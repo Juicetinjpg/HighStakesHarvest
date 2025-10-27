@@ -9,10 +9,10 @@ public class GameManager : MonoBehaviour
     public ToolsManager toolManager;
     public PlantManager plantManager;
     public CropManager cropManager;
+    public PlayerManager playerManager;
 
 
     //public UIManager uiManager;
-    //public PlayerManager playerManager;
 
     void Awake()
     {
@@ -39,12 +39,12 @@ public class GameManager : MonoBehaviour
 
 
         if (cropManager == null)
-            cropManager = GetComponentInChildren<CropManager>();    
+            cropManager = GetComponentInChildren<CropManager>();
+
+        if (playerManager == null)
+            playerManager = GetComponentInChildren<PlayerManager>();
 
         //if (uiManager == null)
         //    uiManager = GetComponentInChildren<UIManager>();
-
-        //if (playerManager == null)
-        //    playerManager = GetComponentInChildren<PlayerManager>();
     }
 }
