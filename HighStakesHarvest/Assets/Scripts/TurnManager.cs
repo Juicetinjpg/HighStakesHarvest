@@ -1,24 +1,22 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-/// <summary>
-/// Enhanced TurnManager that integrates with QuotaManager
-/// Handles turn progression and notifies quota system
-/// </summary>
 public class TurnManager : MonoBehaviour
 {
     public static TurnManager Instance { get; private set; }
 
     [Header("Turn Settings")]
-    [SerializeField] private float turnTimeLimit = 60f; // Time limit per turn in seconds
-
+    [SerializeField] private float turnTimeLimit = 60f;
+    
+    [Header("Player Reference")]
+    [SerializeField] private MonoBehaviour playerMovementScript; // Assign in Inspector
+    
     private float currentTurnTimeRemaining;
     private bool isTurnActive = false;
 
-    // Events
     public System.Action OnTurnStarted;
     public System.Action OnTurnEnded;
-    public System.Action<float> OnTurnTimeChanged; // Remaining time
+    public System.Action<float> OnTurnTimeChanged;
 
     void Awake()
     {
@@ -32,7 +30,6 @@ public class TurnManager : MonoBehaviour
 
     void Start()
     {
-        // Check current scene and start turn if in farm scene
         if (SceneManager.GetActiveScene().name == "FarmScene")
         {
             StartTurn();
@@ -60,9 +57,6 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Start a new turn
-    /// </summary>
     public void StartTurn()
     {
         if (isTurnActive)
@@ -73,14 +67,15 @@ public class TurnManager : MonoBehaviour
 
         currentTurnTimeRemaining = turnTimeLimit;
         isTurnActive = true;
+        
+        // Enable player movement
+        EnablePlayerMovement(true);
+        
         OnTurnStarted?.Invoke();
 
         Debug.Log($"Turn started. Time limit: {turnTimeLimit}s");
     }
 
-    /// <summary>
-    /// End the current turn
-    /// </summary>
     public void EndTurn()
     {
         if (!isTurnActive)
@@ -90,6 +85,9 @@ public class TurnManager : MonoBehaviour
         }
 
         isTurnActive = false;
+        
+        // Disable player movement 
+        EnablePlayerMovement(false);
 
         // Advance all plants
         if (PlantManager.Instance != null)
@@ -112,23 +110,31 @@ public class TurnManager : MonoBehaviour
 
         OnTurnEnded?.Invoke();
 
-        Debug.Log("Turn ended");
+        Debug.Log("Turn ended - Player movement disabled");
 
-        // Note: Scene transition to casino should be handled by a UI button
-        // that calls LoadCasinoScene() 
+        // Automatically load casino after short delay
+        Invoke("LoadCasinoScene", 1.5f);
     }
 
-    /// <summary>
-    /// Load casino scene (called by button)
-    /// </summary>
+
+    private void EnablePlayerMovement(bool enabled)
+    {
+        if (playerMovementScript != null)
+        {
+            playerMovementScript.enabled = enabled;
+            Debug.Log($"Player movement {(enabled ? "enabled" : "disabled")}");
+        }
+        else
+        {
+            Debug.LogWarning("Player movement script not assigned!");
+        }
+    }
+
     public void LoadCasinoScene()
     {
-        SceneManager.LoadScene("CasinoScene");
+        SceneManager.LoadScene("CasinoScene"); 
     }
 
-    /// <summary>
-    /// Load farm scene and start new turn (called when leaving casino)
-    /// </summary>
     public void LoadFarmScene()
     {
         SceneManager.sceneLoaded += OnFarmSceneLoaded;
@@ -144,35 +150,16 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    // ==================== GETTERS ====================
-
-    public float GetTurnTimeRemaining()
-    {
-        return currentTurnTimeRemaining;
-    }
-
-    public float GetTurnTimeLimit()
-    {
-        return turnTimeLimit;
-    }
-
-    public bool IsTurnActive()
-    {
-        return isTurnActive;
-    }
-
-    // ==================== TESTING ====================
-
-    public void SetTurnTimeLimit(float seconds)
-    {
-        turnTimeLimit = seconds;
-    }
-
-    public void AddTime(float seconds)
-    {
-        if (isTurnActive)
-        {
-            currentTurnTimeRemaining += seconds;
-        }
+    // Getters
+    public float GetTurnTimeRemaining() { return currentTurnTimeRemaining; }
+    public float GetTurnTimeLimit() { return turnTimeLimit; }
+    public bool IsTurnActive() { return isTurnActive; }
+    
+    // Testing
+    public void SetTurnTimeLimit(float seconds) { turnTimeLimit = seconds; }
+    public void AddTime(float seconds) 
+    { 
+        if (isTurnActive) 
+            currentTurnTimeRemaining += seconds; 
     }
 }
