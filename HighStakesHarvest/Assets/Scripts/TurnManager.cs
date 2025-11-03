@@ -26,6 +26,14 @@ public class TurnManager : MonoBehaviour
             return;
         }
         Instance = this;
+
+        // Listen for scene loads so we can reset the turn when FarmScene is loaded
+        SceneManager.sceneLoaded += OnAnySceneLoaded;
+    }
+
+    void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnAnySceneLoaded;
     }
 
     void Start()
@@ -74,6 +82,18 @@ public class TurnManager : MonoBehaviour
         OnTurnStarted?.Invoke();
 
         Debug.Log($"Turn started. Time limit: {turnTimeLimit}s");
+    }
+
+    // Force-reset the turn timer and start the turn regardless of previous state
+    public void ResetAndStartTurn()
+    {
+        currentTurnTimeRemaining = turnTimeLimit;
+        isTurnActive = true;
+
+        EnablePlayerMovement(true);
+        OnTurnStarted?.Invoke();
+
+        Debug.Log("Turn timer reset and started due to FarmScene load.");
     }
 
     public void EndTurn()
@@ -147,6 +167,15 @@ public class TurnManager : MonoBehaviour
         {
             StartTurn();
             SceneManager.sceneLoaded -= OnFarmSceneLoaded;
+        }
+    }
+
+    private void OnAnySceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "FarmScene")
+        {
+            // Reset timer any time FarmScene is loaded
+            ResetAndStartTurn();
         }
     }
 

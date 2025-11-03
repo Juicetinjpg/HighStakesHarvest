@@ -16,6 +16,9 @@ public class TurnEndNotification : MonoBehaviour
     [SerializeField] private float displayDuration = 2f;
     [SerializeField] private string casinoSceneName = "CasinoScene";
 
+    private TurnManager subscribedTurnManager;
+    private Coroutine activeCoroutine;
+
     void Start()
     {
         // Hide panel initially
@@ -25,21 +28,32 @@ public class TurnEndNotification : MonoBehaviour
         // Subscribe to turn end event
         if (TurnManager.Instance != null)
         {
-            TurnManager.Instance.OnTurnEnded += ShowTurnEndNotification;
+            subscribedTurnManager = TurnManager.Instance;
+            subscribedTurnManager.OnTurnEnded += ShowTurnEndNotification;
+            subscribedTurnManager.OnTurnStarted += HideTurnEndPanel;
         }
     }
 
     void OnDestroy()
     {
-        if (TurnManager.Instance != null)
+        if (subscribedTurnManager != null)
         {
-            TurnManager.Instance.OnTurnEnded -= ShowTurnEndNotification;
+            subscribedTurnManager.OnTurnEnded -= ShowTurnEndNotification;
+            subscribedTurnManager.OnTurnStarted -= HideTurnEndPanel;
+            subscribedTurnManager = null;
         }
     }
 
     private void ShowTurnEndNotification()
     {
-        StartCoroutine(ShowNotificationAndTransition());
+        // Ensure any previous coroutine is stopped
+        if (activeCoroutine != null)
+        {
+            StopCoroutine(activeCoroutine);
+            activeCoroutine = null;
+        }
+
+        activeCoroutine = StartCoroutine(ShowNotificationAndTransition());
     }
 
     private IEnumerator ShowNotificationAndTransition()
@@ -70,7 +84,22 @@ public class TurnEndNotification : MonoBehaviour
         if (turnEndPanel != null)
             turnEndPanel.SetActive(false);
 
+        activeCoroutine = null;
+
         // Load casino
         SceneManager.LoadScene(casinoSceneName);
+    }
+
+    private void HideTurnEndPanel()
+    {
+        // Stop any running notification coroutine
+        if (activeCoroutine != null)
+        {
+            StopCoroutine(activeCoroutine);
+            activeCoroutine = null;
+        }
+
+        if (turnEndPanel != null && turnEndPanel.activeSelf)
+            turnEndPanel.SetActive(false);
     }
 }
