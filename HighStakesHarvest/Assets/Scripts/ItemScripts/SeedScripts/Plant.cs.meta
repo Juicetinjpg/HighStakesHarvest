@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: f39710f6834fe1040ade1f3123178cf6
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - seedData: {fileID: 11400000, guid: 205c970a34a62bd4697b06c40ed4c8b0, type: 2}
+  - waterIconPrefab: {fileID: 4314358365534686822, guid: 73fc7dfb8ecaedb40a647c336b9dd3fb,
+      type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

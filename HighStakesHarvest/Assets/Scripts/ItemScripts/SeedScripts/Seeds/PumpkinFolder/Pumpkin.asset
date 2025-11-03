@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7aedf3317ec49d24ca374103de9b8897, type: 3}
+  m_Name: Pumpkin
+  m_EditorClassIdentifier: 
+  seedName: Pumpkin
+  price: 25
+  growthTime: 5
+  seasonPreference: Summer
+  type: Veggie
+  growthStages:
+  - {fileID: 7738305070149883613, guid: 6364575b6652c294889838f282ad7863, type: 3}
+  - {fileID: 7829047689554456896, guid: 16fbc486ed47f2941b1ac856705e4f3a, type: 3}
+  - {fileID: 7829047689554456896, guid: 16fbc486ed47f2941b1ac856705e4f3a, type: 3}
+  - {fileID: 7829047689554456896, guid: 16fbc486ed47f2941b1ac856705e4f3a, type: 3}
+  - {fileID: 2736369492407279907, guid: 36ff2ffe0e8d1834786f029e3f14b984, type: 3}
