@@ -8,7 +8,7 @@ using System.Collections;
 public class PlantGrowth : MonoBehaviour
 {
     [Header("Plant Data")]
-    public SeedDataEnhanced seedData;
+    public SeedData seedData;
     public CropData cropData;
     
     [Header("Growth State")]

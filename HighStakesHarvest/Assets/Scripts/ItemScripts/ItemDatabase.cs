@@ -11,7 +11,7 @@ public class ItemDatabase : MonoBehaviour
     public static ItemDatabase Instance { get; private set; }
     
     [Header("Item Collections")]
-    public List<SeedDataEnhanced> allSeeds = new List<SeedDataEnhanced>();
+    public List<SeedData> allSeeds = new List<SeedData>();
     public List<CropData> allCrops = new List<CropData>();
     public List<ToolData> allTools = new List<ToolData>();
     public List<ResourceData> allResources = new List<ResourceData>();
@@ -92,7 +92,7 @@ public class ItemDatabase : MonoBehaviour
     /// <summary>
     /// Gets a seed by name
     /// </summary>
-    public SeedDataEnhanced GetSeed(string seedName)
+    public SeedData GetSeed(string seedName)
     {
         return allSeeds.FirstOrDefault(s => s != null && s.itemName == seedName);
     }
@@ -116,7 +116,7 @@ public class ItemDatabase : MonoBehaviour
     /// <summary>
     /// Gets all seeds available in a specific season
     /// </summary>
-    public List<SeedDataEnhanced> GetSeedsBySeason(string season)
+    public List<SeedData> GetSeedsBySeason(string season)
     {
         return allSeeds.Where(s => s != null && s.CanPlantInSeason(season)).ToList();
     }
@@ -156,7 +156,7 @@ public class ItemDatabase : MonoBehaviour
     /// <summary>
     /// Gets the crop produced by a seed
     /// </summary>
-    public CropData GetCropFromSeed(SeedDataEnhanced seed)
+    public CropData GetCropFromSeed(SeedData seed)
     {
         return seed != null ? seed.producedCrop : null;
     }
@@ -164,7 +164,7 @@ public class ItemDatabase : MonoBehaviour
     /// <summary>
     /// Finds which seed produces a specific crop
     /// </summary>
-    public SeedDataEnhanced GetSeedForCrop(CropData crop)
+    public SeedData GetSeedForCrop(CropData crop)
     {
         return allSeeds.FirstOrDefault(s => s != null && s.producedCrop == crop);
     }
@@ -172,7 +172,7 @@ public class ItemDatabase : MonoBehaviour
     /// <summary>
     /// Gets all multi-harvest crops
     /// </summary>
-    public List<SeedDataEnhanced> GetMultiHarvestSeeds()
+    public List<SeedData> GetMultiHarvestSeeds()
     {
         return allSeeds.Where(s => s != null && s.isMultiHarvest).ToList();
     }
