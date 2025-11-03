@@ -26,13 +26,22 @@ public class PlayerManager : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
         SceneManager.sceneUnloaded += OnSceneUnloaded;
     }
+    private void Start()
+    {
+        // Force spawn if we're already in FarmScene and player doesn't exist
+        if (SceneManager.GetActiveScene().name == "FarmScene" && currentPlayer == null)
+        {
+            SpawnPlayer();
+        }
+    }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        Debug.Log($"Scene loaded: {scene.name}"); // debugs
         currentSceneName = scene.name;
-
         if (currentSceneName == "FarmScene")
         {
+            Debug.Log("Calling SpawnPlayer()"); // debugs
             SpawnPlayer();
         }
     }
@@ -48,6 +57,18 @@ public class PlayerManager : MonoBehaviour
 
     private void SpawnPlayer()
     {
+        Debug.Log("SpawnPlayer() called"); 
+        if (playerPrefab == null)
+        {
+            Debug.LogError("PlayerManager: No player prefab assigned!");
+            return;
+        }
+
+        Debug.Log("Actually spawning player now"); 
+        currentPlayer = Instantiate(playerPrefab);
+        currentPlayer.name = "Player";
+        Debug.Log($"Player spawned: {currentPlayer.name}"); 
+
         if (playerPrefab == null)
         {
             Debug.LogError("PlayerManager: No player prefab assigned!");
