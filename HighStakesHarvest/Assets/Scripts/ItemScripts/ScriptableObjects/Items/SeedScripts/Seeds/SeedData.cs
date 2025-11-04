@@ -1,71 +1,52 @@
 using UnityEngine;
 
 /// <summary>
-/// Enhanced SeedData that extends ItemData
-/// Compatible with your old Plant.cs visual system
-/// Works with the new inventory system
+/// Seed data that inherits from ItemData for full inventory integration
+/// Replaces your old SeedData.cs
+/// Works with your existing growth stage prefabs and CropData
 /// </summary>
 [CreateAssetMenu(fileName = "NewSeed", menuName = "Farming/Seed Data")]
 public class SeedData : ItemData
 {
-    [Header("Old System Compatibility")]
-    public string seedName; // Kept for backward compatibility
-    public int price; // Kept for backward compatibility
-    public GameObject[] growthStages; // Your existing prefabs for each stage
-
-    [Header("Growth Properties")]
-    public int growthTime = 3; // Turns until fully grown
+    [Header("Seed-Specific Properties")]
+    public CropData producedCrop; // What crop this produces when harvested
+    public int growthTime = 3; // Base number of turns to grow
     public string seasonPreference = "All"; // Spring, Summer, Fall, Winter, or All
-    public string type = "Vegetable"; // Vegetable, Fruit, Flower, etc.
 
-    [Header("Crop Output")]
-    public CropData producedCrop; // What crop this seed produces when harvested
+    [Header("Growth Visuals")]
+    public GameObject[] growthStages; // Your prefabs for each growth stage (Sprout, MidGrowth, FullGrowth)
 
-    [Header("Requirements")]
+    [Header("Planting Requirements")]
     public bool requiresWater = true;
     public bool requiresTilledSoil = false;
 
     [Header("Multi-Harvest")]
-    public bool isMultiHarvest = false; // Can be harvested multiple times?
-    public int harvestsPerPlant = 1;
-    public int regrowthTime = 1; // Turns between harvests if multi-harvest
+    public bool isMultiHarvest = false; // Can harvest multiple times?
+    public int harvestsPerPlant = 1; // How many times can you harvest
+    public int regrowthTime = 2; // Turns to regrow after harvest
 
     [Header("Seasonal Bonuses")]
-    public float seasonalYieldBonus = 1.2f; // Yield bonus when planted in preferred season
-    public float seasonalGrowthSpeed = 0.8f; // Grows faster in preferred season (0.8 = 20% faster)
+    public float seasonalGrowthBonus = 0.75f; // 25% faster in preferred season
+    public float seasonalYieldBonus = 1.5f; // 50% more yield in preferred season
 
     private void OnValidate()
     {
-        // Auto-sync with ItemData fields
         itemType = ItemType.Seed;
 
-        // Sync old fields with new fields for compatibility
-        if (string.IsNullOrEmpty(seedName) && !string.IsNullOrEmpty(itemName))
+        // Auto-link: When you assign producedCrop, it automatically sets the crop's sourceSeed
+        if (producedCrop != null && producedCrop.sourceSeed != this)
         {
-            seedName = itemName;
-        }
-        else if (!string.IsNullOrEmpty(seedName) && string.IsNullOrEmpty(itemName))
-        {
-            itemName = seedName;
-        }
-
-        if (price != 0 && basePrice == 0)
-        {
-            basePrice = price;
-        }
-        else if (basePrice != 0 && price == 0)
-        {
-            price = basePrice;
+            producedCrop.sourceSeed = this;
         }
     }
 
     /// <summary>
-    /// Checks if this seed can be planted in the current season
+    /// Checks if this seed can be planted in the given season
     /// </summary>
-    public bool CanPlantInSeason(string currentSeason)
+    public bool CanPlantInSeason(string season)
     {
         if (seasonPreference == "All") return true;
-        return seasonPreference.Equals(currentSeason, System.StringComparison.OrdinalIgnoreCase);
+        return seasonPreference.Equals(season, System.StringComparison.OrdinalIgnoreCase);
     }
 
     /// <summary>
@@ -73,16 +54,17 @@ public class SeedData : ItemData
     /// </summary>
     public int GetModifiedGrowthTime(string currentSeason)
     {
+        // If in preferred season, grow faster
         if (CanPlantInSeason(currentSeason) && seasonPreference != "All")
         {
-            // Grows faster in preferred season
-            return Mathf.CeilToInt(growthTime * seasonalGrowthSpeed);
+            return Mathf.CeilToInt(growthTime * seasonalGrowthBonus);
         }
+
         return growthTime;
     }
 
     /// <summary>
-    /// Gets total number of growth stages
+    /// Gets the total number of growth stages
     /// </summary>
     public int GetTotalGrowthStages()
     {
@@ -92,21 +74,23 @@ public class SeedData : ItemData
     /// <summary>
     /// Gets the prefab for a specific growth stage
     /// </summary>
-    public GameObject GetGrowthStagePrefab(int stage)
+    public GameObject GetGrowthStagePrefab(int stageIndex)
     {
-        if (growthStages == null || stage < 0 || stage >= growthStages.Length)
+        if (growthStages == null || stageIndex < 0 || stageIndex >= growthStages.Length)
+        {
             return null;
+        }
 
-        return growthStages[stage];
+        return growthStages[stageIndex];
     }
 
     /// <summary>
-    /// Use the seed (plants it)
+    /// Uses the seed (plants it)
     /// </summary>
     public override bool Use(GameObject user)
     {
-        Debug.Log($"Use {itemName} - right-click on tilled soil to plant!");
-        return false; // Don't consume here, ImprovedPlantPlacer handles it
+        Debug.Log($"Cannot use {itemName} directly - equip it and click on the ground to plant");
+        return false;
     }
 
     public override string GetDisplayInfo()
@@ -114,15 +98,16 @@ public class SeedData : ItemData
         string info = base.GetDisplayInfo();
         info += $"\nGrowth Time: {growthTime} turns";
         info += $"\nSeason: {seasonPreference}";
-
-        if (producedCrop != null)
-        {
-            info += $"\nProduces: {producedCrop.itemName}";
-        }
+        info += $"\nProduces: {(producedCrop != null ? producedCrop.itemName : "Unknown")}";
 
         if (isMultiHarvest)
         {
-            info += $"\nMulti-Harvest: {harvestsPerPlant}x";
+            info += $"\nMulti-Harvest ({harvestsPerPlant}x)";
+        }
+
+        if (requiresWater)
+        {
+            info += "\nRequires Water";
         }
 
         return info;
