@@ -1735,7 +1735,7 @@ GameObject:
   - component: {fileID: 1678311799}
   - component: {fileID: 1678311798}
   m_Layer: 5
-  m_Name: Price
+  m_Name: Prize
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1784,8 +1784,9 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 4c6004890b4ecc4488b434c9a6507933, type: 2}
+  m_sharedMaterial: {fileID: -7489765113027175155, guid: 4c6004890b4ecc4488b434c9a6507933,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
