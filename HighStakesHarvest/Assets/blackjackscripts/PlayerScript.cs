@@ -1,6 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+/// <summary>
+/// PlayerScript for blackjack that now uses the persistent MoneyManager
+/// This ensures money persists between casino and farm scenes
+/// </summary>
 public class PlayerScript : MonoBehaviour
 {
     public DeckScript deckScript;
@@ -10,7 +14,6 @@ public class PlayerScript : MonoBehaviour
     public int cardIndex = 0;
 
     private List<CardScript> aceList = new List<CardScript>();
-    private int money = 1000;
 
     // --- Deals the initial 2-card hand ---
     public void DealInitialHand()
@@ -82,7 +85,54 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    // --- Money management ---
-    public void AdjustMoney(int amount) { money += amount; }
-    public int GetMoney() { return money; }
+    // ==================== MONEY MANAGEMENT ====================
+    // Now uses MoneyManager instead of local variable
+
+    /// <summary>
+    /// Adjust money amount (positive to add, negative to remove)
+    /// </summary>
+    public void AdjustMoney(int amount)
+    {
+        if (MoneyManager.Instance == null)
+        {
+            Debug.LogError("MoneyManager not found! Cannot adjust money.");
+            return;
+        }
+
+        if (amount > 0)
+        {
+            MoneyManager.Instance.AddMoney(amount);
+        }
+        else if (amount < 0)
+        {
+            MoneyManager.Instance.RemoveMoney(-amount);
+        }
+    }
+
+    /// <summary>
+    /// Get current money from MoneyManager
+    /// </summary>
+    public int GetMoney()
+    {
+        if (MoneyManager.Instance != null)
+        {
+            return MoneyManager.Instance.GetMoney();
+        }
+
+        Debug.LogError("MoneyManager not found! Returning 0.");
+        return 0;
+    }
+
+    /// <summary>
+    /// Check if player has enough money for a bet
+    /// </summary>
+    public bool HasEnoughMoney(int amount)
+    {
+        if (MoneyManager.Instance != null)
+        {
+            return MoneyManager.Instance.HasEnoughMoney(amount);
+        }
+
+        return false;
+    }
 }
