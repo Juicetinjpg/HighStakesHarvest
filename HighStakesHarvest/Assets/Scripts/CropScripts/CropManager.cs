@@ -31,41 +31,41 @@ public class CropManager : MonoBehaviour
 
     // getters
 
-    public CropInfo getCropInfo(string name)
+    CropInfo getCropInfo(string name)
     {
         return cropInfoDictionary[name];
     }
 
-    public int getCropValue(string name)
+    int getCropValue(string name)
     {
         return cropInfoDictionary[name].value;
     }
 
-    public int getCropGrowth(string name)
+    int getCropGrowth(string name)
     {
         return cropInfoDictionary[name].growth;
     }
 
-    public int getCropQuantity(string name)
+    int getCropQuantity(string name)
     {
         return cropInfoDictionary[name].quantity;
     }
 
-    public void ApplySpecificValueBuff(CropInfo crop, float modifier)
+    void ApplySpecificValueBuff(CropInfo crop, float modifier)
     {
         crop.value = Mathf.CeilToInt(crop.value * modifier);
 
         Debug.Log("New value of "+crop.name+"is "+crop.value);
     }
 
-    public void ApplySpecificGrowthDecrease(CropInfo crop, int decrease)
+    void ApplySpecificGrowthDecrease(CropInfo crop, int decrease)
     {
         crop.growth -= decrease;
 
         Debug.Log("New growth of " + crop.name + "is " + crop.growth);
     }
 
-    public void ApplySpecificQuantityBuff(CropInfo crop, float modifier)
+    void ApplySpecificQuantityBuff(CropInfo crop, float modifier)
     {
         crop.quantity = Mathf.CeilToInt(crop.quantity * modifier);
 
