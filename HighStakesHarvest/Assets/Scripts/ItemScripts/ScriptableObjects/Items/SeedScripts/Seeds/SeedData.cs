@@ -8,6 +8,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewSeed", menuName = "Farming/Seed Data")]
 public class SeedData : ItemData
 {
+
     [Header("Seed-Specific Properties")]
     public string cropName;
     public CropData producedCrop; // What crop this produces when harvested
@@ -62,6 +63,12 @@ public class SeedData : ItemData
         }
 
         return growthTime;
+    }
+
+    public int GetCurrentGrowth()
+    {
+        CropManager cropManager = GameObject.Find("CropManager").GetComponent<CropManager>();
+        return cropManager.cropInfoDictionary[cropName].growth;
     }
 
     /// <summary>

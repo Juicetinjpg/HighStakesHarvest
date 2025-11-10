@@ -16,6 +16,7 @@ public class PlantPlacer : MonoBehaviour
     [Header("References")]
     public Tilemap soilTilemap;
     public Tilemap interactableTilemap;
+    public CropManager cropManager;
     public GameObject waterIconPrefab; // Your water droplet prefab
     public GameObject Player;
 
@@ -30,16 +31,13 @@ public class PlantPlacer : MonoBehaviour
     private void Start()
     {
         Player = GameObject.Find("Player");
+        cropManager = GameObject.Find("CropManager").GetComponent<CropManager>();  
 
-        int count = 1;
         Debug.Log("Starting dict");
         foreach (GameObject i in seedList)
         {
-            Debug.Log("count: " + count);
             Plant j = i.GetComponent<Plant>();
-            if (j == null) Debug.Log("j is null");
             seedDict.Add(j.cropName, i);
-            Debug.Log(j.cropName + "is the cropname");
         }
     }
 
@@ -47,17 +45,50 @@ public class PlantPlacer : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            HandleMouseClick();
+            // Get world position from mouse and convert to grid position
+            Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            worldPos.z = 0;
+            Vector3Int cellPos = soilTilemap.WorldToCell(worldPos);
+            Vector3 placePos = soilTilemap.GetCellCenterWorld(cellPos);
+
+            Vector3 playerWorldPosition = Player.transform.position;
+
+            // Convert player world position to cell position on the tilemap
+            Vector3Int playerCellPosition = soilTilemap.WorldToCell(playerWorldPosition);
+
+            int thresholdX = Mathf.Abs((int)(placePos.x - playerCellPosition.x));
+            int thresholdY = Mathf.Abs((int)(placePos.y - playerCellPosition.y));
+
+            // magic number : change to playerRange
+            if (thresholdX < 2 && thresholdY < 2)
+            {
+                HandleMouseClick(placePos);
+            }
+            else
+            {
+                Debug.Log("Tile not in range");
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            // get player position - to reuse in mouseclick as well 
+
+            Vector3 playerWorldPosition = Player.transform.position;
+
+            // Convert world position to cell position on the tilemap
+            Vector3Int playerCellPosition = soilTilemap.WorldToCell(playerWorldPosition);
+
+            Vector3 placePos = soilTilemap.GetCellCenterWorld(playerCellPosition);
+
+            HandleMouseClick(placePos);
+
         }
     }
 
-    private void HandleMouseClick()
+    private void HandleMouseClick(Vector3 pos)
     {
-        // Get world position from mouse and convert to grid position
-        Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        worldPos.z = 0;
-        Vector3Int cellPos = soilTilemap.WorldToCell(worldPos);
-        Vector3 placePos = soilTilemap.GetCellCenterWorld(cellPos);
+        
 
         // Get what's currently equipped in the hotbar
         if (HotbarManager.Instance == null)
@@ -71,6 +102,7 @@ public class PlantPlacer : MonoBehaviour
         if (equippedItem == null)
         {
             Debug.Log("No item equipped. Select an item from your hotbar (keys 1-9, 0)");
+            //TryHarvestPlant(pos, null); // hacky solution to test harvest without tool
             return;
         }
 
@@ -78,11 +110,11 @@ public class PlantPlacer : MonoBehaviour
         switch (equippedItem.itemType)
         {
             case ItemType.Seed:
-                TryPlantSeed(placePos, equippedItem as SeedData);
+                TryPlantSeed(pos, equippedItem as SeedData);
                 break;
 
             case ItemType.Tool:
-                TryUseTool(placePos, equippedItem as ToolData);
+                TryUseTool(pos, equippedItem as ToolData);
                 break;
 
             default:
@@ -150,6 +182,11 @@ public class PlantPlacer : MonoBehaviour
        
 
         GameObject go = Instantiate(seedDict[seed.cropName], objectPos, Quaternion.identity);
+
+        // set the growth time according to whatever is in seed data..?
+        //go.GetComponent<Plant>().seedData.growthTime = cropManager.cropInfoDictionary[seed.cropName].growth;
+        
+        // change growthrate to be whats stored in cropinfo
 
         // Register with PlantManager for persistence and turn management
         if (PlantManager.Instance != null)
@@ -263,7 +300,7 @@ public class PlantPlacer : MonoBehaviour
 
         if (!plant.IsFullyGrown())
         {
-            Debug.Log($"{plant.seedData.itemName} is not ready to harvest yet!");
+            Debug.Log($"{plant.seedData.itemName} is not ready to harvest yet! Growth time is {plant.seedData.GetCurrentGrowth()}");
             return;
         }
 
@@ -275,7 +312,7 @@ public class PlantPlacer : MonoBehaviour
 
         if (harvestedCrop != null)
         {
-            int yieldAmount = harvestedCrop.GetYieldAmount();
+            int yieldAmount = cropManager.cropInfoDictionary[harvestedCrop.cropName].quantity;
 
             // Add to inventory
             if (InventoryManager.Instance.AddHarvestedCrop(harvestedCrop, yieldAmount))

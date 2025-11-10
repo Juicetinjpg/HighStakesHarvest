@@ -20,13 +20,14 @@ MonoBehaviour:
   itemType: 1
   basePrice: 100
   sellPriceMultiplier: 0.5
-  sourceSeed: {fileID: 11400000, guid: 79d64b3b484c64047a76a91171c13bcf, type: 2}
+  sourceSeed: {fileID: 11400000, guid: cd1203788cb875f4ca20c97cc41eabe9, type: 2}
+  cropName: Potato
   quality: 1
   minYield: 1
   maxYield: 3
   qualityMultiplier: 1
   hasSeasonalBonus: 0
-  bonusSeason: All
+  bonusSeason: Winter
   seasonalPriceMultiplier: 1.5
   canBeUsedAsAnimalFeed: 1
   feedValue: 1
