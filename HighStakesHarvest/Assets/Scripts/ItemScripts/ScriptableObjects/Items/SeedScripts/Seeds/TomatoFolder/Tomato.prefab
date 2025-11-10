@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8168315863344613957}
   - component: {fileID: 6886298048769507387}
   m_Layer: 0
-  m_Name: Potato
+  m_Name: Tomato
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,14 +45,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f39710f6834fe1040ade1f3123178cf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  seedData: {fileID: 11400000, guid: 205c970a34a62bd4697b06c40ed4c8b0, type: 2}
+  seedData: {fileID: 11400000, guid: 52e1bc09a9a3ee844b5a10feed623109, type: 2}
   currentSeason: Spring
-  cropName: Potato
+  cropName: Tomato
   currentStage: 0
   turnsGrown: 0
   needsWater: 1
   timesHarvested: 0
-  waterIconPrefab: {fileID: 4314358365534686822, guid: 73fc7dfb8ecaedb40a647c336b9dd3fb,
+  waterIconPrefab: {fileID: 4314358365534686822, guid: 1471a0aa0e69421408a71bc94233bd01,
     type: 3}
 --- !u!61 &6886298048769507387
 BoxCollider2D:

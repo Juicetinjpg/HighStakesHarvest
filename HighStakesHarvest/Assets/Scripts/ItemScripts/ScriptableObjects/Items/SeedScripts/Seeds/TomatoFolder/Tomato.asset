@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7aedf3317ec49d24ca374103de9b8897, type: 3}
-  m_Name: PotatoSeed
+  m_Name: Tomato
   m_EditorClassIdentifier: 
-  itemName: Potato Seeds
+  itemName: 
   description: 
   icon: {fileID: 0}
   stackSize: 10
@@ -20,15 +20,11 @@ MonoBehaviour:
   itemType: 0
   basePrice: 0
   sellPriceMultiplier: 0.5
-  cropName: Potato
-  producedCrop: {fileID: 11400000, guid: 83489051655e4fc48a920965d74041cb, type: 2}
-  growthTime: 4
+  cropName: 
+  producedCrop: {fileID: 0}
+  growthTime: 3
   seasonPreference: All
-  growthStages:
-  - {fileID: 7738305070149883613, guid: 6364575b6652c294889838f282ad7863, type: 3}
-  - {fileID: 7829047689554456896, guid: 16fbc486ed47f2941b1ac856705e4f3a, type: 3}
-  - {fileID: 7829047689554456896, guid: 16fbc486ed47f2941b1ac856705e4f3a, type: 3}
-  - {fileID: 2736369492407279907, guid: 36ff2ffe0e8d1834786f029e3f14b984, type: 3}
+  growthStages: []
   requiresWater: 1
   requiresTilledSoil: 0
   isMultiHarvest: 0

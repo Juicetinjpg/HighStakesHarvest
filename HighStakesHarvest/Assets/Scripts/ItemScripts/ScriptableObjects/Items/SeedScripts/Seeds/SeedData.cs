@@ -9,6 +9,7 @@ using UnityEngine;
 public class SeedData : ItemData
 {
     [Header("Seed-Specific Properties")]
+    public string cropName;
     public CropData producedCrop; // What crop this produces when harvested
     public int growthTime = 3; // Base number of turns to grow
     public string seasonPreference = "All"; // Spring, Summer, Fall, Winter, or All

@@ -1,5 +1,8 @@
-﻿using UnityEngine;
+﻿using NUnit.Framework;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 /// <summary>
 /// Inventory-based planting system that works with your tilemap grid
@@ -9,13 +12,36 @@ using UnityEngine.Tilemaps;
 /// </summary>
 public class PlantPlacer : MonoBehaviour
 {
+
     [Header("References")]
     public Tilemap soilTilemap;
+    public Tilemap interactableTilemap;
     public GameObject waterIconPrefab; // Your water droplet prefab
+    public GameObject Player;
+
+    // list of seed prefabs
+    [SerializeField] public List<GameObject> seedList = new List<GameObject>();
+    public Dictionary<string, GameObject> seedDict = new Dictionary<string, GameObject>();
 
     [Header("Visual Feedback")]
     public Color validPlacementColor = new Color(0, 1, 0, 0.3f);
     public Color invalidPlacementColor = new Color(1, 0, 0, 0.3f);
+
+    private void Start()
+    {
+        Player = GameObject.Find("Player");
+
+        int count = 1;
+        Debug.Log("Starting dict");
+        foreach (GameObject i in seedList)
+        {
+            Debug.Log("count: " + count);
+            Plant j = i.GetComponent<Plant>();
+            if (j == null) Debug.Log("j is null");
+            seedDict.Add(j.cropName, i);
+            Debug.Log(j.cropName + "is the cropname");
+        }
+    }
 
     void Update()
     {
@@ -70,11 +96,29 @@ public class PlantPlacer : MonoBehaviour
     /// </summary>
     private void TryPlantSeed(Vector3 placePos, SeedData seed)
     {
+        /** Convert interacted position to a vector position for object referencing **/
+
+        // Convert world position to cell position on the tilemap
+        Vector3Int cellPos = soilTilemap.WorldToCell(placePos);
+
+        // Convert cell position back to vector position in relation to center of tile
+        Vector3 objectPos = new Vector3(cellPos.x + (float)0.5, cellPos.y + (float)0.5);
+
+        // get layer mask with plant objects to ensure collision issues aren't caused
+        int defaultLayerMask = LayerMask.GetMask("Default");
+
+        // get object at position of interaction on the layer mask
+        Collider2D hit = Physics2D.OverlapPoint(objectPos, defaultLayerMask);
+
+        // above lines are reused in other functions
+
+        // get interactable tile for checking if is interactable (if tile on interactable map exists)
+        TileBase interactable = interactableTilemap.GetTile(cellPos);
+
+
         if (seed == null) return;
 
-        // Check if spot is already occupied
-        Collider2D hit = Physics2D.OverlapPoint(placePos);
-        if (hit != null)
+        if (hit != null || interactable == null)
         {
             Debug.Log("Cannot plant here - space already occupied");
             return;
@@ -103,27 +147,18 @@ public class PlantPlacer : MonoBehaviour
             return;
         }
 
-        // Create the plant GameObject
-        GameObject plantObj = new GameObject($"Plant_{seed.itemName}");
-        plantObj.transform.position = placePos;
-        plantObj.layer = LayerMask.NameToLayer("Default"); // Or your plant layer
+       
 
-        // Add collider so we can detect it's there
-        CircleCollider2D collider = plantObj.AddComponent<CircleCollider2D>();
-        collider.radius = 0.4f;
-
-        // Add the Plant component (uses the currentSeason from above)
-        Plant plant = plantObj.AddComponent<Plant>();
-        plant.Initialize(seed, waterIconPrefab, currentSeason);
+        GameObject go = Instantiate(seedDict[seed.cropName], objectPos, Quaternion.identity);
 
         // Register with PlantManager for persistence and turn management
         if (PlantManager.Instance != null)
         {
-            PlantManager.Instance.AddPlant(plantObj);
+            PlantManager.Instance.AddPlant(go);
         }
         else
         {
-            DontDestroyOnLoad(plantObj);
+            DontDestroyOnLoad(go);
         }
 
         Debug.Log($"✓ Planted {seed.itemName} at {placePos}");
@@ -163,7 +198,18 @@ public class PlantPlacer : MonoBehaviour
     /// </summary>
     private void TryWaterPlant(Vector3 placePos, ToolData tool)
     {
-        Collider2D hit = Physics2D.OverlapPoint(placePos);
+        // Convert world position to cell position on the tilemap
+        Vector3Int cellPos = soilTilemap.WorldToCell(placePos);
+
+        // Convert cell position back to vector position in relation to center of tile
+        Vector3 objectPos = new Vector3(cellPos.x + (float)0.5, cellPos.y + (float)0.5);
+
+        // get layer mask with plant objects to ensure collision issues aren't caused
+        int defaultLayerMask = LayerMask.GetMask("Default");
+
+        // get object at position of interaction on the layer mask
+        Collider2D hit = Physics2D.OverlapPoint(objectPos, defaultLayerMask);
+
         if (hit == null)
         {
             Debug.Log("No plant here to water");
@@ -190,7 +236,18 @@ public class PlantPlacer : MonoBehaviour
     /// </summary>
     private void TryHarvestPlant(Vector3 placePos, ToolData tool)
     {
-        Collider2D hit = Physics2D.OverlapPoint(placePos);
+        // Convert world position to cell position on the tilemap
+        Vector3Int cellPos = soilTilemap.WorldToCell(placePos);
+
+        // Convert cell position back to vector position in relation to center of tile
+        Vector3 objectPos = new Vector3(cellPos.x + (float)0.5, cellPos.y + (float)0.5);
+
+        // get layer mask with plant objects to ensure collision issues aren't caused
+        int defaultLayerMask = LayerMask.GetMask("Default");
+
+        // get object at position of interaction on the layer mask
+        Collider2D hit = Physics2D.OverlapPoint(objectPos, defaultLayerMask);
+
         if (hit == null)
         {
             Debug.Log("No plant here to harvest");

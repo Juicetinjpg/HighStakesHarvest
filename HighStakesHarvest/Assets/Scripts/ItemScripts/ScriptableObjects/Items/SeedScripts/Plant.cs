@@ -10,6 +10,7 @@ public class Plant : MonoBehaviour
     [Header("Plant Data")]
     public SeedData seedData;
     public string currentSeason = "Spring";
+    public string cropName;
 
     [Header("Growth State")]
     public int currentStage = 0;

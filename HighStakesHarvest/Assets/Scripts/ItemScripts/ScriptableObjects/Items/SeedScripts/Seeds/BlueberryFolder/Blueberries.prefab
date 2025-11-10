@@ -46,6 +46,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   seedData: {fileID: 11400000, guid: eccfaa8f472e97949b227166c712a073, type: 2}
+  currentSeason: Spring
+  cropName: Blueberry
+  currentStage: 0
+  turnsGrown: 0
+  needsWater: 1
+  timesHarvested: 0
   waterIconPrefab: {fileID: 4314358365534686822, guid: 73fc7dfb8ecaedb40a647c336b9dd3fb,
     type: 3}
 --- !u!61 &455872312157144219
