@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /// <summary>
@@ -198,7 +198,7 @@ public class TurnManager : MonoBehaviour
         int nextSeasonIndex = (currentSeasonIndex + 1) % seasons.Length;
         currentSeason = seasons[nextSeasonIndex];
 
-        Debug.Log($"🍂 Season changed to: {currentSeason}");
+        Debug.Log($"?? Season changed to: {currentSeason}");
 
         // Update all Plants with new season
         if (PlantManager.Instance != null)
