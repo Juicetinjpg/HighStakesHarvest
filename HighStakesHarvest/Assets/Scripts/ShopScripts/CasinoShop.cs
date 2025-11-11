@@ -54,14 +54,41 @@ public class CasinoShop : MonoBehaviour
 
     private void Start()
     {
-        if (!ValidateManagers()) return;
+        Debug.Log("=== CasinoShop Start ===");
+        Debug.Log($"MoneyManager exists: {MoneyManager.Instance != null}");
+        Debug.Log($"ItemDatabase exists: {ItemDatabase.Instance != null}");
+        Debug.Log($"PlayerInventory exists: {PlayerInventory.Instance != null}");
 
+        if (MoneyManager.Instance != null)
+        {
+            Debug.Log($"Current Money: ${MoneyManager.Instance.GetMoney()}");
+        }
+
+        if (ItemDatabase.Instance != null)
+        {
+            Debug.Log($"Seeds in database: {ItemDatabase.Instance.allSeeds.Count}");
+            Debug.Log($"Tools in database: {ItemDatabase.Instance.allTools.Count}");
+        }
+
+        if (!ValidateManagers())
+        {
+            Debug.LogError("ValidateManagers FAILED!");
+            return;
+        }
+
+        Debug.Log("Subscribing to MoneyChanged event...");
         MoneyManager.Instance.OnMoneyChanged += UpdateMoneyDisplay;
+
+        Debug.Log("Initial money display update...");
         UpdateMoneyDisplay(MoneyManager.Instance.GetMoney());
 
+        Debug.Log("Populating shop from database...");
         PopulateShopFromDatabase();
 
+        Debug.Log("Hiding panels...");
         HideAllPanels();
+
+        Debug.Log("=== CasinoShop Start Complete ===");
     }
 
     private void OnDestroy()
@@ -123,17 +150,24 @@ public class CasinoShop : MonoBehaviour
     /// </summary>
     private void PopulateShopFromDatabase()
     {
+        Debug.Log("=== PopulateShopFromDatabase START ===");
         List<ItemData> itemsToSell = new List<ItemData>();
 
         // Gather items based on what we want to sell
         if (sellSeeds)
         {
-            itemsToSell.AddRange(ItemDatabase.Instance.allSeeds.Where(s => s != null));
+            Debug.Log($"Checking seeds... Database has {ItemDatabase.Instance.allSeeds.Count} seeds");
+            var seeds = ItemDatabase.Instance.allSeeds.Where(s => s != null).ToList();
+            Debug.Log($"Found {seeds.Count} non-null seeds");
+            itemsToSell.AddRange(seeds);
         }
 
         if (sellTools)
         {
-            itemsToSell.AddRange(ItemDatabase.Instance.allTools.Where(t => t != null));
+            Debug.Log($"Checking tools... Database has {ItemDatabase.Instance.allTools.Count} tools");
+            var tools = ItemDatabase.Instance.allTools.Where(t => t != null).ToList();
+            Debug.Log($"Found {tools.Count} non-null tools");
+            itemsToSell.AddRange(tools);
         }
 
         if (sellCrops)
@@ -146,15 +180,23 @@ public class CasinoShop : MonoBehaviour
             itemsToSell.AddRange(ItemDatabase.Instance.allResources.Where(r => r != null));
         }
 
-        Debug.Log($"CasinoShop: Found {itemsToSell.Count} items to sell");
+        Debug.Log($"CasinoShop: Total items to sell: {itemsToSell.Count}");
+
+        if (itemsToSell.Count == 0)
+        {
+            Debug.LogWarning("NO ITEMS TO SELL! Check your ItemDatabase!");
+        }
 
         // Create UI slot for each item
         foreach (var itemData in itemsToSell)
         {
+            Debug.Log($"Creating slot for: {itemData.itemName}");
             CreateItemSlot(itemData);
         }
 
+        Debug.Log($"Created {runtimeItems.Count} shop items");
         UpdateButtonStates();
+        Debug.Log("=== PopulateShopFromDatabase END ===");
     }
 
     /// <summary>
@@ -283,13 +325,29 @@ public class CasinoShop : MonoBehaviour
 
     private void UpdateMoneyDisplay(int currentMoney)
     {
+        Debug.Log($"[UpdateMoneyDisplay] Called with money: ${currentMoney}");
+
         string moneyText = $"${currentMoney}";
 
         if (moneyDisplayText != null)
+        {
             moneyDisplayText.text = moneyText;
+            Debug.Log($"Updated moneyDisplayText to: {moneyText}");
+        }
+        else
+        {
+            Debug.Log("moneyDisplayText is NULL");
+        }
 
         if (moneyDisplayTextTMP != null)
+        {
             moneyDisplayTextTMP.text = moneyText;
+            Debug.Log($"Updated moneyDisplayTextTMP to: {moneyText}");
+        }
+        else
+        {
+            Debug.Log("moneyDisplayTextTMP is NULL");
+        }
 
         UpdateButtonStates();
     }
