@@ -20,10 +20,14 @@ MonoBehaviour:
   itemType: 0
   basePrice: 50
   sellPriceMultiplier: 0.5
+  cropName: Tomato
   producedCrop: {fileID: 11400000, guid: 74c9d3dba74897142a9734878f1b1905, type: 2}
   growthTime: 3
   seasonPreference: All
-  growthStages: []
+  growthStages:
+  - {fileID: 7738305070149883613, guid: 6364575b6652c294889838f282ad7863, type: 3}
+  - {fileID: 7829047689554456896, guid: 16fbc486ed47f2941b1ac856705e4f3a, type: 3}
+  - {fileID: 2736369492407279907, guid: 36ff2ffe0e8d1834786f029e3f14b984, type: 3}
   requiresWater: 1
   requiresTilledSoil: 0
   isMultiHarvest: 0

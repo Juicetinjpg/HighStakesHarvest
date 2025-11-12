@@ -10,6 +10,7 @@ public class Plant : MonoBehaviour
     [Header("Plant Data")]
     public SeedData seedData;
     public string currentSeason = "Spring";
+    public string cropName;
 
     [Header("Growth State")]
     public int currentStage = 0;
@@ -91,7 +92,7 @@ public class Plant : MonoBehaviour
         turnsGrown++;
 
         // Check if reached full growth
-        int requiredTurns = seedData.growthTime;
+        int requiredTurns = seedData.GetCurrentGrowth();
         if (turnsGrown >= requiredTurns)
         {
             currentStage = seedData.growthStages.Length - 1;
@@ -172,7 +173,7 @@ public class Plant : MonoBehaviour
     /// </summary>
     public bool IsFullyGrown()
     {
-        return turnsGrown >= seedData.growthTime;
+        return turnsGrown >= seedData.GetCurrentGrowth();
     }
 
     /// <summary>

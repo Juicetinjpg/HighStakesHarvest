@@ -20,6 +20,7 @@ MonoBehaviour:
   itemType: 0
   basePrice: 0
   sellPriceMultiplier: 0.5
+  cropName: Potato
   producedCrop: {fileID: 11400000, guid: 83489051655e4fc48a920965d74041cb, type: 2}
   growthTime: 4
   seasonPreference: All

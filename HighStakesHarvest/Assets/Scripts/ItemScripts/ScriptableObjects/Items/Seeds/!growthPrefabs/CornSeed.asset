@@ -20,6 +20,7 @@ MonoBehaviour:
   itemType: 0
   basePrice: 70
   sellPriceMultiplier: 0.5
+  cropName: Corn
   producedCrop: {fileID: 0}
   growthTime: 5
   seasonPreference: Summer

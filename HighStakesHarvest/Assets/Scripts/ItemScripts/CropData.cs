@@ -10,6 +10,7 @@ public class CropData : ItemData
 {
     [Header("Crop Properties")]
     public SeedData sourceSeed; // Reference to the seed that produces this crop
+    public string cropName;
     public CropQuality quality = CropQuality.Normal;
 
     [Header("Yield Information")]
