@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 
 /// <summary>
@@ -92,31 +92,39 @@ public class InventoryManager : MonoBehaviour
         
         return success;
     }
-    
+
     /// <summary>
     /// Sells item from inventory
     /// </summary>
     public bool SellItem(ItemData item, int quantity, out int totalValue)
     {
         totalValue = 0;
-        
+
         if (item == null || !item.isTradeable || !HasItem(item, quantity))
         {
             return false;
         }
-        
+
         totalValue = item.GetSellPrice() * quantity;
-        
+
         if (RemoveItem(item, quantity))
         {
-            // TODO: Add money to player
-            Debug.Log($"Sold {quantity}x {item.itemName} for ${totalValue}");
+            // Add money to player through MoneyManager
+            if (MoneyManager.Instance != null)
+            {
+                MoneyManager.Instance.AddMoney(totalValue);
+                Debug.Log($"✅ Sold {quantity}x {item.itemName} for ${totalValue}");
+            }
+            else
+            {
+                Debug.LogError("⚠️ MoneyManager not found!");
+            }
             return true;
         }
-        
+
         return false;
     }
-    
+
     /// <summary>
     /// Gets the ItemData from a slot
     /// </summary>
