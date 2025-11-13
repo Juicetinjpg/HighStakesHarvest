@@ -17,5 +17,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/CasinoScene.unity
     guid: 9ae8fe8e5821642429858025188a2f64
+  - enabled: 1
+    path: Assets/Scenes/Slots.unity
+    guid: 94f07d81509975b48bdf4762e0c8dbc6
+  - enabled: 1
+    path: Assets/Scenes/CasinoTable.unity
+    guid: 1f6c2ed1e9e50d443ad56a59eeb6316f
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
