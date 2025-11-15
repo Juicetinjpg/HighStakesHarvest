@@ -531,6 +531,62 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &354888087
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 354888089}
+  - component: {fileID: 354888088}
+  m_Layer: 0
+  m_Name: PaymentHandler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &354888088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 354888087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bdb3ef1cc6859144b3c84fc0c7725b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  entryFee: 150
+  firstGameFree: 0
+  gamesPerEntry: 3
+  gameManager: {fileID: 0}
+  moneyText: {fileID: 672962287}
+  entryFeeText: {fileID: 854497330}
+  messageText: {fileID: 0}
+  paymentPanel: {fileID: 590397593}
+  insufficientFundsPanel: {fileID: 3595010031948996495, guid: 9a430015deb2a9740a761f24b108f640,
+    type: 3}
+  payButton: {fileID: 546909675}
+  backToLobbyButton: {fileID: 300164445}
+--- !u!4 &354888089
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 354888087}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.1308675, y: 0.3278848, z: 0.03392602}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &393940867
 GameObject:
   m_ObjectHideFlags: 0
@@ -2103,7 +2159,7 @@ MonoBehaviour:
   stand: {fileID: 1698040347}
   playerscript: {fileID: 298895822}
   dealerscript: {fileID: 396059187}
-  CashText: {fileID: 672962287}
+  CashText: {fileID: 0}
   HandText: {fileID: 842548644}
   BetText: {fileID: 854497330}
   DealerText: {fileID: 1740029309}
@@ -2111,6 +2167,7 @@ MonoBehaviour:
   WinScreen: {fileID: 516573381}
   LoseScreen: {fileID: 1973281545}
   DrawScreen: {fileID: 2087401545}
+  paymentHandler: {fileID: 354888088}
 --- !u!4 &833824263
 Transform:
   m_ObjectHideFlags: 0
@@ -5776,3 +5833,4 @@ SceneRoots:
   - {fileID: 1531512296}
   - {fileID: 1632970256}
   - {fileID: 889500920}
+  - {fileID: 354888089}
