@@ -632,7 +632,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 110, y: -15}
+  m_AnchoredPosition: {x: 115.9, y: -18}
   m_SizeDelta: {x: 220, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &486555907
@@ -1548,6 +1548,7 @@ GameObject:
   - component: {fileID: 1144000648}
   - component: {fileID: 1144000647}
   - component: {fileID: 1144000646}
+  - component: {fileID: 1144000650}
   m_Layer: 5
   m_Name: ModeToggleButton
   m_TagString: Untagged
@@ -1572,8 +1573,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 40, y: -15}
-  m_SizeDelta: {x: 70, y: 20}
+  m_AnchoredPosition: {x: 38.800003, y: -20}
+  m_SizeDelta: {x: 70, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1144000646
 MonoBehaviour:
@@ -1590,8 +1591,8 @@ MonoBehaviour:
   casinoShop: {fileID: 1503038613}
   buttonTextTMP: {fileID: 1772394055}
   buttonTextLegacy: {fileID: 0}
-  buyModeText: Switch to Sell
-  sellModeText: Switch to Buy
+  buyModeText: Sell
+  sellModeText: Buy
   shopTitleTMP: {fileID: 0}
   shopTitleLegacy: {fileID: 0}
   buyModeTitle: Buy Items
@@ -1681,6 +1682,30 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1144000644}
   m_CullTransparentMesh: 1
+--- !u!114 &1144000650
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1144000644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e29339cede5ba546a67ba9eeccf2a01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  casinoShop: {fileID: 1503038613}
+  buttonTextTMP: {fileID: 1772394055}
+  buttonTextLegacy: {fileID: 0}
+  buyModeText: Switch to Sell
+  sellModeText: Switch to Buy
+  shopTitleTMP: {fileID: 0}
+  shopTitleLegacy: {fileID: 0}
+  buyModeTitle: Buy Items
+  sellModeTitle: Sell Crops
+  changeButtonColor: 1
+  buyModeColor: {r: 0.3, g: 0.6, b: 0.9, a: 1}
+  sellModeColor: {r: 0.3, g: 0.8, b: 0.3, a: 1}
 --- !u!1 &1266266820
 GameObject:
   m_ObjectHideFlags: 0
@@ -2338,7 +2363,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buyMode: 1
-  toggleModeButton: {fileID: 0}
+  toggleModeButton: {fileID: 1144000647}
   sellSeeds: 1
   sellTools: 0
   sellCrops: 1
@@ -3260,13 +3285,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 14
-  m_fontSizeBase: 14
+  m_fontSize: 12
+  m_fontSizeBase: 12
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -3922,12 +3947,12 @@ PrefabInstance:
     - target: {fileID: 5583365057860584617, guid: 10a5667aa1fd6ea47826d4c0f98f09b0,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 175
+      value: 157.2
       objectReference: {fileID: 0}
     - target: {fileID: 5583365057860584617, guid: 10a5667aa1fd6ea47826d4c0f98f09b0,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -35
+      value: -25
       objectReference: {fileID: 0}
     - target: {fileID: 5583365057860584617, guid: 10a5667aa1fd6ea47826d4c0f98f09b0,
         type: 3}
