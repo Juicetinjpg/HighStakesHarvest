@@ -21,6 +21,10 @@ public class SlotController : MonoBehaviour
     [SerializeField]
     private BuffManager buffManager;
 
+    [Header("Payment")]
+    [SerializeField]
+    private SlotsPaymentHandler paymentHandler;
+
     private int prizeValue;
     private bool resultsChecked = false;
 
@@ -122,6 +126,17 @@ public class SlotController : MonoBehaviour
         if (rows == null || rows.Length < 3) return;
         if (rows[0] == null || rows[1] == null || rows[2] == null) return;
 
+        // Ask payment handler first
+        if (paymentHandler != null)
+        {
+            bool canSpin = paymentHandler.TryPayForSpin();
+            if (!canSpin)
+            {
+                // Not enough money or blocked; do NOT spin
+                return;
+            }
+        }
+
         if (rows[0].rowStopped && rows[1].rowStopped && rows[2].rowStopped)
         {
             StartCoroutine("PullHandle");
@@ -195,7 +210,6 @@ public class SlotController : MonoBehaviour
             if (buffManager == null)
             {
                 Debug.LogWarning("BuffManager is null! Cannot award buffs.");
-                // Display "No Prize" since we can't award a buff
                 if (prizeText != null)
                 {
                     prizeText.text = "Prize: None";
@@ -210,24 +224,16 @@ public class SlotController : MonoBehaviour
                     buffManager.AddBuff(awardedBuff);
                     Debug.Log($"Awarded buff: {awardedBuff.BuffName} from {tierName} tier (Score: {prizeValue})");
 
-                    // Update prize text to show buff name and description
-                    Debug.Log($"About to set prize text. prizeText is null? {prizeText == null}");
                     if (prizeText != null)
                     {
                         string buffDescription = GetBuffDescription(awardedBuff);
                         string displayText = $"Prize: {awardedBuff.BuffName}\n{buffDescription}";
                         prizeText.text = displayText;
-                        Debug.Log($"Prize text set to: {displayText}");
-                    }
-                    else
-                    {
-                        Debug.LogError("prizeText is NULL! Cannot display buff info.");
                     }
                 }
                 else
                 {
                     Debug.Log($"No buff awarded for score: {prizeValue}");
-                    // No buff was awarded (already have all buffs or drop chance failed)
                     if (prizeText != null)
                     {
                         prizeText.text = "Prize: None";
@@ -237,7 +243,6 @@ public class SlotController : MonoBehaviour
         }
         else
         {
-            // No match at all
             if (prizeText != null)
             {
                 prizeText.text = "Prize: None";
@@ -281,7 +286,6 @@ public class SlotController : MonoBehaviour
                     }
                     else
                     {
-                        // If no buff manager, add all non-null buffs
                         foreach (ScriptableBuff buff in tier.possibleBuffs)
                         {
                             if (buff != null)
@@ -291,7 +295,6 @@ public class SlotController : MonoBehaviour
                         }
                     }
 
-                    // Select random buff from available buffs
                     if (availableBuffs.Count > 0)
                     {
                         int randomIndex = UnityEngine.Random.Range(0, availableBuffs.Count);
@@ -311,7 +314,6 @@ public class SlotController : MonoBehaviour
                     Debug.Log($"Drop chance failed for {tier.tierName} tier. Checking lower tiers...");
                 }
 
-                // If we didn't get a buff from this tier, check lower tiers
                 continue;
             }
         }
@@ -320,7 +322,6 @@ public class SlotController : MonoBehaviour
         return null;
     }
 
-    // Helper method to add buff tiers in code if needed
     public void AddBuffTier(string tierName, int minScore, float dropChance, params ScriptableBuff[] buffs)
     {
         BuffTier newTier = new BuffTier
@@ -334,16 +335,13 @@ public class SlotController : MonoBehaviour
         buffTiers.Sort((a, b) => b.minScore.CompareTo(a.minScore));
     }
 
-    // Public getter for current score (useful for other systems)
     public int GetCurrentPrizeValue()
     {
         return prizeValue;
     }
 
-    // Helper method to generate buff description from buff data
     private string GetBuffDescription(ScriptableBuff buff)
     {
-        // Try to cast to specific buff types to get detailed info
         if (buff is QuantityBuff quantityBuff)
         {
             float percentage = (quantityBuff.modifier - 1f) * 100f;
@@ -357,7 +355,6 @@ public class SlotController : MonoBehaviour
             return $"{valueBuff.cropAffected} Value {sign}{percentage:F0}%";
         }
 
-        // Fallback for other buff types
         return "Buff Applied";
     }
 }

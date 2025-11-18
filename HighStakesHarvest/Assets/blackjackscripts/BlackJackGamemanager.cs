@@ -21,9 +21,13 @@ public class BlackJackGameManager : MonoBehaviour
     public GameObject LoseScreen;
     public GameObject DrawScreen;
 
+    [Header("Payment")]
+    [SerializeField] private BlackjackPaymentHandler paymentHandler;
+
     private int pot = 0;
     private bool playerHasStood = false;
     private bool roundEnded = false;
+
     private void Start()
     {
         // Remove all previous listeners
@@ -42,6 +46,17 @@ public class BlackJackGameManager : MonoBehaviour
     // Start a new round
     public void DealClicked()
     {
+        // Check table access / payment first
+        if (paymentHandler != null)
+        {
+            bool canPlay = paymentHandler.TryPayEntry();
+            if (!canPlay)
+            {
+                // Payment handler will show UI/message; do not start round
+                return;
+            }
+        }
+
         ResetUI();
 
         deal.gameObject.SetActive(false); // hide Deal when round starts
@@ -90,7 +105,6 @@ public class BlackJackGameManager : MonoBehaviour
         hit.gameObject.SetActive(false);
         stand.gameObject.SetActive(false);
 
-
         StartCoroutine(DealerTurn());
     }
 
@@ -109,7 +123,7 @@ public class BlackJackGameManager : MonoBehaviour
         // If player busted, dealer doesn't need to draw
         if (playerscript.handValue > 21)
         {
-            DetermineRoundOutcome();  // Remove roundEnded = true from here
+            DetermineRoundOutcome();
             yield break;
         }
 
@@ -124,7 +138,7 @@ public class BlackJackGameManager : MonoBehaviour
         // Add delay after dealer finishes drawing before showing result
         yield return new WaitForSeconds(.5f);
 
-        DetermineRoundOutcome();  // Remove roundEnded = true from here too
+        DetermineRoundOutcome();
     }
 
     private void CheckBlackjack()
@@ -150,9 +164,10 @@ public class BlackJackGameManager : MonoBehaviour
 
     private IEnumerator DealerTurnAfterBlackjack()
     {
-        yield return new WaitForSeconds(.5f); // Show the blackjack for 2 seconds
+        yield return new WaitForSeconds(.5f); // Show the blackjack briefly
         StartCoroutine(DealerTurn());
     }
+
     private IEnumerator DealerTurnWithDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
@@ -176,15 +191,30 @@ public class BlackJackGameManager : MonoBehaviour
         {
             DrawScreen.SetActive(true);
             playerscript.AdjustMoney(pot / 2);
+
+            if (paymentHandler != null)
+            {
+                paymentHandler.OnGameResult(false, 0); // treat draw as neutral
+            }
         }
         else if (playerBust || (!dealerBust && dealerscript.handValue > playerscript.handValue))
         {
             LoseScreen.SetActive(true);
+
+            if (paymentHandler != null)
+            {
+                paymentHandler.OnGameResult(false, pot);
+            }
         }
         else
         {
             WinScreen.SetActive(true);
             playerscript.AdjustMoney(pot);
+
+            if (paymentHandler != null)
+            {
+                paymentHandler.OnGameResult(true, pot);
+            }
         }
 
         hit.gameObject.SetActive(false);
@@ -193,6 +223,7 @@ public class BlackJackGameManager : MonoBehaviour
 
         roundEnded = true;
     }
+
     private bool IsBlackjack(PlayerScript player)
     {
         return player.handValue == 21 && player.cardIndex == 2;
