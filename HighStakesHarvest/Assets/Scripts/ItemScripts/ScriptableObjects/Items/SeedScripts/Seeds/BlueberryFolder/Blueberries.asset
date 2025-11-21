@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7aedf3317ec49d24ca374103de9b8897, type: 3}
   m_Name: Blueberries
   m_EditorClassIdentifier: 
-  itemName: 
-  description: 
+  itemName: Blueberry Seed
+  description: Plant these to grow blueberries.
   icon: {fileID: 0}
   stackSize: 10
   isTradeable: 1
   itemType: 0
-  basePrice: 0
+  basePrice: 20
   sellPriceMultiplier: 0.5
   cropName: Blueberry
-  producedCrop: {fileID: 0}
+  producedCrop: {fileID: 11400000, guid: f134af38362506c4586587da73101bc8, type: 2}
   growthTime: 3
   seasonPreference: Spring
   growthStages:

@@ -25,8 +25,8 @@ public class CropManager : MonoBehaviour
     {
         // name, plural vers, value, growth, quantity, type
         cropInfoDictionary.Add("Potato", new CropInfo("Potato", "Potatoes", 10, 3, 3, "Vegetable"));
-        cropInfoDictionary.Add("Blueberry", new CropInfo("Blueberry", "Blueberries", 5, 3, 6, "Fruit"));
-        cropInfoDictionary.Add("Pumpkin", new CropInfo("Pumpkin", "Pumpkins", 15, 3, 1, "Fruit"));
+        cropInfoDictionary.Add("Blueberry", new CropInfo("Blueberry", "Blueberries", 5, 3, 4, "Fruit"));
+        cropInfoDictionary.Add("Pumpkin", new CropInfo("Pumpkin", "Pumpkins", 15, 4, 2, "Fruit"));
         cropInfoDictionary.Add("Tomato", new CropInfo("Tomato", "Tomatoes", 20, 3, 3, "Fruit"));
     }
 
