@@ -205,6 +205,24 @@ public class FarmhandManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Returns the world position the farmhand should move to in order to water the plant.
+    /// Prefers a child Transform named "WaterPoint", otherwise falls back to the plant root position.
+    /// </summary>
+    private Vector3 GetPlantWaterPosition(GameObject plantObj)
+    {
+        if (plantObj == null) return Vector3.zero;
+
+        // Look for a child marker named "WaterPoint"
+        var marker = plantObj.transform.Find("WaterPoint");
+        if (marker != null)
+            return marker.position;
+
+        // Optionally, if your Plant component exposes a specific watering point you could use that here.
+        // Fallback to the plant object's position.
+        return plantObj.transform.position;
+    }
+
     private IEnumerator FarmhandRoutine()
     {
         // Loop while farmhand should be active and the instance exists and we're on the farm
@@ -237,7 +255,9 @@ public class FarmhandManager : MonoBehaviour
                 // Check if needs water
                 if (!plantComp.needsWater) continue;
 
-                float d = Vector3.Distance(currentFarmhand.transform.position, pObj.transform.position);
+                // Use the resolved watering position when evaluating distance
+                Vector3 waterPos = GetPlantWaterPosition(pObj);
+                float d = Vector3.Distance(currentFarmhand.transform.position, waterPos);
                 if (d < bestDist)
                 {
                     bestDist = d;
@@ -253,15 +273,17 @@ public class FarmhandManager : MonoBehaviour
                 continue;
             }
 
+            // Determine target position (water anchor or plant position)
+            Vector3 targetPos = GetPlantWaterPosition(targetObj);
+
             // Move toward the target plant until within engageDistance
-            while (currentFarmhand != null && targetObj != null && Vector3.Distance(currentFarmhand.transform.position, targetObj.transform.position) > engageDistance)
+            while (currentFarmhand != null && targetObj != null && Vector3.Distance(currentFarmhand.transform.position, targetPos) > engageDistance)
             {
                 // Re-check conditions
                 if (!farmhandActive || SceneManager.GetActiveScene().name != "FarmScene")
                     yield break;
 
-                Vector3 dir = (targetObj.transform.position - currentFarmhand.transform.position).normalized;
-                currentFarmhand.transform.position = Vector3.MoveTowards(currentFarmhand.transform.position, targetObj.transform.position, moveSpeed * Time.deltaTime);
+                currentFarmhand.transform.position = Vector3.MoveTowards(currentFarmhand.transform.position, targetPos, moveSpeed * Time.deltaTime);
                 yield return null;
 
                 // If plant no longer needs water, break out and look for another
