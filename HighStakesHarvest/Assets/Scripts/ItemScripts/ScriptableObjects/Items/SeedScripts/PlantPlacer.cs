@@ -23,6 +23,7 @@ public class PlantPlacer : MonoBehaviour
     // list of seed prefabs
     [SerializeField] public List<GameObject> seedList = new List<GameObject>();
     public Dictionary<string, GameObject> seedDict = new Dictionary<string, GameObject>();
+    [SerializeField] private List<ToolCategory> harvestToolCategories = new List<ToolCategory> { ToolCategory.Sickle, ToolCategory.Scythe };
 
     [Header("Visual Feedback")]
     public Color validPlacementColor = new Color(0, 1, 0, 0.3f);
@@ -36,8 +37,21 @@ public class PlantPlacer : MonoBehaviour
         Debug.Log("Starting dict");
         foreach (GameObject i in seedList)
         {
-            Plant j = i.GetComponent<Plant>();
-            seedDict.Add(j.cropName, i);
+            PlantGrowth plant = i.GetComponent<PlantGrowth>();
+            if (plant == null)
+            {
+                Debug.LogWarning($"Seed prefab {i.name} is missing PlantGrowth");
+                continue;
+            }
+
+            string key = !string.IsNullOrEmpty(plant.cropName) ? plant.cropName : plant.seedData?.cropName;
+            if (string.IsNullOrEmpty(key))
+            {
+                Debug.LogWarning($"Seed prefab {i.name} has no cropName; skipping dictionary add");
+                continue;
+            }
+
+            seedDict.Add(key, i);
         }
     }
 
@@ -253,7 +267,7 @@ public class PlantPlacer : MonoBehaviour
             return;
         }
 
-        Plant plant = hit.GetComponent<Plant>();
+        PlantGrowth plant = hit.GetComponent<PlantGrowth>();
         if (plant == null)
         {
             Debug.Log("Not a plant");
@@ -273,16 +287,15 @@ public class PlantPlacer : MonoBehaviour
     /// </summary>
     private void TryHarvestPlant(Vector3 placePos, ToolData tool)
     {
-        // Convert world position to cell position on the tilemap
+        if (!IsHarvestTool(tool))
+        {
+            Debug.Log($"{tool?.itemName ?? "This item"} cannot harvest crops");
+            return;
+        }
+
         Vector3Int cellPos = soilTilemap.WorldToCell(placePos);
-
-        // Convert cell position back to vector position in relation to center of tile
         Vector3 objectPos = new Vector3(cellPos.x + (float)0.5, cellPos.y + (float)0.5);
-
-        // get layer mask with plant objects to ensure collision issues aren't caused
         int defaultLayerMask = LayerMask.GetMask("Default");
-
-        // get object at position of interaction on the layer mask
         Collider2D hit = Physics2D.OverlapPoint(objectPos, defaultLayerMask);
 
         if (hit == null)
@@ -291,7 +304,7 @@ public class PlantPlacer : MonoBehaviour
             return;
         }
 
-        Plant plant = hit.GetComponent<Plant>();
+        PlantGrowth plant = hit.GetComponent<PlantGrowth>();
         if (plant == null)
         {
             Debug.Log("Not a plant");
@@ -304,23 +317,36 @@ public class PlantPlacer : MonoBehaviour
             return;
         }
 
-        // Use the tool
-        InventoryManager.Instance.UseEquippedTool(gameObject);
+        if (!InventoryManager.Instance.UseEquippedTool(gameObject))
+        {
+            Debug.Log($"Could not use {tool.itemName} to harvest");
+            return;
+        }
 
-        // Harvest the plant
         CropData harvestedCrop = plant.Harvest();
 
         if (harvestedCrop != null)
         {
-            int yieldAmount = cropManager.cropInfoDictionary[harvestedCrop.cropName].quantity;
+            int yieldAmount = 1;
+            if (cropManager != null && cropManager.cropInfoDictionary.TryGetValue(harvestedCrop.cropName, out CropInfo info))
+            {
+                yieldAmount = Mathf.Max(1, info.quantity);
+            }
+            else
+            {
+                yieldAmount = harvestedCrop.GetYieldAmount();
+                Debug.LogWarning($"No crop info found for {harvestedCrop.cropName}; using data-defined yield {yieldAmount}");
+            }
 
-            // Add to inventory
             if (InventoryManager.Instance.AddHarvestedCrop(harvestedCrop, yieldAmount))
             {
                 Debug.Log($"✓ Harvested {yieldAmount}x {harvestedCrop.itemName}!");
             }
+            else
+            {
+                Debug.LogWarning($"Failed to add {harvestedCrop.itemName} to inventory");
+            }
 
-            // If plant doesn't regrow, remove it from PlantManager
             if (!plant.seedData.isMultiHarvest || plant.timesHarvested >= plant.seedData.harvestsPerPlant)
             {
                 if (PlantManager.Instance != null)
@@ -345,5 +371,10 @@ public class PlantPlacer : MonoBehaviour
         // Could change the tile to a tilled version:
         // Vector3Int cellPos = soilTilemap.WorldToCell(placePos);
         // soilTilemap.SetTile(cellPos, tilledSoilTile);
+    }
+
+    private bool IsHarvestTool(ToolData tool)
+    {
+        return tool != null && harvestToolCategories != null && harvestToolCategories.Contains(tool.toolCategory);
     }
 }
