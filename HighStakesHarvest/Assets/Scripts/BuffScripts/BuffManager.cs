@@ -10,9 +10,11 @@ public class BuffManager : MonoBehaviour
         public ScriptableBuff buff;
         public float timeRemaining;
         public bool isPermanent;
+        public string buffId; // cached id for quick lookup
     }
 
     private List<ActiveBuff> activeBuffs = new List<ActiveBuff>();
+    private HashSet<string> activeBuffIds = new HashSet<string>(); // canonical ownership
 
     [Header("Target Configuration")]
     [SerializeField]
@@ -24,25 +26,31 @@ public class BuffManager : MonoBehaviour
 
     private void Start()
     {
-        // Auto-find CropManager if not assigned
-        if (cropManagerObject == null)
+        // Force auto-locate every time, ignore inspector value to avoid stale prefab refs
+        cropManagerObject = null;
+        StartCoroutine(FindCropManagerNextFrame());
+        Debug.Log($"BuffManager Start — activeBuffs count: {activeBuffs.Count}");
+    }
+
+    private IEnumerator FindCropManagerNextFrame()
+    {
+        yield return null; // wait one frame for all objects to initialize
+
+        CropManager cm = FindFirstObjectByType<CropManager>();
+        if (cm != null)
         {
-            CropManager cropManager = Object.FindFirstObjectByType<CropManager>();
-            if (cropManager != null)
-            {
-                cropManagerObject = cropManager.gameObject;
-                Debug.Log("BuffManager: Auto-found CropManager on " + cropManagerObject.name);
-            }
-            else
-            {
-                Debug.LogError("BuffManager: Could not find CropManager in scene!");
-            }
+            cropManagerObject = cm.gameObject;
+            Debug.Log("BuffManager: Auto-found CropManager on " + cropManagerObject.name);
+        }
+        else
+        {
+            Debug.LogError("BuffManager: Could not find CropManager in scene!");
         }
     }
 
     private void Update()
     {
-        // Update buff durations
+        // Update timed buff durations
         for (int i = activeBuffs.Count - 1; i >= 0; i--)
         {
             if (!activeBuffs[i].isPermanent)
@@ -57,6 +65,7 @@ public class BuffManager : MonoBehaviour
         }
     }
 
+    // Add buff by asset. duration <= 0 makes it permanent
     public void AddBuff(ScriptableBuff buff, float duration = -1f)
     {
         if (buff == null)
@@ -71,37 +80,52 @@ public class BuffManager : MonoBehaviour
             return;
         }
 
-        // Check if buff is already active
-        ActiveBuff existingBuff = activeBuffs.Find(ab => ab.buff == buff);
+        // Determine canonical id to use for identity checks.
+        // Prefer BuffID if present; otherwise fall back to BuffName (ensure unique names)
+        string id = !string.IsNullOrEmpty(buff.BuffID) ? buff.BuffID : buff.BuffName;
 
-        if (existingBuff != null)
+        // Check if buff is already active via the ID set
+        if (activeBuffIds.Contains(id))
         {
-            // Refresh duration if it's a temporary buff
-            if (!existingBuff.isPermanent && duration > 0)
+            // find existing and refresh duration if applicable
+            ActiveBuff existing = activeBuffs.Find(ab => ab.buffId == id);
+            if (existing != null)
             {
-                existingBuff.timeRemaining = duration;
-                Debug.Log($"Buff '{buff.BuffName}' duration refreshed to {duration}s");
+                if (!existing.isPermanent && duration > 0f)
+                {
+                    existing.timeRemaining = duration;
+                    Debug.Log($"Buff '{buff.BuffName}' duration refreshed to {duration}s");
+                }
+                else
+                {
+                    Debug.LogWarning($"Buff '{buff.BuffName}' is already active.");
+                }
             }
             else
             {
-                Debug.LogWarning($"Buff '{buff.BuffName}' is already active.");
+                // Shouldn't happen, but keep consistent
+                Debug.LogWarning($"BuffManager state mismatch: ID '{id}' present but no ActiveBuff found.");
             }
             return;
         }
 
-        // Add new buff
+        // Add new active buff record
         ActiveBuff newBuff = new ActiveBuff
         {
             buff = buff,
             timeRemaining = duration,
-            isPermanent = duration <= 0
+            isPermanent = duration <= 0f,
+            buffId = id
         };
 
         activeBuffs.Add(newBuff);
+        activeBuffIds.Add(id);
+
+        // Apply buff effects to crop manager (ScriptableBuff should not change its own "owned" flags)
         buff.Apply(cropManagerObject);
 
         string durationText = newBuff.isPermanent ? "permanent" : $"{duration}s";
-        Debug.Log($"Buff '{buff.BuffName}' added ({durationText}) to {cropManagerObject.name}");
+        Debug.Log($"Buff '{buff.BuffName}' (id: {id}) added ({durationText}) to {cropManagerObject.name}");
     }
 
     private void RemoveBuffAtIndex(int index)
@@ -111,18 +135,24 @@ public class BuffManager : MonoBehaviour
 
         ActiveBuff buffToRemove = activeBuffs[index];
         buffToRemove.buff.Remove(cropManagerObject);
+
+        // keep sets consistent
+        if (!string.IsNullOrEmpty(buffToRemove.buffId))
+            activeBuffIds.Remove(buffToRemove.buffId);
+
         activeBuffs.RemoveAt(index);
 
-        Debug.Log($"Buff '{buffToRemove.buff.BuffName}' expired and removed.");
+        Debug.Log($"Buff '{buffToRemove.buff.BuffName}' removed.");
     }
 
     public void RemoveBuff(ScriptableBuff buff)
     {
         if (buff == null) return;
+        string id = !string.IsNullOrEmpty(buff.BuffID) ? buff.BuffID : buff.BuffName;
 
         for (int i = 0; i < activeBuffs.Count; i++)
         {
-            if (activeBuffs[i].buff == buff)
+            if (activeBuffs[i].buffId == id)
             {
                 RemoveBuffAtIndex(i);
                 return;
@@ -138,12 +168,16 @@ public class BuffManager : MonoBehaviour
         {
             RemoveBuffAtIndex(i);
         }
+        activeBuffIds.Clear();
         Debug.Log("All buffs removed.");
     }
 
+    // Robust HasBuff: checks canonical ID set
     public bool HasBuff(ScriptableBuff buff)
     {
-        return activeBuffs.Exists(ab => ab.buff == buff);
+        if (buff == null) return false;
+        string id = !string.IsNullOrEmpty(buff.BuffID) ? buff.BuffID : buff.BuffName;
+        return activeBuffIds.Contains(id);
     }
 
     public List<ScriptableBuff> GetActiveBuffs()
@@ -158,7 +192,9 @@ public class BuffManager : MonoBehaviour
 
     public float GetBuffTimeRemaining(ScriptableBuff buff)
     {
-        ActiveBuff activeBuff = activeBuffs.Find(ab => ab.buff == buff);
-        return activeBuff != null ? activeBuff.timeRemaining : 0f;
+        if (buff == null) return 0f;
+        string id = !string.IsNullOrEmpty(buff.BuffID) ? buff.BuffID : buff.BuffName;
+        ActiveBuff active = activeBuffs.Find(ab => ab.buffId == id);
+        return active != null ? active.timeRemaining : 0f;
     }
 }

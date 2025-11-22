@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BuffName: Berry Burst
   Icon: {fileID: 0}
+  BuffID: 1
   cropAffected: Fruits
   modifier: 1.5

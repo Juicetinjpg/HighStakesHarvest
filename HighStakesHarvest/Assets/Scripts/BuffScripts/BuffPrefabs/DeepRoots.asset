@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BuffName: Deep Roots
   Icon: {fileID: 0}
+  BuffID: 6
   cropAffected: Vegetables
-  modifier: 3
+  modifier: 2

@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BuffName: Vine Efficiency
   Icon: {fileID: 0}
+  BuffID: 14
   cropAffected: Tomato
   modifier: 2

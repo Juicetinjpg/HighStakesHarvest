@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BuffName: Juicy Bonus
   Icon: {fileID: 0}
-  cropAffected: Fruit
+  BuffID: 8
+  cropAffected: Fruits
   modifier: 1.5

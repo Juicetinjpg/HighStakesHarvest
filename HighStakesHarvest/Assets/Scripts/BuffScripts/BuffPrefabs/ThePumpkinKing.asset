@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BuffName: The Pumpkin King
   Icon: {fileID: 0}
+  BuffID: 13
   cropAffected: Pumpkin
   modifier: 1.25

@@ -222,6 +222,7 @@ public class SlotController : MonoBehaviour
                     else
                     {
                         Debug.LogError("prizeText is NULL! Cannot display buff info.");
+                        Debug.LogError("prizeText is NULL! Cannot display buff info.");
                     }
                 }
                 else
@@ -294,6 +295,11 @@ public class SlotController : MonoBehaviour
                     // Select random buff from available buffs
                     if (availableBuffs.Count > 0)
                     {
+                        foreach (var buff in tier.possibleBuffs)
+                        {
+                            bool has = buffManager.HasBuff(buff);
+                            Debug.Log($"Buff {buff.BuffName} — HasBuff? {has}");
+                        }
                         int randomIndex = UnityEngine.Random.Range(0, availableBuffs.Count);
                         ScriptableBuff selectedBuff = availableBuffs[randomIndex];
 
