@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee611d3042b71bb4295da07cd1a9f501, type: 3}
+  m_Name: Squash
+  m_EditorClassIdentifier: 
+  itemName: Squash
+  description: Fresh squash
+  icon: {fileID: 0}
+  stackSize: 99
+  isTradeable: 1
+  itemType: 1
+  basePrice: 40
+  sellPriceMultiplier: 0.5
+  sourceSeed: {fileID: 11400000, guid: d138881d9e304096861ab3d69ed5c962, type: 2}
+  cropName: Squash
+  quality: 1
+  minYield: 1
+  maxYield: 3
+  qualityMultiplier: 1
+  hasSeasonalBonus: 0
+  bonusSeason: All
+  seasonalPriceMultiplier: 1.5
+  canBeUsedAsAnimalFeed: 1
+  feedValue: 1
