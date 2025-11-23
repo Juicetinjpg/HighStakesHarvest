@@ -23,6 +23,7 @@ public class SlotController : MonoBehaviour
 
     private int prizeValue;
     private bool resultsChecked = false;
+    private bool canPull = true;
 
     // Original prize dictionaries
     private Dictionary<string, int> threeMatchPrizes = new Dictionary<string, int>()
@@ -56,8 +57,24 @@ public class SlotController : MonoBehaviour
     [SerializeField]
     private List<BuffTier> buffTiers = new List<BuffTier>();
 
+    private IEnumerator FindBuffManagerNextFrame()
+    {
+        yield return null; // wait one frame
+
+        BuffManager bm = FindFirstObjectByType<BuffManager>();
+        if (bm != null)
+        {
+            buffManager = bm;
+            Debug.Log("BuffManager auto-found: " + buffManager.name);
+        }
+        else
+        {
+            Debug.LogError("No BuffManager found in scene!");
+        }
+    }
     private void Start()
     {
+
         // Validate that all rows are assigned
         if (rows == null || rows.Length < 3)
         {
@@ -76,11 +93,7 @@ public class SlotController : MonoBehaviour
         // Auto-find BuffManager on this GameObject if not assigned
         if (buffManager == null)
         {
-            buffManager = GetComponent<BuffManager>();
-            if (buffManager != null)
-            {
-                Debug.Log("SlotController: Auto-found BuffManager on " + gameObject.name);
-            }
+            StartCoroutine(FindBuffManagerNextFrame());
         }
 
         // Validate buff manager
@@ -119,17 +132,21 @@ public class SlotController : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (!canPull) return;
         if (rows == null || rows.Length < 3) return;
         if (rows[0] == null || rows[1] == null || rows[2] == null) return;
 
         if (rows[0].rowStopped && rows[1].rowStopped && rows[2].rowStopped)
         {
             StartCoroutine("PullHandle");
+
         }
     }
 
     private IEnumerator PullHandle()
     {
+        canPull = false;
+
         for (int i = 0; i < 30; i += 5)
         {
             if (handle != null)
@@ -145,6 +162,14 @@ public class SlotController : MonoBehaviour
                 handle.Rotate(-i, 0f, 0f);
             yield return new WaitForSeconds(.1f);
         }
+
+        yield return new WaitUntil(() =>
+            rows[0].rowStopped &&
+            rows[1].rowStopped &&
+            rows[2].rowStopped
+        );
+
+        canPull = true;
     }
 
     private void CheckResults()

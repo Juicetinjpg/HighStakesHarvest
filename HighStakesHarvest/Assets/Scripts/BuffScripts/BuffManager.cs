@@ -5,6 +5,7 @@ using UnityEngine;
 public class BuffManager : MonoBehaviour
 {
     [System.Serializable]
+
     private class ActiveBuff
     {
         public ScriptableBuff buff;
@@ -196,5 +197,19 @@ public class BuffManager : MonoBehaviour
         string id = !string.IsNullOrEmpty(buff.BuffID) ? buff.BuffID : buff.BuffName;
         ActiveBuff active = activeBuffs.Find(ab => ab.buffId == id);
         return active != null ? active.timeRemaining : 0f;
+    }
+
+    public static BuffManager Instance;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 }
