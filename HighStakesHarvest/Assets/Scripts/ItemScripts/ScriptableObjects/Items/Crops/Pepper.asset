@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Pepper
   description: Fresh pepper
-  icon: {fileID: 0}
+  icon: {fileID: -5026999700583838770, guid: 7075dbd24eae86742865e25d9ad28180, type: 3}
   stackSize: 99
   isTradeable: 1
   itemType: 1

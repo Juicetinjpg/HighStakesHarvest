@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Carrot Seed
   description: Plant these to grow carrots.
-  icon: {fileID: 0}
+  icon: {fileID: 8066529047900251399, guid: 7075dbd24eae86742865e25d9ad28180, type: 3}
   stackSize: 10
   isTradeable: 1
   itemType: 0
@@ -25,9 +25,10 @@ MonoBehaviour:
   growthTime: 3
   seasonPreference: All
   growthStages:
-  - {fileID: 7738305070149883613, guid: 6364575b6652c294889838f282ad7863, type: 3}
-  - {fileID: 7829047689554456896, guid: 16fbc486ed47f2941b1ac856705e4f3a, type: 3}
-  - {fileID: 2736369492407279907, guid: 36ff2ffe0e8d1834786f029e3f14b984, type: 3}
+  - {fileID: 7738305070149883613, guid: cef9f4b42997449693c5dbe9d253355b, type: 3}
+  - {fileID: 7738305070149883613, guid: 8585bfe4a4c449929bddeb1fbd9fde6d, type: 3}
+  - {fileID: 7738305070149883613, guid: 5dea07e3a392498ba03a4e0c8cbe077a, type: 3}
+  - {fileID: 7738305070149883613, guid: ebacee2c897444ebb3619712bfdb9af3, type: 3}
   requiresWater: 1
   requiresTilledSoil: 0
   isMultiHarvest: 0

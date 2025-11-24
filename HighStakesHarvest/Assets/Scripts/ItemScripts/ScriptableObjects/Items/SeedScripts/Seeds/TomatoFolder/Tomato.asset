@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Tomato Seeds
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 8645403569046808747, guid: 7075dbd24eae86742865e25d9ad28180, type: 3}
   stackSize: 10
   isTradeable: 1
   itemType: 0
@@ -25,9 +25,10 @@ MonoBehaviour:
   growthTime: 3
   seasonPreference: All
   growthStages:
-  - {fileID: 7738305070149883613, guid: 6364575b6652c294889838f282ad7863, type: 3}
-  - {fileID: 7829047689554456896, guid: 16fbc486ed47f2941b1ac856705e4f3a, type: 3}
-  - {fileID: 2736369492407279907, guid: 36ff2ffe0e8d1834786f029e3f14b984, type: 3}
+  - {fileID: 7738305070149883613, guid: ba93fdbaae9d4c7e988ab2f5edc840a3, type: 3}
+  - {fileID: 7738305070149883613, guid: d029acd1f8894b97bd8ba7803a0e483d, type: 3}
+  - {fileID: 7738305070149883613, guid: ab8fa02bf867487da517745ca62e5003, type: 3}
+  - {fileID: 7738305070149883613, guid: ca0d4502ac8847388a49ed2cdfd5911c, type: 3}
   requiresWater: 1
   requiresTilledSoil: 0
   isMultiHarvest: 0

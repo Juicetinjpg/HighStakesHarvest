@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: StarFruit Seed
   description: Plant these to grow starfruits.
-  icon: {fileID: 0}
+  icon: {fileID: 3357748692526693516, guid: 7075dbd24eae86742865e25d9ad28180, type: 3}
   stackSize: 10
   isTradeable: 1
   itemType: 0
@@ -25,9 +25,12 @@ MonoBehaviour:
   growthTime: 3
   seasonPreference: All
   growthStages:
-  - {fileID: 7738305070149883613, guid: 6364575b6652c294889838f282ad7863, type: 3}
-  - {fileID: 7829047689554456896, guid: 16fbc486ed47f2941b1ac856705e4f3a, type: 3}
-  - {fileID: 2736369492407279907, guid: 36ff2ffe0e8d1834786f029e3f14b984, type: 3}
+  - {fileID: 100001, guid: 5a6d28cffccc4193a032f08b265fd9b0, type: 3}
+  - {fileID: 100001, guid: 2b5c7df600f8437ebbeb54c39bb85b34, type: 3}
+  - {fileID: 100001, guid: 3c6e81eca5164c958b478a490cb6a214, type: 3}
+  - {fileID: 100001, guid: f52728eb3d954865a8698cd5061c2224, type: 3}
+  - {fileID: 100001, guid: bd72b69cff6549d3ba03b7ba709cc96c, type: 3}
+  - {fileID: 100001, guid: ce15215c9ed34f579574cfd5278488f9, type: 3}
   requiresWater: 1
   requiresTilledSoil: 0
   isMultiHarvest: 0

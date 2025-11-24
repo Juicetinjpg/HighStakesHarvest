@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Pumpkin Seed
   description: Plant these to grow pumpkins.
-  icon: {fileID: 0}
+  icon: {fileID: 7039910336858596001, guid: 7075dbd24eae86742865e25d9ad28180, type: 3}
   stackSize: 10
   isTradeable: 1
   itemType: 0
@@ -25,9 +25,10 @@ MonoBehaviour:
   growthTime: 4
   seasonPreference: Fall
   growthStages:
-  - {fileID: 7738305070149883613, guid: 6364575b6652c294889838f282ad7863, type: 3}
-  - {fileID: 7829047689554456896, guid: 16fbc486ed47f2941b1ac856705e4f3a, type: 3}
-  - {fileID: 2736369492407279907, guid: 36ff2ffe0e8d1834786f029e3f14b984, type: 3}
+  - {fileID: 7738305070149883613, guid: 7cc10478d56d4a039ccecbbfd48549ed, type: 3}
+  - {fileID: 7738305070149883613, guid: b31f42aa09814699b4ee82b0852cd692, type: 3}
+  - {fileID: 7738305070149883613, guid: f6b641a7b4854e978059c33cdeaf5f3f, type: 3}
+  - {fileID: 7738305070149883613, guid: b57c95fe0a234fbdb2e41b15fc1c3701, type: 3}
   requiresWater: 1
   requiresTilledSoil: 0
   isMultiHarvest: 0
