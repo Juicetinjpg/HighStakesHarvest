@@ -12,22 +12,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7aedf3317ec49d24ca374103de9b8897, type: 3}
   m_Name: Blueberries
   m_EditorClassIdentifier: 
-  itemName: 
-  description: 
-  icon: {fileID: 0}
+  itemName: Blueberry Seed
+  description: Plant these to grow blueberries.
+  icon: {fileID: 5573573398683587482, guid: 7075dbd24eae86742865e25d9ad28180, type: 3}
   stackSize: 10
   isTradeable: 1
   itemType: 0
-  basePrice: 0
+  basePrice: 20
   sellPriceMultiplier: 0.5
   cropName: Blueberry
-  producedCrop: {fileID: 0}
+  producedCrop: {fileID: 11400000, guid: f134af38362506c4586587da73101bc8, type: 2}
   growthTime: 3
   seasonPreference: Spring
   growthStages:
-  - {fileID: 7738305070149883613, guid: 6364575b6652c294889838f282ad7863, type: 3}
-  - {fileID: 7829047689554456896, guid: 16fbc486ed47f2941b1ac856705e4f3a, type: 3}
-  - {fileID: 2736369492407279907, guid: 36ff2ffe0e8d1834786f029e3f14b984, type: 3}
+  - {fileID: 7738305070149883613, guid: 1239c978b0a74a9ba4360de5b08e9cda, type: 3}
+  - {fileID: 7738305070149883613, guid: d42730d7eb8d49709ce50d4c925f0e63, type: 3}
+  - {fileID: 7738305070149883613, guid: 36db118ebc6a4c74a0684cc4f513ec13, type: 3}
+  - {fileID: 7738305070149883613, guid: 90a78d1f93084771b6a402a2ef699b94, type: 3}
+  - {fileID: 100001, guid: d42730d7eb8d49709ce50d4c925f0e63, type: 3}
+  - {fileID: 100001, guid: 36db118ebc6a4c74a0684cc4f513ec13, type: 3}
+  - {fileID: 100001, guid: 90a78d1f93084771b6a402a2ef699b94, type: 3}
+  - {fileID: 100001, guid: 337579ca62d14479b751140a79a0e4a7, type: 3}
+  - {fileID: 100001, guid: 864e9af13572407c9d7c225a0d6d48be, type: 3}
+  - {fileID: 100001, guid: 8944ade5b1f74498956aa74b1bf605e3, type: 3}
   requiresWater: 1
   requiresTilledSoil: 0
   isMultiHarvest: 0

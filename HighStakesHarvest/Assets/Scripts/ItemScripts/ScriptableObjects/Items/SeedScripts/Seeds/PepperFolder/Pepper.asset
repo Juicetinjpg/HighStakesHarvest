@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7aedf3317ec49d24ca374103de9b8897, type: 3}
+  m_Name: Pepper
+  m_EditorClassIdentifier: 
+  itemName: Pepper Seed
+  description: Plant these to grow peppers.
+  icon: {fileID: -5026999700583838770, guid: 7075dbd24eae86742865e25d9ad28180, type: 3}
+  stackSize: 10
+  isTradeable: 1
+  itemType: 0
+  basePrice: 35
+  sellPriceMultiplier: 0.5
+  cropName: Pepper
+  producedCrop: {fileID: 11400000, guid: 4a43d46d6e0d47b98a8e02e4dea1e8a7, type: 2}
+  growthTime: 3
+  seasonPreference: All
+  growthStages:
+  - {fileID: 7738305070149883613, guid: 656e7714a0f1493286faea860fb4f1fd, type: 3}
+  - {fileID: 7738305070149883613, guid: 675d93cdf7f34c0fa237b844cb97ff3f, type: 3}
+  - {fileID: 7738305070149883613, guid: 53d21d26e7fa465387e0a90e07172b55, type: 3}
+  - {fileID: 7738305070149883613, guid: f689bb7c719f45599e64008ad6cb8034, type: 3}
+  requiresWater: 1
+  requiresTilledSoil: 0
+  isMultiHarvest: 0
+  harvestsPerPlant: 1
+  regrowthTime: 2
+  seasonalGrowthBonus: 0.75
+  seasonalYieldBonus: 1.5

@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Potato
   description: Potato Crop
-  icon: {fileID: 0}
+  icon: {fileID: 8243370969719617450, guid: 7075dbd24eae86742865e25d9ad28180, type: 3}
   stackSize: 99
   isTradeable: 1
   itemType: 1
   basePrice: 100
   sellPriceMultiplier: 0.5
-  sourceSeed: {fileID: 11400000, guid: cd1203788cb875f4ca20c97cc41eabe9, type: 2}
+  sourceSeed: {fileID: 11400000, guid: 205c970a34a62bd4697b06c40ed4c8b0, type: 2}
   cropName: Potato
   quality: 1
   minYield: 1
