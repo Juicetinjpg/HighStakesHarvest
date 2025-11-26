@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BuffName: Bountiful Soil
   Icon: {fileID: 0}
+  BuffID: 2
   cropAffected: All
   modifier: 2

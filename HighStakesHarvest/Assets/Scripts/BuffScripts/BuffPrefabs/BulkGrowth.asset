@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BuffName: Bulk Growth
   Icon: {fileID: 0}
+  BuffID: 3
   cropAffected: Vegetables
   modifier: 2

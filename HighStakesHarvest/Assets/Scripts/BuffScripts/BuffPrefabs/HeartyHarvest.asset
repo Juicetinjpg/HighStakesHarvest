@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BuffName: Hearty Harvest
   Icon: {fileID: 0}
+  BuffID: 7
   cropAffected: Blueberry
   modifier: 1.6
