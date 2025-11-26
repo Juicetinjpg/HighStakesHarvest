@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public PlantManager plantManager;
     public CropManager cropManager;
     public PlayerManager playerManager;
+    public FarmhandManager farmhandManager;
 
 
     //public UIManager uiManager;
@@ -43,6 +44,9 @@ public class GameManager : MonoBehaviour
 
         if (playerManager == null)
             playerManager = GetComponentInChildren<PlayerManager>();
+
+        if (farmhandManager == null)
+            farmhandManager = GetComponentInChildren<FarmhandManager>();
 
         //if (uiManager == null)
         //    uiManager = GetComponentInChildren<UIManager>();
