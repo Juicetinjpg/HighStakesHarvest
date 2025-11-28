@@ -2109,8 +2109,6 @@ GameObject:
   - component: {fileID: 1100180541}
   - component: {fileID: 1100180540}
   - component: {fileID: 1100180542}
-  - component: {fileID: 1100180544}
-  - component: {fileID: 1100180543}
   m_Layer: 0
   m_Name: GameControl
   m_TagString: Untagged
@@ -2197,7 +2195,7 @@ MonoBehaviour:
   - {fileID: 697828232}
   - {fileID: 981609326}
   handle: {fileID: 1305130457}
-  buffManager: {fileID: 1100180544}
+  buffManager: {fileID: 0}
   buffTiers:
   - tierName: Common
     minScore: 100
@@ -2228,32 +2226,6 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 59b17807b3617104bbeab7364e9fe97c, type: 2}
     - {fileID: 11400000, guid: 56c4381059f91a4479a32e18b1cb9941, type: 2}
     dropChance: 1
---- !u!114 &1100180543
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1100180539}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 763480e05a38b3948b16d82e80abcc76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1100180544
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1100180539}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62c0c64cd5f99d142b238c652bd57652, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cropManagerObject: {fileID: 0}
-  buffUIContainer: {fileID: 0}
 --- !u!1 &1237137908
 GameObject:
   m_ObjectHideFlags: 0
@@ -2375,8 +2347,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1305130457}
   - component: {fileID: 1305130456}
-  - component: {fileID: 1305130459}
-  - component: {fileID: 1305130458}
   m_Layer: 0
   m_Name: Handle
   m_TagString: Untagged
@@ -2455,99 +2425,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &1305130458
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1305130455}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0.0923996, y: 12.654083}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.48427242, y: 0.08693925}
-    oldSize: {x: 5.875, y: 17}
-    newSize: {x: 5.875, y: 17}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 5.875, y: 5.735898}
-  m_EdgeRadius: 0
---- !u!114 &1305130459
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1305130455}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 93a55b0b21f3978459c08dbc730d9145, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prizeText: {fileID: 1678311798}
-  rows: []
-  handle: {fileID: 1305130457}
-  buffManager: {fileID: 0}
-  buffTiers:
-  - tierName: Common
-    minScore: 200
-    possibleBuffs:
-    - {fileID: 11400000, guid: eba4ba52e6205914aa84850773c0c16f, type: 2}
-    - {fileID: 11400000, guid: 7eebbeed9353e9644b8c0c3f0dd8d86a, type: 2}
-    - {fileID: 11400000, guid: c1120940bbfda484eabd7f8967776361, type: 2}
-    dropChance: 1
-  - tierName: Uncommon
-    minScore: 400
-    possibleBuffs:
-    - {fileID: 11400000, guid: 78db2334fec85c243bde44d7249bdf06, type: 2}
-    - {fileID: 11400000, guid: fc058e32647696e4f828440e97dbba2f, type: 2}
-    - {fileID: 11400000, guid: c05bd37e58e74cc4db6b62431910bce9, type: 2}
-    - {fileID: 11400000, guid: 1c9c4e22017a3e3458090b17a397bc8d, type: 2}
-    dropChance: 1
-  - tierName: Rare
-    minScore: 600
-    possibleBuffs:
-    - {fileID: 11400000, guid: ce4e259f34ac10a44b0c2721a433245b, type: 2}
-    - {fileID: 11400000, guid: d1e02c96d59639f45bf4e6f85fcd33c7, type: 2}
-    - {fileID: 11400000, guid: 69b161fadd008494b8d720eb4e9e0617, type: 2}
-    - {fileID: 11400000, guid: 9c8583ad6412f5d4eb8f2cc2823a14c3, type: 2}
-    - {fileID: 11400000, guid: fb278db03846cdf4080d08f149d6d1fb, type: 2}
-    dropChance: 1
-  - tierName: Epic
-    minScore: 1000
-    possibleBuffs:
-    - {fileID: 11400000, guid: 59b17807b3617104bbeab7364e9fe97c, type: 2}
-    - {fileID: 11400000, guid: 56c4381059f91a4479a32e18b1cb9941, type: 2}
-    dropChance: 1
 --- !u!1 &1514283540
 GameObject:
   m_ObjectHideFlags: 0

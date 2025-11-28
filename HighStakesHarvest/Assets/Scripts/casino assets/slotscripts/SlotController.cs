@@ -18,8 +18,7 @@ public class SlotController : MonoBehaviour
     private Transform handle;
 
     [Header("Buff System")]
-    [SerializeField]
-    private BuffManager buffManager;
+    public BuffManager buffManager;
 
     private int prizeValue;
     private bool resultsChecked = false;
@@ -57,25 +56,15 @@ public class SlotController : MonoBehaviour
     [SerializeField]
     private List<BuffTier> buffTiers = new List<BuffTier>();
 
-    private IEnumerator FindBuffManagerNextFrame()
-    {
-        yield return null; // wait one frame
-
-        BuffManager bm = FindFirstObjectByType<BuffManager>();
-        if (bm != null)
-        {
-            buffManager = bm;
-            Debug.Log("BuffManager auto-found: " + buffManager.name);
-        }
-        else
-        {
-            Debug.LogError("No BuffManager found in scene!");
-        }
-    }
     private void Start()
     {
+        if (buffManager == null)
+        {
+            Debug.LogWarning("SlotController: BuffManager not assigned. Finding automatically...");
+            StartCoroutine(FindBuffManagerNextFrame());
+        }
 
-        // Validate that all rows are assigned
+        // Validate rows
         if (rows == null || rows.Length < 3)
         {
             Debug.LogError("SlotController: rows array is not properly assigned! Need 3 rows.");
@@ -90,20 +79,24 @@ public class SlotController : MonoBehaviour
             }
         }
 
-        // Auto-find BuffManager on this GameObject if not assigned
-        if (buffManager == null)
-        {
-            StartCoroutine(FindBuffManagerNextFrame());
-        }
-
-        // Validate buff manager
-        if (buffManager == null)
-        {
-            Debug.LogWarning("SlotController: BuffManager not assigned or found! Buff rewards will be disabled.");
-        }
-
         // Sort buff tiers by minScore (highest first) for easier checking
         buffTiers.Sort((a, b) => b.minScore.CompareTo(a.minScore));
+    }
+
+    private IEnumerator FindBuffManagerNextFrame()
+    {
+        yield return null;
+
+        BuffManager found = FindFirstObjectByType<BuffManager>();
+        if (found != null)
+        {
+            buffManager = found;
+            Debug.Log("SlotController found BuffManager successfully.");
+        }
+        else
+        {
+            Debug.LogError("SlotController could NOT find BuffManager in scene!");
+        }
     }
 
     private void Update()
