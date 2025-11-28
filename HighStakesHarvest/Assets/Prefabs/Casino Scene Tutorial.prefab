@@ -65,7 +65,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Welcome to the Farm!
+  m_text: Welcome to the Casino!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4c6004890b4ecc4488b434c9a6507933, type: 2}
   m_sharedMaterial: {fileID: -7489765113027175155, guid: 4c6004890b4ecc4488b434c9a6507933,
@@ -224,7 +224,7 @@ GameObject:
   - component: {fileID: 703213152725397027}
   - component: {fileID: 910045012807248177}
   m_Layer: 5
-  m_Name: Farm Scene Tutorial
+  m_Name: Casino Scene Tutorial
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -360,8 +360,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Turns have a limited amount of time, so be sure to make the most of each
-    turn.
+  m_text: At the Casino, you can buy more seeds and buffs for your farm.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4c6004890b4ecc4488b434c9a6507933, type: 2}
   m_sharedMaterial: {fileID: -7489765113027175155, guid: 4c6004890b4ecc4488b434c9a6507933,
@@ -498,7 +497,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Crops, when watered, will grow between turns.
+  m_text: Slots and Blackjack both allow you to gamble for buffs, but at a cost.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4c6004890b4ecc4488b434c9a6507933, type: 2}
   m_sharedMaterial: {fileID: -7489765113027175155, guid: 4c6004890b4ecc4488b434c9a6507933,
@@ -635,7 +634,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Every quota will give you a certain number of turns til money is due.
+  m_text: After each turn, you will go to the Casino.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4c6004890b4ecc4488b434c9a6507933, type: 2}
   m_sharedMaterial: {fileID: -7489765113027175155, guid: 4c6004890b4ecc4488b434c9a6507933,
@@ -772,7 +771,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Here on the farm, you can plant, water, and harvest crops.
+  m_text: The Shop allows you to buy more seeds to be planted on following turns.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4c6004890b4ecc4488b434c9a6507933, type: 2}
   m_sharedMaterial: {fileID: -7489765113027175155, guid: 4c6004890b4ecc4488b434c9a6507933,
@@ -909,8 +908,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Select a seed from your inventory and move to the dirt to plant your first
-    crop seed!
+  m_text: Make use of the benefits of the Casino to boost your profit on the farm!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4c6004890b4ecc4488b434c9a6507933, type: 2}
   m_sharedMaterial: {fileID: -7489765113027175155, guid: 4c6004890b4ecc4488b434c9a6507933,
