@@ -23,7 +23,6 @@ public class PauseManager : MonoBehaviour
             return;
         }
 
-        // When a new scene loads, make sure pauseMenuInstance reattaches properly
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -32,11 +31,19 @@ public class PauseManager : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
+    private bool IsInMainMenu()
+    {
+        return SceneManager.GetActiveScene().name == "MainMenu";
+    }
+
     void Update()
     {
+        // Disable pause system in MainMenu
+        if (IsInMainMenu())
+            return;
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            // Use the actual pause menu instance active state
             if (pauseMenuInstance != null && pauseMenuInstance.activeSelf)
                 Resume();
             else
@@ -46,32 +53,39 @@ public class PauseManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // If pause menu already exists, reattach it to the new scene's Canvas
         if (pauseMenuInstance != null)
         {
             Canvas canvas = FindObjectOfType<Canvas>();
             if (canvas != null)
                 pauseMenuInstance.transform.SetParent(canvas.transform, false);
         }
+
+        // If entering MainMenu, destroy existing pause menu instance
+        if (IsInMainMenu() && pauseMenuInstance != null)
+        {
+            Destroy(pauseMenuInstance);
+            pauseMenuInstance = null;
+            Time.timeScale = 1f;
+            isPaused = false;
+        }
     }
 
     public void Pause()
     {
+        // Do not open pause menu in MainMenu
+        if (IsInMainMenu())
+            return;
+
         if (pauseMenuInstance == null)
         {
-            // Find current scene's UI Canvas
             Canvas canvas = FindObjectOfType<Canvas>();
             Transform parent = canvas != null ? canvas.transform : null;
 
-            // Spawn inside Canvas or at root if none
             pauseMenuInstance = Instantiate(pauseMenuPrefab, parent);
 
-            // Ensure it's visible on top
             var canvasComp = pauseMenuInstance.GetComponentInChildren<Canvas>();
             if (canvasComp != null)
-            {
                 canvasComp.sortingOrder = 100;
-            }
         }
 
         pauseMenuInstance.SetActive(true);
@@ -107,10 +121,10 @@ public class PauseManager : MonoBehaviour
 
     public void ShowPauseMenu()
     {
-        if (pauseMenuInstance != null)
-        {
-            pauseMenuInstance.SetActive(true);
-        }
-    }
+        if (IsInMainMenu())
+            return;
 
+        if (pauseMenuInstance != null)
+            pauseMenuInstance.SetActive(true);
+    }
 }
