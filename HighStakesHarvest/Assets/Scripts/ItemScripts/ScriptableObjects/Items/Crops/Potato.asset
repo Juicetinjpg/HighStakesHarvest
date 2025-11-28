@@ -18,7 +18,7 @@ MonoBehaviour:
   stackSize: 99
   isTradeable: 1
   itemType: 1
-  basePrice: 100
+  basePrice: 15
   sellPriceMultiplier: 0.5
   sourceSeed: {fileID: 11400000, guid: 205c970a34a62bd4697b06c40ed4c8b0, type: 2}
   cropName: Potato
@@ -26,8 +26,8 @@ MonoBehaviour:
   minYield: 1
   maxYield: 3
   qualityMultiplier: 1
-  hasSeasonalBonus: 0
+  hasSeasonalBonus: 1
   bonusSeason: Winter
-  seasonalPriceMultiplier: 1.5
+  seasonalPriceMultiplier: 1
   canBeUsedAsAnimalFeed: 1
   feedValue: 1

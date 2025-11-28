@@ -18,7 +18,7 @@ MonoBehaviour:
   stackSize: 10
   isTradeable: 1
   itemType: 1
-  basePrice: 40
+  basePrice: 3
   sellPriceMultiplier: 0.5
   sourceSeed: {fileID: 11400000, guid: eccfaa8f472e97949b227166c712a073, type: 2}
   cropName: Blueberry
@@ -28,6 +28,6 @@ MonoBehaviour:
   qualityMultiplier: 1
   hasSeasonalBonus: 1
   bonusSeason: Spring
-  seasonalPriceMultiplier: 1.5
+  seasonalPriceMultiplier: 1
   canBeUsedAsAnimalFeed: 1
   feedValue: 1

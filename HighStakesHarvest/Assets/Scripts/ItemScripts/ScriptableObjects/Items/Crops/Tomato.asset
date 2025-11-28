@@ -18,7 +18,7 @@ MonoBehaviour:
   stackSize: 99
   isTradeable: 1
   itemType: 1
-  basePrice: 80
+  basePrice: 4
   sellPriceMultiplier: 0.5
   sourceSeed: {fileID: 11400000, guid: 52e1bc09a9a3ee844b5a10feed623109, type: 2}
   cropName: Tomato
@@ -28,6 +28,6 @@ MonoBehaviour:
   qualityMultiplier: 1
   hasSeasonalBonus: 1
   bonusSeason: Spring
-  seasonalPriceMultiplier: 1.5
+  seasonalPriceMultiplier: 1
   canBeUsedAsAnimalFeed: 1
   feedValue: 1
