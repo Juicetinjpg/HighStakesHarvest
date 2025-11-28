@@ -7,6 +7,7 @@ using TMPro;
 public class SlotController : MonoBehaviour
 {
     public static event Action HandlePulled = delegate { };
+    [SerializeField] private SlotsPaymentHandler moneyHandler;
 
     [SerializeField]
     private TMP_Text prizeText;
@@ -125,6 +126,9 @@ public class SlotController : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (!moneyHandler.TryPayForSpin())
+            return;
+
         if (!canPull) return;
         if (rows == null || rows.Length < 3) return;
         if (rows[0] == null || rows[1] == null || rows[2] == null) return;

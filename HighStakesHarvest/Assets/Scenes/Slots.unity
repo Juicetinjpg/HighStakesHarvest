@@ -2189,6 +2189,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93a55b0b21f3978459c08dbc730d9145, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moneyHandler: {fileID: 865770665}
   prizeText: {fileID: 1678311798}
   rows:
   - {fileID: 1899299703}
