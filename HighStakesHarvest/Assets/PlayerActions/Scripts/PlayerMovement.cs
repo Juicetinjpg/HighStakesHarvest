@@ -6,21 +6,38 @@ using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
-
     [SerializeField] private float speed = 5f;
     private Rigidbody2D rb;
-    private Vector2 moveInput; 
+    private Vector2 moveInput;
+    public Animator animator;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        rb.linearVelocity = moveInput * speed; 
+        if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
+        {
+            animator.SetBool("isRunning", true);
+        }
+        else
+        {
+            animator.SetBool("isRunning", false);
+        }
+
+        if (Input.GetAxis("Horizontal") < 0)
+            GetComponent<SpriteRenderer>().flipX = true;
+        else if (Input.GetAxis("Horizontal") > 0)
+        {
+            GetComponent<SpriteRenderer>().flipX = false;
+        }
+
+            rb.linearVelocity = moveInput * speed; 
     }
 
     public void Move(InputAction.CallbackContext context)
