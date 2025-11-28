@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BuffName: Cluster Craze
   Icon: {fileID: 0}
+  BuffID: 5
   cropAffected: Blueberry
   modifier: 2

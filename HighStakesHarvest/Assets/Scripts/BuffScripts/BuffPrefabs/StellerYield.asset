@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BuffName: Stellar Yield
   Icon: {fileID: 0}
-  cropAffected: Star Fruit
+  BuffID: 12
+  cropAffected: StarFruit
   modifier: 2

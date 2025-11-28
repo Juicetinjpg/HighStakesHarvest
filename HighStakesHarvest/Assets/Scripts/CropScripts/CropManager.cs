@@ -24,10 +24,19 @@ public class CropManager : MonoBehaviour
     void setDebugDictionaryValues()
     {
         // name, plural vers, value, growth, quantity, type
-        cropInfoDictionary.Add("Potato", new CropInfo("Potato", "Potatoes", 10, 3, 3, "Vegetable"));
-        cropInfoDictionary.Add("Blueberry", new CropInfo("Blueberry", "Blueberries", 5, 3, 6, "Fruit"));
-        cropInfoDictionary.Add("Pumpkin", new CropInfo("Pumpkin", "Pumpkins", 15, 3, 1, "Fruit"));
-        cropInfoDictionary.Add("Tomato", new CropInfo("Tomato", "Tomatoes", 20, 3, 3, "Fruit"));
+        cropInfoDictionary.Add("Potato", new CropInfo("Potato", "Potatoes", 15, 3, 6, "Vegetable"));
+        cropInfoDictionary.Add("Pumpkin", new CropInfo("Pumpkin", "Pumpkins", 200, 3, 1, "Vegetable"));
+        cropInfoDictionary.Add("Squash", new CropInfo("Squash", "Squashs", 40, 3, 3, "Vegetable"));
+        cropInfoDictionary.Add("Pepper", new CropInfo("Pepper", "Peppers", 35, 3, 4, "Vegetable"));
+        cropInfoDictionary.Add("Carrot", new CropInfo("Carrot", "Carrots", 10, 3, 6, "Vegetable"));
+
+
+        cropInfoDictionary.Add("Blueberry", new CropInfo("Blueberry", "Blueberries", 3, 3, 30, "Fruit"));
+        cropInfoDictionary.Add("Tomato", new CropInfo("Tomato", "Tomatoes", 4, 3, 20, "Fruit"));
+        cropInfoDictionary.Add("Kiwi", new CropInfo("Kiwi", "Kiwis", 10, 3, 10, "Fruit"));
+        cropInfoDictionary.Add("StarFruit", new CropInfo("StarFruit", "StarFruits", 15, 3, 7, "Fruit"));
+        cropInfoDictionary.Add("Strawberry", new CropInfo("Strawberry", "Strawberries", 3, 3, 30, "Fruit"));
+
     }
 
     // getters
@@ -73,7 +82,39 @@ public class CropManager : MonoBehaviour
         Debug.Log("New quantity of " + crop.name + "is " + crop.quantity);
     }
 
+    public List<CropInfo> GetAllCrops()
+    {
+        return new List<CropInfo>(cropInfoDictionary.Values);
+    }
 
+    public List<CropInfo> GetCropsByType(string type)
+    {
+        List<CropInfo> crops = new List<CropInfo>();
+        foreach (var crop in cropInfoDictionary.Values)
+        {
+            if (crop.type.Equals(type, StringComparison.OrdinalIgnoreCase))
+            {
+                crops.Add(crop);
+            }
+        }
+        return crops;
+    }
+
+    public void ApplyQuantityBuff(List<CropInfo> crops, float modifier)
+    {
+        foreach (var crop in crops)
+        {
+            ApplySpecificQuantityBuff(crop, modifier);
+        }
+    }
+
+    public void ApplyValueBuff(List<CropInfo> crops, float modifier)
+    {
+        foreach (var crop in crops)
+        {
+            ApplySpecificValueBuff(crop, modifier);
+        }
+    }
 
 
 }

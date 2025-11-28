@@ -21,8 +21,8 @@ MonoBehaviour:
   basePrice: 0
   sellPriceMultiplier: 0.5
   toolCategory: 1
-  durability: 100
-  isUnbreakable: 0
+  durability: 0
+  isUnbreakable: 1
   currentDurability: 100
   effectiveness: 1
   speedMultiplier: 1
@@ -32,7 +32,7 @@ MonoBehaviour:
   upgradePrice: 0
   requiresRefill: 1
   maxCapacity: 40
-  currentCapacity: 40
+  currentCapacity: 21
   toolPrefab: {fileID: 0}
   useSound: {fileID: 0}
   useAnimation: {fileID: 0}

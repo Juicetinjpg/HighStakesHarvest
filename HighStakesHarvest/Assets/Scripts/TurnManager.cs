@@ -161,32 +161,21 @@ public class TurnManager : MonoBehaviour
         }
 
         var plants = PlantManager.Instance.Plants;
-        int oldPlantCount = 0;
-        int newPlantCount = 0;
+        int advancedCount = 0;
 
         foreach (var plantObj in plants)
         {
             if (plantObj == null) continue;
 
-            // Try new Plant first
-            Plant Plant = plantObj.GetComponent<Plant>();
-            if (Plant != null)
+            PlantGrowth plant = plantObj.GetComponent<PlantGrowth>();
+            if (plant != null)
             {
-                Plant.AdvanceTurn();
-                newPlantCount++;
-                continue;
-            }
-
-            // Fall back to old Plant for backward compatibility
-            Plant oldPlant = plantObj.GetComponent<Plant>();
-            if (oldPlant != null)
-            {
-                oldPlant.AdvanceTurn();
-                oldPlantCount++;
+                plant.AdvanceTurn();
+                advancedCount++;
             }
         }
 
-        Debug.Log($"Advanced {newPlantCount} new plants and {oldPlantCount} old plants");
+        Debug.Log($"Advanced {advancedCount} plants");
     }
 
     /// <summary>
@@ -209,7 +198,7 @@ public class TurnManager : MonoBehaviour
             {
                 if (plantObj == null) continue;
 
-                Plant plant = plantObj.GetComponent<Plant>();
+                PlantGrowth plant = plantObj.GetComponent<PlantGrowth>();
                 if (plant != null)
                 {
                     plant.currentSeason = currentSeason;
@@ -299,7 +288,7 @@ public class TurnManager : MonoBehaviour
             {
                 if (plantObj == null) continue;
 
-                Plant plant = plantObj.GetComponent<Plant>();
+                PlantGrowth plant = plantObj.GetComponent<PlantGrowth>();
                 if (plant != null)
                 {
                     plant.currentSeason = currentSeason;

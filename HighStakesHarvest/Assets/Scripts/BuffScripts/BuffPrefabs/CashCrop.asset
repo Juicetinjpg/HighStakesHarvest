@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BuffName: CashCrop
   Icon: {fileID: 0}
+  BuffID: 4
   cropAffected: All
   modifier: 1.2

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: 
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 8243370969719617450, guid: 7075dbd24eae86742865e25d9ad28180, type: 3}
   stackSize: 10
   isTradeable: 1
   itemType: 0
@@ -25,10 +25,10 @@ MonoBehaviour:
   growthTime: 4
   seasonPreference: Winter
   growthStages:
-  - {fileID: 7738305070149883613, guid: 6364575b6652c294889838f282ad7863, type: 3}
-  - {fileID: 7829047689554456896, guid: 16fbc486ed47f2941b1ac856705e4f3a, type: 3}
-  - {fileID: 7829047689554456896, guid: 16fbc486ed47f2941b1ac856705e4f3a, type: 3}
-  - {fileID: 2736369492407279907, guid: 36ff2ffe0e8d1834786f029e3f14b984, type: 3}
+  - {fileID: 7738305070149883613, guid: 14af6312145842709ca9577731229612, type: 3}
+  - {fileID: 7738305070149883613, guid: 108354c1871a4c5d8768aadfdbff12e5, type: 3}
+  - {fileID: 7738305070149883613, guid: 86c5974d00a2447ebbc76cb4bcc621cc, type: 3}
+  - {fileID: 7738305070149883613, guid: fd18f5e865e94cafa5c51802e986472f, type: 3}
   requiresWater: 1
   requiresTilledSoil: 0
   isMultiHarvest: 0

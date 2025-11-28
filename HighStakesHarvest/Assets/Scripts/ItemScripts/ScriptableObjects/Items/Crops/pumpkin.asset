@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee611d3042b71bb4295da07cd1a9f501, type: 3}
+  m_Name: pumpkin
+  m_EditorClassIdentifier: 
+  itemName: Pumpkin
+  description: A hefty pumpkin
+  icon: {fileID: 7039910336858596001, guid: 7075dbd24eae86742865e25d9ad28180, type: 3}
+  stackSize: 10
+  isTradeable: 1
+  itemType: 1
+  basePrice: 100
+  sellPriceMultiplier: 0.5
+  sourceSeed: {fileID: 11400000, guid: 8acc3e8d9be8f224e9fe9e7dfd62ef27, type: 2}
+  cropName: Pumpkin
+  quality: 1
+  minYield: 1
+  maxYield: 2
+  qualityMultiplier: 1
+  hasSeasonalBonus: 1
+  bonusSeason: Fall
+  seasonalPriceMultiplier: 1.5
+  canBeUsedAsAnimalFeed: 1
+  feedValue: 1

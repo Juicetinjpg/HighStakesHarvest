@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BuffName: Mineral Rich Soil
   Icon: {fileID: 0}
+  BuffID: 9
   cropAffected: Vegetables
   modifier: 1.5

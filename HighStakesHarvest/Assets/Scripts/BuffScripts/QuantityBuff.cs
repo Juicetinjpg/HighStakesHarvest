@@ -5,16 +5,46 @@ using UnityEngine;
 [Serializable]
 public class QuantityBuff : ScriptableBuff
 {
-
-    public string cropAffected;
+    public string cropAffected; // e.g., "Tomato", "Vegetables", "Fruits", "All"
     public float modifier;
 
     public override void Apply(GameObject target)
     {
         CropManager cropManager = target.GetComponent<CropManager>();
-        CropInfo crop = cropManager.getCropInfo(cropAffected);
-        cropManager.ApplySpecificQuantityBuff(crop, modifier);
-        Debug.Log($"Crop '{cropAffected}' quantity is now '{cropManager.getCropQuantity(cropAffected)}'.");
+        if (cropManager == null)
+        {
+            Debug.LogError("CropManager not found on target!");
+            return;
+        }
+
+        foreach (var kvp in cropManager.cropInfoDictionary)
+        {
+            CropInfo crop = kvp.Value;
+            bool apply = false;
+
+            if (cropAffected.Equals("All", StringComparison.OrdinalIgnoreCase))
+            {
+                apply = true;
+            }
+            else if (cropAffected.Equals("Vegetables", StringComparison.OrdinalIgnoreCase) && crop.type.Equals("Vegetable", StringComparison.OrdinalIgnoreCase))
+            {
+                apply = true;
+            }
+            else if (cropAffected.Equals("Fruits", StringComparison.OrdinalIgnoreCase) && crop.type.Equals("Fruit", StringComparison.OrdinalIgnoreCase))
+            {
+                apply = true;
+            }
+            else if (crop.name.Equals(cropAffected, StringComparison.OrdinalIgnoreCase))
+            {
+                apply = true;
+            }
+
+            if (apply)
+            {
+                cropManager.ApplySpecificQuantityBuff(crop, modifier);
+                Debug.Log($"Crop '{crop.name}' quantity is now '{cropManager.getCropQuantity(crop.name)}'.");
+            }
+        }
     }
 
     public override void Remove(GameObject target)
@@ -22,4 +52,3 @@ public class QuantityBuff : ScriptableBuff
         throw new System.NotImplementedException();
     }
 }
-
