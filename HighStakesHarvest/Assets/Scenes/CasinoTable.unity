@@ -2342,7 +2342,6 @@ MonoBehaviour:
   dealerEmotion: {fileID: 833824264}
   CashText: {fileID: 0}
   HandText: {fileID: 842548644}
-  BetText: {fileID: 0}
   DealerText: {fileID: 1740029309}
   hideCard: {fileID: 1832480649}
   DealerEmotionText: {fileID: 921521917}
@@ -2356,7 +2355,7 @@ MonoBehaviour:
     - {fileID: 11400000, guid: eba4ba52e6205914aa84850773c0c16f, type: 2}
     - {fileID: 11400000, guid: 7eebbeed9353e9644b8c0c3f0dd8d86a, type: 2}
     - {fileID: 11400000, guid: c1120940bbfda484eabd7f8967776361, type: 2}
-    dropChance: 0
+    dropChance: 1
   - tierName: Uncommon
     minScore: 14
     maxScore: 18
@@ -2365,7 +2364,7 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 1c9c4e22017a3e3458090b17a397bc8d, type: 2}
     - {fileID: 11400000, guid: fc058e32647696e4f828440e97dbba2f, type: 2}
     - {fileID: 11400000, guid: 78db2334fec85c243bde44d7249bdf06, type: 2}
-    dropChance: 0
+    dropChance: 1
   - tierName: Rare
     minScore: 19
     maxScore: 20
@@ -2375,14 +2374,14 @@ MonoBehaviour:
     - {fileID: 11400000, guid: d1e02c96d59639f45bf4e6f85fcd33c7, type: 2}
     - {fileID: 11400000, guid: fb278db03846cdf4080d08f149d6d1fb, type: 2}
     - {fileID: 11400000, guid: 69b161fadd008494b8d720eb4e9e0617, type: 2}
-    dropChance: 0
+    dropChance: 1
   - tierName: Epic
     minScore: 21
     maxScore: 21
     possibleBuffs:
     - {fileID: 11400000, guid: 56c4381059f91a4479a32e18b1cb9941, type: 2}
     - {fileID: 11400000, guid: 59b17807b3617104bbeab7364e9fe97c, type: 2}
-    dropChance: 0
+    dropChance: 1
 --- !u!4 &833824263
 Transform:
   m_ObjectHideFlags: 0

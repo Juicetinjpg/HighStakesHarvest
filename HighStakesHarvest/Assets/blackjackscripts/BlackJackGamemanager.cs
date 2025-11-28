@@ -23,7 +23,6 @@ public class BlackJackGameManager : MonoBehaviour
     [Header("UI Text")]
     public Text CashText;
     public Text HandText;
-    public Text BetText;
     public Text DealerText;
     public GameObject hideCard;
     public Text DealerEmotionText;
@@ -270,7 +269,7 @@ public class BlackJackGameManager : MonoBehaviour
         if (HandText != null) HandText.text = "Hand: " + playerscript.handValue;
         if (DealerText != null) DealerText.text = "Hand: " + dealerscript.handValue;
         if (CashText != null) CashText.text = "Cash: " + playerscript.GetMoney().ToString();
-        if (BetText != null) BetText.text = "Bet: " + pot.ToString();
+        
     }
 
     private void ResetUI()
