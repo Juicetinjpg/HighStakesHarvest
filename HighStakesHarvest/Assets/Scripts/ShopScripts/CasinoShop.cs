@@ -76,6 +76,7 @@ public class CasinoShop : MonoBehaviour
     private void Start()
     {
         if (!ValidateManagers()) return;
+        EnsureRuntimeSlotPrefab();
 
         // Subscribe to events
         MoneyManager.Instance.OnMoneyChanged += UpdateMoneyDisplay;
@@ -189,7 +190,7 @@ public class CasinoShop : MonoBehaviour
         bool valid = true;
         if (MoneyManager.Instance == null) { Debug.LogError("CasinoShop: MoneyManager not found!"); valid = false; }
         if (PlayerInventory.Instance == null) { Debug.LogError("CasinoShop: PlayerInventory not found!"); valid = false; }
-        if (InventoryManager.Instance == null) { Debug.LogError("CasinoShop: InventoryManager not found!"); valid = false; }
+        if (InventoryManager.Instance == null) { Debug.LogWarning("CasinoShop: InventoryManager not found (Sell panel will be disabled)."); }
         if (ItemDatabase.Instance == null) { Debug.LogError("CasinoShop: ItemDatabase not found!"); valid = false; }
         if (itemSlotPrefab == null) { Debug.LogError("CasinoShop: ItemSlot prefab not assigned!"); valid = false; }
         if (buySlotContainer == null) { Debug.LogError("CasinoShop: Buy slot container not assigned!"); valid = false; }
@@ -197,6 +198,68 @@ public class CasinoShop : MonoBehaviour
         if (buyPanelRoot == null) { Debug.LogWarning("CasinoShop: Buy panel root not assigned - panel switching may not work!"); }
         if (sellPanelRoot == null) { Debug.LogWarning("CasinoShop: Sell panel root not assigned - panel switching may not work!"); }
         return valid;
+    }
+
+    /// <summary>
+    /// If the item slot prefab is missing, build a minimal runtime prefab so the shop can still populate.
+    /// </summary>
+    private void EnsureRuntimeSlotPrefab()
+    {
+        if (itemSlotPrefab != null) return;
+
+        Debug.LogWarning("CasinoShop: ItemSlot prefab missing; building a runtime fallback.");
+
+        GameObject slot = new GameObject("RuntimeItemSlot", typeof(RectTransform), typeof(Image), typeof(LayoutElement));
+        RectTransform rt = slot.GetComponent<RectTransform>();
+        rt.sizeDelta = new Vector2(0, 160);
+        Image bg = slot.GetComponent<Image>();
+        bg.color = new Color(1f, 1f, 1f, 0.9f);
+        LayoutElement le = slot.GetComponent<LayoutElement>();
+        le.minHeight = 140;
+
+        VerticalLayoutGroup vlg = slot.AddComponent<VerticalLayoutGroup>();
+        vlg.childControlWidth = true;
+        vlg.childControlHeight = true;
+        vlg.childForceExpandWidth = true;
+        vlg.childForceExpandHeight = false;
+        vlg.spacing = 6f;
+        vlg.padding = new RectOffset(10, 10, 10, 10);
+
+        GameObject icon = new GameObject(iconImageName, typeof(RectTransform), typeof(Image), typeof(LayoutElement));
+        icon.transform.SetParent(slot.transform, false);
+        RectTransform iconRT = icon.GetComponent<RectTransform>();
+        iconRT.sizeDelta = new Vector2(96, 96);
+        LayoutElement iconLE = icon.GetComponent<LayoutElement>();
+        iconLE.preferredHeight = 96;
+        iconLE.preferredWidth = 96;
+        icon.GetComponent<Image>().color = new Color(0.9f, 0.9f, 0.9f, 1f);
+
+        CreateRuntimeTMP(slot.transform, nameTextName, "Item Name", 26, TMPro.TextAlignmentOptions.Left);
+        CreateRuntimeTMP(slot.transform, costTextName, "$0", 22, TMPro.TextAlignmentOptions.Left);
+        CreateRuntimeTMP(slot.transform, descriptionTextName, "Description here", 20, TMPro.TextAlignmentOptions.TopLeft);
+
+        GameObject btnGO = new GameObject(buyButtonName, typeof(RectTransform), typeof(Image), typeof(Button));
+        btnGO.transform.SetParent(slot.transform, false);
+        Image btnImg = btnGO.GetComponent<Image>();
+        btnImg.color = new Color(0.9f, 0.9f, 0.9f, 1f);
+        Button btn = btnGO.GetComponent<Button>();
+        TextMeshProUGUI btnLabel = CreateRuntimeTMP(btnGO.transform, "Label", "BUY", 22, TMPro.TextAlignmentOptions.Center);
+        RectTransform btnRT = btnGO.GetComponent<RectTransform>();
+        btnRT.sizeDelta = new Vector2(0, 46);
+
+        itemSlotPrefab = slot;
+    }
+
+    private TextMeshProUGUI CreateRuntimeTMP(Transform parent, string name, string text, int size, TMPro.TextAlignmentOptions align)
+    {
+        GameObject go = new GameObject(name, typeof(RectTransform), typeof(TextMeshProUGUI));
+        go.transform.SetParent(parent, false);
+        TextMeshProUGUI tmp = go.GetComponent<TextMeshProUGUI>();
+        tmp.text = text;
+        tmp.fontSize = size;
+        tmp.alignment = align;
+        tmp.color = Color.black;
+        return tmp;
     }
     
     #endregion

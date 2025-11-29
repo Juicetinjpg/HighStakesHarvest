@@ -771,12 +771,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 400688314}
   m_CullTransparentMesh: 1
---- !u!1 &437496954 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3595010031948996495, guid: 9a430015deb2a9740a761f24b108f640,
-    type: 3}
-  m_PrefabInstance: {fileID: 3307284333814268699}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &437496955 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3243496248256960007, guid: 9a430015deb2a9740a761f24b108f640,
@@ -2144,94 +2138,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1487372703}
   m_CullTransparentMesh: 1
---- !u!1 &1503038612
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1503038614}
-  - component: {fileID: 1503038613}
-  m_Layer: 0
-  m_Name: CasinoShop
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1503038613
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1503038612}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a99fa0a060f0b4e4eb091eb47c6a43ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  buyMode: 1
-  toggleModeButton: {fileID: 0}
-  sellSeeds: 1
-  sellTools: 0
-  sellCrops: 1
-  sellResources: 0
-  shopBuysCrops: 1
-  shopBuysResources: 0
-  itemSlotPrefab: {fileID: 887895903223597528, guid: 80658da4ae59a524a8c81c2785148b60,
-    type: 3}
-  itemSlotContainer: {fileID: 0}
-  iconImageName: IconImage
-  nameTextName: NameText
-  costTextName: CostText
-  descriptionTextName: DescriptionText
-  buyButtonName: BuyButton
-  moneyDisplayText: {fileID: 0}
-  moneyDisplayTextTMP: {fileID: 1625605153}
-  insufficientFundsPanel: {fileID: 437496954}
-  insufficientSpacePanel: {fileID: 1331518637}
-  purchaseSuccessPanel: {fileID: 581997624}
-  purchaseSuccessText: {fileID: 0}
-  purchaseSuccessTextTMP: {fileID: 1634691828}
-  notificationDuration: 2
-  useItemBasePrices: 1
-  priceMultiplier: 1
---- !u!4 &1503038614
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1503038612}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.1594145, y: -3.0241625, z: -0.0349873}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &1625605152 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5583365057860584617, guid: 10a5667aa1fd6ea47826d4c0f98f09b0,
     type: 3}
   m_PrefabInstance: {fileID: 7263981266814824996}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1625605153 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4447177717061396737, guid: 10a5667aa1fd6ea47826d4c0f98f09b0,
-    type: 3}
-  m_PrefabInstance: {fileID: 7263981266814824996}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1634691826
 GameObject:
   m_ObjectHideFlags: 0
@@ -3359,4 +3271,3 @@ SceneRoots:
   - {fileID: 695074277}
   - {fileID: 1001462766}
   - {fileID: 1359785395}
-  - {fileID: 1503038614}
