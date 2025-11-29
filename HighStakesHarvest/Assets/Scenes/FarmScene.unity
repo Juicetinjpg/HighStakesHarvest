@@ -9621,7 +9621,7 @@ GameObject:
   - component: {fileID: 507439361}
   - component: {fileID: 507439364}
   m_Layer: 5
-  m_Name: To Casino Button
+  m_Name: End Turn Early Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9691,7 +9691,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 507439362}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 507439364}
+        m_TargetAssemblyTypeName: EndTurnButton, Assembly-CSharp
+        m_MethodName: ForceEndTurn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &507439362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9740,7 +9752,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 507439359}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a9929664d7134294b8d82698c43c6817, type: 3}
+  m_Script: {fileID: 11500000, guid: aa3679c8d42597549bca84fc370f571d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &547417840
@@ -13912,7 +13924,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: To Casino
+  m_text: End Turn Early
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4c6004890b4ecc4488b434c9a6507933, type: 2}
   m_sharedMaterial: {fileID: -7489765113027175155, guid: 4c6004890b4ecc4488b434c9a6507933,
@@ -14173,7 +14185,7 @@ GameObject:
   - component: {fileID: 1499873548}
   - component: {fileID: 1499873547}
   m_Layer: 5
-  m_Name: To Casino Button Outline
+  m_Name: End Turn Early Button Outline
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

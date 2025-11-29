@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.IO;
+using System.Collections;
 
 [System.Serializable]
 public class SaveData
@@ -9,6 +10,10 @@ public class SaveData
     public int casinoSceneTutoSeen = 0;
     public int slotsSceneTutoSeen = 0;
     public int casinoTableTutoSeen = 0;
+    public int savedQuotaIndex = 0;
+    public int savedTurnsRemaining = 0;
+    public int savedMoney = 0;
+    public string inventoryJson = "";
 }
 
 public class SaveManager : MonoBehaviour
@@ -72,24 +77,68 @@ public class SaveManager : MonoBehaviour
     {
         try
         {
-            string json = File.ReadAllText(savePath);
-            data = JsonUtility.FromJson<SaveData>(json);
-            if (data == null) data = new SaveData();
-            Debug.Log("[SaveManager] Loaded save file.");
+            if (File.Exists(savePath))
+            {
+                string json = File.ReadAllText(savePath);
+                data = JsonUtility.FromJson<SaveData>(json);
+
+                if (data == null)
+                    data = new SaveData();
+
+                Debug.Log("[SaveManager] Loaded save file.");
+            }
+            else
+            {
+                data = new SaveData();
+                SaveGame(); // Create a save file immediately
+                Debug.Log("[SaveManager] No save file found. Created new one.");
+            }
         }
         catch
         {
             data = new SaveData();
             Debug.LogWarning("[SaveManager] Failed to load save file, using defaults.");
         }
+
+        // --- Load Inventory ------------------------
+        if (PlayerInventory.Instance != null)
+        {
+            if (!string.IsNullOrEmpty(data.inventoryJson))
+            {
+                PlayerInventory.Instance.LoadInventoryData(data.inventoryJson);
+                Debug.Log("[SaveManager] Loaded player inventory.");
+            }
+            else
+            {
+                Debug.Log("[SaveManager] No inventory found in save. Starting empty.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[SaveManager] PlayerInventory not found in scene during load.");
+        }
     }
+
 
     public void SaveGame()
     {
         try
         {
+            // --- Save Inventory ------------------------
+            if (PlayerInventory.Instance != null)
+            {
+                data.inventoryJson = PlayerInventory.Instance.SaveInventoryData();
+                Debug.Log("[SaveManager] Saved player inventory.");
+            }
+            else
+            {
+                Debug.LogWarning("[SaveManager] PlayerInventory not found during save.");
+            }
+
+            // --- Write Save File ------------------------
             string json = JsonUtility.ToJson(data, true);
             File.WriteAllText(savePath, json);
+
             Debug.Log("[SaveManager] Save file written.");
         }
         catch (System.Exception ex)
@@ -97,6 +146,7 @@ public class SaveManager : MonoBehaviour
             Debug.LogError("[SaveManager] Failed to write save file: " + ex.Message);
         }
     }
+
 
     // Scene loaded -> try show tutorial (single place of truth)
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -162,6 +212,33 @@ public class SaveManager : MonoBehaviour
 
         flag = 1;
         SaveGame();
+    }
+
+    public void ContinueGame()
+    {
+        SaveManager.Instance.LoadGame();
+
+        int quotaIndex = SaveManager.Instance.data.savedQuotaIndex;
+        int turns = SaveManager.Instance.data.savedTurnsRemaining;
+        int money = SaveManager.Instance.data.savedMoney;
+
+        // Load the actual play scene
+        SceneManager.LoadScene("FarmScene");  // or whatever first gameplay scene
+
+        // After scene loads:
+        StartCoroutine(LoadRunDelayed(quotaIndex, turns, money));
+    }
+
+    private IEnumerator LoadRunDelayed(int quotaIndex, int turns, int money)
+    {
+        yield return new WaitForSeconds(0.1f); // wait for managers to exist
+
+        MoneyManager.Instance.SetMoney(money);
+
+        QuotaManager.Instance.StartQuota(quotaIndex);
+        QuotaManager.Instance.AddTurns(turns - QuotaManager.Instance.GetTurnsRemaining());
+
+        Debug.Log("[MainMenu] Loaded saved quota/turn progress.");
     }
 
 }
