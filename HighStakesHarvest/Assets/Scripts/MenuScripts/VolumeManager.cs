@@ -4,27 +4,29 @@ using TMPro;
 
 public class VolumeManager : MonoBehaviour
 {
-    public Slider volumeSlider;   // Drag your slider here
-    public TMP_Text volumeText;   // Drag the TMP text here
+    public Slider volumeSlider;
+    public TMP_Text volumeText;
 
     void Start()
     {
         if (volumeSlider != null)
         {
-            // Initialize the slider to current volume
-            volumeSlider.value = AudioListener.volume;
+            // Load from AudioManager's saved volume
+            float savedVolume = AudioManager.Instance.GetVolume();
+            volumeSlider.value = savedVolume;
 
-            // Update the text immediately
-            UpdateVolumeText(volumeSlider.value);
+            UpdateVolumeText(savedVolume);
 
-            // Add a listener to update volume and text when slider changes
             volumeSlider.onValueChanged.AddListener(VolumeChanged);
         }
     }
 
     void VolumeChanged(float value)
     {
-        AudioListener.volume = value;
+        // Update AudioManager volume
+        AudioManager.Instance.SetVolume(value);
+
+        // Update UI text
         UpdateVolumeText(value);
     }
 
@@ -32,7 +34,7 @@ public class VolumeManager : MonoBehaviour
     {
         if (volumeText != null)
         {
-            volumeText.text = Mathf.RoundToInt(value * 100).ToString(); // 0-100
+            volumeText.text = Mathf.RoundToInt(value * 100).ToString();
         }
     }
 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class OptionsMenuManager : MonoBehaviour
 {
@@ -11,7 +12,6 @@ public class OptionsMenuManager : MonoBehaviour
 
     void Update()
     {
-        // If Esc is pressed, go back to Pause Menu
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             BackToPauseMenu();
@@ -20,13 +20,17 @@ public class OptionsMenuManager : MonoBehaviour
 
     public void BackToPauseMenu()
     {
-        if (pauseManager != null)
+        // If we are in MainMenu, simply close the options menu
+        if (SceneManager.GetActiveScene().name == "MainMenu")
         {
-            // Re-enable pause menu
-            pauseManager.ShowPauseMenu();
+            Destroy(gameObject);
+            return;
         }
 
-        // Disable options menu
+        // Otherwise, return to Pause Menu
+        if (pauseManager != null)
+            pauseManager.ShowPauseMenu();
+
         gameObject.SetActive(false);
     }
 }
