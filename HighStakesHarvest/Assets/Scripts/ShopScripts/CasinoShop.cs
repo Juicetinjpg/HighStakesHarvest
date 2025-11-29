@@ -61,6 +61,8 @@ public class CasinoShop : MonoBehaviour
 
     private readonly List<ShopItemRuntime> buyRuntimeItems = new();
     private readonly List<ShopItemRuntime> sellRuntimeItems = new();
+    private bool loggedBuySlotInfo;
+    private bool loggedSellSlotInfo;
     
     private enum ShopPanel { Buy, Sell }
     private ShopPanel currentPanel = ShopPanel.Buy;
@@ -76,7 +78,6 @@ public class CasinoShop : MonoBehaviour
     private void Start()
     {
         if (!ValidateManagers()) return;
-        EnsureRuntimeSlotPrefab();
 
         // Subscribe to events
         MoneyManager.Instance.OnMoneyChanged += UpdateMoneyDisplay;
@@ -190,7 +191,7 @@ public class CasinoShop : MonoBehaviour
         bool valid = true;
         if (MoneyManager.Instance == null) { Debug.LogError("CasinoShop: MoneyManager not found!"); valid = false; }
         if (PlayerInventory.Instance == null) { Debug.LogError("CasinoShop: PlayerInventory not found!"); valid = false; }
-        if (InventoryManager.Instance == null) { Debug.LogWarning("CasinoShop: InventoryManager not found (Sell panel will be disabled)."); }
+        if (InventoryManager.Instance == null) { Debug.LogError("CasinoShop: InventoryManager not found!"); valid = false; }
         if (ItemDatabase.Instance == null) { Debug.LogError("CasinoShop: ItemDatabase not found!"); valid = false; }
         if (itemSlotPrefab == null) { Debug.LogError("CasinoShop: ItemSlot prefab not assigned!"); valid = false; }
         if (buySlotContainer == null) { Debug.LogError("CasinoShop: Buy slot container not assigned!"); valid = false; }
@@ -199,68 +200,6 @@ public class CasinoShop : MonoBehaviour
         if (sellPanelRoot == null) { Debug.LogWarning("CasinoShop: Sell panel root not assigned - panel switching may not work!"); }
         return valid;
     }
-
-    /// <summary>
-    /// If the item slot prefab is missing, build a minimal runtime prefab so the shop can still populate.
-    /// </summary>
-    private void EnsureRuntimeSlotPrefab()
-    {
-        if (itemSlotPrefab != null) return;
-
-        Debug.LogWarning("CasinoShop: ItemSlot prefab missing; building a runtime fallback.");
-
-        GameObject slot = new GameObject("RuntimeItemSlot", typeof(RectTransform), typeof(Image), typeof(LayoutElement));
-        RectTransform rt = slot.GetComponent<RectTransform>();
-        rt.sizeDelta = new Vector2(0, 160);
-        Image bg = slot.GetComponent<Image>();
-        bg.color = new Color(1f, 1f, 1f, 0.9f);
-        LayoutElement le = slot.GetComponent<LayoutElement>();
-        le.minHeight = 140;
-
-        VerticalLayoutGroup vlg = slot.AddComponent<VerticalLayoutGroup>();
-        vlg.childControlWidth = true;
-        vlg.childControlHeight = true;
-        vlg.childForceExpandWidth = true;
-        vlg.childForceExpandHeight = false;
-        vlg.spacing = 6f;
-        vlg.padding = new RectOffset(10, 10, 10, 10);
-
-        GameObject icon = new GameObject(iconImageName, typeof(RectTransform), typeof(Image), typeof(LayoutElement));
-        icon.transform.SetParent(slot.transform, false);
-        RectTransform iconRT = icon.GetComponent<RectTransform>();
-        iconRT.sizeDelta = new Vector2(96, 96);
-        LayoutElement iconLE = icon.GetComponent<LayoutElement>();
-        iconLE.preferredHeight = 96;
-        iconLE.preferredWidth = 96;
-        icon.GetComponent<Image>().color = new Color(0.9f, 0.9f, 0.9f, 1f);
-
-        CreateRuntimeTMP(slot.transform, nameTextName, "Item Name", 26, TMPro.TextAlignmentOptions.Left);
-        CreateRuntimeTMP(slot.transform, costTextName, "$0", 22, TMPro.TextAlignmentOptions.Left);
-        CreateRuntimeTMP(slot.transform, descriptionTextName, "Description here", 20, TMPro.TextAlignmentOptions.TopLeft);
-
-        GameObject btnGO = new GameObject(buyButtonName, typeof(RectTransform), typeof(Image), typeof(Button));
-        btnGO.transform.SetParent(slot.transform, false);
-        Image btnImg = btnGO.GetComponent<Image>();
-        btnImg.color = new Color(0.9f, 0.9f, 0.9f, 1f);
-        Button btn = btnGO.GetComponent<Button>();
-        TextMeshProUGUI btnLabel = CreateRuntimeTMP(btnGO.transform, "Label", "BUY", 22, TMPro.TextAlignmentOptions.Center);
-        RectTransform btnRT = btnGO.GetComponent<RectTransform>();
-        btnRT.sizeDelta = new Vector2(0, 46);
-
-        itemSlotPrefab = slot;
-    }
-
-    private TextMeshProUGUI CreateRuntimeTMP(Transform parent, string name, string text, int size, TMPro.TextAlignmentOptions align)
-    {
-        GameObject go = new GameObject(name, typeof(RectTransform), typeof(TextMeshProUGUI));
-        go.transform.SetParent(parent, false);
-        TextMeshProUGUI tmp = go.GetComponent<TextMeshProUGUI>();
-        tmp.text = text;
-        tmp.fontSize = size;
-        tmp.alignment = align;
-        tmp.color = Color.black;
-        return tmp;
-    }
     
     #endregion
 
@@ -268,35 +207,91 @@ public class CasinoShop : MonoBehaviour
     
     private void PopulateBuyPanel()
     {
+        Debug.Log("=== PopulateBuyPanel START ===");
         ClearPanel(buyRuntimeItems);
         List<ItemData> itemsToSell = new();
 
         if (sellSeeds)
+        {
+            Debug.Log($"Adding seeds. Total seeds in database: {ItemDatabase.Instance.allSeeds.Count}");
             itemsToSell.AddRange(ItemDatabase.Instance.allSeeds.Where(s => s != null));
+        }
         if (sellTools)
+        {
+            Debug.Log($"Adding tools. Total tools in database: {ItemDatabase.Instance.allTools.Count}");
             itemsToSell.AddRange(ItemDatabase.Instance.allTools.Where(t => t != null));
+        }
         if (sellCrops)
+        {
+            Debug.Log($"Adding crops. Total crops in database: {ItemDatabase.Instance.allCrops.Count}");
             itemsToSell.AddRange(ItemDatabase.Instance.allCrops.Where(c => c != null));
+        }
         if (sellResources)
+        {
+            Debug.Log($"Adding resources. Total resources in database: {ItemDatabase.Instance.allResources.Count}");
             itemsToSell.AddRange(ItemDatabase.Instance.allResources.Where(r => r != null));
+        }
+
+        Debug.Log($"Total items to sell: {itemsToSell.Count}");
+        Debug.Log($"Buy Slot Container null? {buySlotContainer == null}");
+        Debug.Log($"Item Slot Prefab null? {itemSlotPrefab == null}");
 
         if (itemsToSell.Count == 0)
         {
+            Debug.LogWarning("No items to sell - creating no items message");
             CreateNoItemsMessage("No items available for purchase!", buySlotContainer);
         }
         else
         {
+            Debug.Log($"Creating {itemsToSell.Count} buy slots...");
             foreach (var itemData in itemsToSell)
+            {
+                Debug.Log($"Creating slot for: {itemData.itemName}");
                 CreateBuySlot(itemData);
+            }
         }
 
         UpdateButtonStates();
+        RebuildLayout(buySlotContainer);
+        LogContainerState(buySlotContainer, "BUY");
+        Debug.Log("=== PopulateBuyPanel END ===");
+    }
+
+    private void ConfigureSlotLayout(GameObject slotObj)
+    {
+        const float cardWidth = 300f;
+        const float cardHeight = 350f;
+
+        // Stretch slot to top-center and set a predictable size so GridLayoutGroup can arrange it
+        RectTransform rt = slotObj.transform as RectTransform;
+        if (rt != null)
+        {
+            rt.anchorMin = new Vector2(0.5f, 1f);
+            rt.anchorMax = new Vector2(0.5f, 1f);
+            rt.pivot = new Vector2(0.5f, 1f);
+            rt.anchoredPosition = new Vector2(0f, rt.anchoredPosition.y);
+            rt.sizeDelta = new Vector2(cardWidth, cardHeight);
+        }
+
+        LayoutElement le = slotObj.GetComponent<LayoutElement>();
+        if (le != null)
+        {
+            le.minWidth = cardWidth;
+            le.minHeight = cardHeight;
+            le.preferredWidth = cardWidth;
+            le.preferredHeight = cardHeight;
+            le.flexibleWidth = 0f;
+            le.flexibleHeight = 0f;
+        }
     }
 
     private void CreateBuySlot(ItemData itemData)
     {
         GameObject slotObj = Instantiate(itemSlotPrefab, buySlotContainer);
+        slotObj.transform.SetParent(buySlotContainer, false);
         slotObj.name = $"BuySlot_{itemData.itemName}";
+        ConfigureSlotLayout(slotObj);
+        LogSlotDebugOnce(slotObj, "BUY");
 
         int cost = useItemBasePrices ? itemData.GetBuyPrice() : itemData.basePrice;
         cost = Mathf.CeilToInt(cost * priceMultiplier);
@@ -366,6 +361,7 @@ public class CasinoShop : MonoBehaviour
     
     private void PopulateSellPanel()
     {
+        Debug.Log("=== PopulateSellPanel START ===");
         ClearPanel(sellRuntimeItems);
 
         if (InventoryManager.Instance == null)
@@ -378,10 +374,13 @@ public class CasinoShop : MonoBehaviour
 
         if (shopBuysCrops)
         {
+            Debug.Log("Shop buys crops - checking inventory...");
             var crops = InventoryManager.Instance.GetCrops();
+            Debug.Log($"Found {crops.Count} crops in inventory");
             foreach (var crop in crops)
             {
                 int quantity = InventoryManager.Instance.GetItemQuantity(crop);
+                Debug.Log($"Crop: {crop.itemName}, Quantity: {quantity}, Tradeable: {crop.isTradeable}");
                 if (quantity > 0 && crop.isTradeable)
                     itemsToShow.Add(crop);
             }
@@ -389,34 +388,48 @@ public class CasinoShop : MonoBehaviour
 
         if (shopBuysResources)
         {
+            Debug.Log("Shop buys resources - checking inventory...");
             var resources = InventoryManager.Instance.GetItemsByType(ItemType.Resource);
+            Debug.Log($"Found {resources.Count} resources in inventory");
             foreach (var resource in resources)
             {
                 int quantity = InventoryManager.Instance.GetItemQuantity(resource);
+                Debug.Log($"Resource: {resource.itemName}, Quantity: {quantity}, Tradeable: {resource.isTradeable}");
                 if (quantity > 0 && resource.isTradeable)
                     itemsToShow.Add(resource);
             }
         }
 
+        Debug.Log($"Total items to show in sell panel: {itemsToShow.Count}");
+
         if (itemsToShow.Count == 0)
         {
             string message = shopBuysCrops ? "No crops to sell!\nGo farm some crops first!" : "No items to sell!";
+            Debug.LogWarning($"No items to sell - showing message: {message}");
             CreateNoItemsMessage(message, sellSlotContainer);
         }
         else
         {
+            Debug.Log($"Creating {itemsToShow.Count} sell slots...");
             foreach (var itemData in itemsToShow)
             {
                 int quantity = InventoryManager.Instance.GetItemQuantity(itemData);
+                Debug.Log($"Creating sell slot for: {itemData.itemName} x{quantity}");
                 CreateSellSlot(itemData, quantity);
             }
         }
+        Debug.Log("=== PopulateSellPanel END ===");
+        RebuildLayout(sellSlotContainer);
+        LogContainerState(sellSlotContainer, "SELL");
     }
 
     private void CreateSellSlot(ItemData itemData, int quantity)
     {
         GameObject slotObj = Instantiate(itemSlotPrefab, sellSlotContainer);
+        slotObj.transform.SetParent(sellSlotContainer, false);
         slotObj.name = $"SellSlot_{itemData.itemName}";
+        ConfigureSlotLayout(slotObj);
+        LogSlotDebugOnce(slotObj, "SELL");
 
         int sellPrice = itemData.GetSellPrice();
         int totalValue = sellPrice * quantity;
@@ -623,6 +636,71 @@ public class CasinoShop : MonoBehaviour
                 Destroy(item.slotObject);
         }
         list.Clear();
+    }
+
+    private void RebuildLayout(Transform container)
+    {
+        if (container == null) return;
+        RectTransform rt = container as RectTransform;
+        if (rt != null)
+        {
+            Canvas.ForceUpdateCanvases();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(rt);
+            if (rt.parent != null)
+                LayoutRebuilder.ForceRebuildLayoutImmediate(rt.parent as RectTransform);
+            Canvas.ForceUpdateCanvases();
+        }
+    }
+
+    private void LogSlotDebugOnce(GameObject slotObj, string panel)
+    {
+        if (slotObj == null) return;
+        if (panel == "BUY" && loggedBuySlotInfo) return;
+        if (panel == "SELL" && loggedSellSlotInfo) return;
+
+        RectTransform rt = slotObj.transform as RectTransform;
+        if (rt != null)
+        {
+            Vector2 size = rt.rect.size;
+            Vector2 anchored = rt.anchoredPosition;
+            var parentRt = rt.parent as RectTransform;
+            string parentInfo = parentRt == null ? "none" : $"parent size {parentRt.rect.size}, pos {parentRt.anchoredPosition}";
+            Debug.Log($"[{panel}] First slot debug -> anchored: {anchored}, size: {size}, world pos: {rt.position}, parent: {rt.parent?.name}, {parentInfo}");
+        }
+
+        if (panel == "BUY") loggedBuySlotInfo = true;
+        if (panel == "SELL") loggedSellSlotInfo = true;
+    }
+
+    private void LogContainerState(Transform container, string panel)
+    {
+        if (container == null) return;
+        RectTransform rt = container as RectTransform;
+        string header = rt == null
+            ? $"[{panel}] Container info: no RectTransform, childCount {container.childCount}"
+            : $"[{panel}] Container info: size {rt.rect.size}, anchored {rt.anchoredPosition}, scale {rt.lossyScale}, childCount {container.childCount}, active {container.gameObject.activeInHierarchy}";
+        Debug.Log(header);
+
+        RectTransform viewport = container.parent as RectTransform;
+        int i = 0;
+        foreach (Transform child in container)
+        {
+            if (child == null) continue;
+            RectTransform crt = child as RectTransform;
+            Vector2 cSize = crt != null ? crt.rect.size : Vector2.zero;
+            Vector2 cPos = crt != null ? crt.anchoredPosition : Vector2.zero;
+            Vector3 cScale = crt != null ? crt.lossyScale : Vector3.one;
+            bool overlapsViewport = false;
+            if (crt != null && viewport != null)
+            {
+                Rect childRect = new Rect(crt.anchoredPosition - Vector2.Scale(crt.rect.size, new Vector2(crt.pivot.x, 1f - crt.pivot.y)), crt.rect.size);
+                Rect viewRect = new Rect(Vector2.zero, viewport.rect.size);
+                overlapsViewport = childRect.Overlaps(viewRect);
+            }
+            Debug.Log($"[{panel}] child {i}: name {child.name}, activeSelf {child.gameObject.activeSelf}, anchored {cPos}, size {cSize}, scale {cScale}, overlapsViewport {overlapsViewport}");
+            i++;
+            if (i >= 5) break; // avoid spamming
+        }
     }
 
     private void CleanupButtons(List<ShopItemRuntime> list)
