@@ -1,35 +1,43 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 using System.Collections.Generic;
 using System.Linq;
 
 /// <summary>
-/// Dynamic CasinoShop that auto-populates items from ItemDatabase
-/// Now supports BOTH buying items AND selling crops!
-/// Toggle between modes with the buyMode boolean
+/// CasinoShop - Standalone scene with two separate panels: Buy (from ItemDatabase) and Sell (from player inventory)
 /// </summary>
 public class CasinoShop : MonoBehaviour
 {
-    [Header("Shop Mode")]
-    [SerializeField] private bool buyMode = true; // true = buy items, false = sell crops
-    [SerializeField] private Button toggleModeButton; // Optional button to switch modes
-
-    [Header("What to Sell (Buy Mode)")]
+    [Header("Scene Management")]
+    [SerializeField] private string returnSceneName = "MainGame"; // Scene to return to when closing shop
+    [SerializeField] private Button closeShopButton; // Button to exit shop scene
+    
+    [Header("Panel Management")]
+    [SerializeField] private Button buyTabButton;
+    [SerializeField] private Button sellTabButton;
+    [SerializeField] private GameObject buyPanelRoot;
+    [SerializeField] private GameObject sellPanelRoot;
+    
+    [Header("What to Sell (Buy Panel)")]
     [SerializeField] private bool sellSeeds = true;
     [SerializeField] private bool sellTools = true;
     [SerializeField] private bool sellCrops = false;
     [SerializeField] private bool sellResources = false;
 
-    [Header("What Shop Buys (Sell Mode)")]
+    [Header("What Shop Buys (Sell Panel)")]
     [SerializeField] private bool shopBuysCrops = true;
     [SerializeField] private bool shopBuysResources = false;
 
     [Header("Item Slot Prefab")]
-    [SerializeField] private GameObject itemSlotPrefab; // Your ItemSlot UI prefab
-    [SerializeField] private Transform itemSlotContainer; // Parent (e.g., ScrollView Content)
+    [SerializeField] private GameObject itemSlotPrefab;
 
-    [Header("Prefab References (assign in prefab)")]
+    [Header("UI Containers")]
+    [SerializeField] private Transform buySlotContainer;
+    [SerializeField] private Transform sellSlotContainer;
+
+    [Header("Prefab References")]
     [Tooltip("These should be set in the ItemSlot prefab itself")]
     public string iconImageName = "IconImage";
     public string nameTextName = "NameText";
@@ -49,9 +57,15 @@ public class CasinoShop : MonoBehaviour
 
     [Header("Pricing")]
     [SerializeField] private bool useItemBasePrices = true;
-    [SerializeField] private float priceMultiplier = 1.0f; // Adjust prices (1.0 = normal, 1.5 = 50% more expensive)
+    [SerializeField] private float priceMultiplier = 1.0f;
 
-    private List<ShopItemRuntime> runtimeItems = new List<ShopItemRuntime>();
+    private readonly List<ShopItemRuntime> buyRuntimeItems = new();
+    private readonly List<ShopItemRuntime> sellRuntimeItems = new();
+    private bool loggedBuySlotInfo;
+    private bool loggedSellSlotInfo;
+    
+    private enum ShopPanel { Buy, Sell }
+    private ShopPanel currentPanel = ShopPanel.Buy;
 
     private class ShopItemRuntime
     {
@@ -63,307 +77,222 @@ public class CasinoShop : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log("=== CasinoShop Start ===");
-        Debug.Log($"Buy Mode: {buyMode}");
-        Debug.Log($"MoneyManager exists: {MoneyManager.Instance != null}");
-        Debug.Log($"ItemDatabase exists: {ItemDatabase.Instance != null}");
-        Debug.Log($"PlayerInventory exists: {PlayerInventory.Instance != null}");
-        Debug.Log($"InventoryManager exists: {InventoryManager.Instance != null}");
+        if (!ValidateManagers()) return;
 
-        if (MoneyManager.Instance != null)
-        {
-            Debug.Log($"Current Money: ${MoneyManager.Instance.GetMoney()}");
-        }
-
-        if (ItemDatabase.Instance != null)
-        {
-            Debug.Log($"Seeds in database: {ItemDatabase.Instance.allSeeds.Count}");
-            Debug.Log($"Tools in database: {ItemDatabase.Instance.allTools.Count}");
-            Debug.Log($"Crops in database: {ItemDatabase.Instance.allCrops.Count}");
-        }
-
-        if (!ValidateManagers())
-        {
-            Debug.LogError("ValidateManagers FAILED!");
-            return;
-        }
-
-        Debug.Log("Subscribing to MoneyChanged event...");
+        // Subscribe to events
         MoneyManager.Instance.OnMoneyChanged += UpdateMoneyDisplay;
-
-        // Subscribe to inventory changes for sell mode (static event)
         PlayerInventory.OnInventoryChanged += OnInventoryChanged;
 
-        Debug.Log("Initial money display update...");
+        // Setup UI
         UpdateMoneyDisplay(MoneyManager.Instance.GetMoney());
-
-        Debug.Log("Populating shop...");
-        PopulateShop();
-
-        Debug.Log("Hiding panels...");
         HideAllPanels();
+        
+        // Setup panel switching buttons
+        SetupPanelButtons();
+        
+        // Setup close button
+        if (closeShopButton != null)
+            closeShopButton.onClick.AddListener(CloseShop);
 
-        // Setup toggle button if assigned
-        if (toggleModeButton != null)
-        {
-            toggleModeButton.onClick.AddListener(ToggleMode);
-        }
-
-        Debug.Log("=== CasinoShop Start Complete ===");
+        // Populate both panels
+        PopulateBuyPanel();
+        PopulateSellPanel();
+        
+        // Show buy panel by default
+        ShowPanel(ShopPanel.Buy);
     }
 
     private void OnDestroy()
     {
+        // Unsubscribe from events
         if (MoneyManager.Instance != null)
-        {
             MoneyManager.Instance.OnMoneyChanged -= UpdateMoneyDisplay;
-        }
 
-        // Unsubscribe from static inventory event
         PlayerInventory.OnInventoryChanged -= OnInventoryChanged;
 
-        // Clean up button listeners
-        foreach (var item in runtimeItems)
-        {
-            if (item.buyButton != null)
-            {
-                item.buyButton.onClick.RemoveAllListeners();
-            }
-        }
+        // Cleanup button listeners
+        CleanupButtons(buyRuntimeItems);
+        CleanupButtons(sellRuntimeItems);
+        
+        if (closeShopButton != null)
+            closeShopButton.onClick.RemoveAllListeners();
+        if (buyTabButton != null)
+            buyTabButton.onClick.RemoveAllListeners();
+        if (sellTabButton != null)
+            sellTabButton.onClick.RemoveAllListeners();
     }
 
+    #region Panel Management
+    
+    private void SetupPanelButtons()
+    {
+        if (buyTabButton != null)
+        {
+            buyTabButton.onClick.AddListener(() => ShowPanel(ShopPanel.Buy));
+        }
+        
+        if (sellTabButton != null)
+        {
+            sellTabButton.onClick.AddListener(() => ShowPanel(ShopPanel.Sell));
+        }
+    }
+    
+    private void ShowPanel(ShopPanel panel)
+    {
+        currentPanel = panel;
+        
+        if (buyPanelRoot != null)
+            buyPanelRoot.SetActive(panel == ShopPanel.Buy);
+        
+        if (sellPanelRoot != null)
+            sellPanelRoot.SetActive(panel == ShopPanel.Sell);
+        
+        // Update tab button visuals (optional - add highlighting)
+        UpdateTabButtonVisuals();
+        
+        // Refresh the active panel
+        if (panel == ShopPanel.Sell)
+            PopulateSellPanel();
+    }
+    
+    private void UpdateTabButtonVisuals()
+    {
+        // Optional: Update button colors/sprites to show active tab
+        if (buyTabButton != null)
+        {
+            ColorBlock colors = buyTabButton.colors;
+            colors.normalColor = currentPanel == ShopPanel.Buy ? new Color(0.8f, 0.8f, 0.8f) : Color.white;
+            buyTabButton.colors = colors;
+        }
+        
+        if (sellTabButton != null)
+        {
+            ColorBlock colors = sellTabButton.colors;
+            colors.normalColor = currentPanel == ShopPanel.Sell ? new Color(0.8f, 0.8f, 0.8f) : Color.white;
+            sellTabButton.colors = colors;
+        }
+    }
+    
+    private void CloseShop()
+    {
+        Debug.Log($"Closing shop, returning to {returnSceneName}");
+        
+        // Optional: Save any shop state before leaving
+        
+        SceneManager.LoadScene(returnSceneName);
+    }
+    
+    #endregion
+
+    #region Validation
+    
     private bool ValidateManagers()
     {
         bool valid = true;
-
-        if (MoneyManager.Instance == null)
-        {
-            Debug.LogError("CasinoShop: MoneyManager not found!");
-            valid = false;
-        }
-
-        if (PlayerInventory.Instance == null)
-        {
-            Debug.LogError("CasinoShop: PlayerInventory not found!");
-            valid = false;
-        }
-
-        if (InventoryManager.Instance == null)
-        {
-            Debug.LogError("CasinoShop: InventoryManager not found!");
-            valid = false;
-        }
-
-        if (ItemDatabase.Instance == null)
-        {
-            Debug.LogError("CasinoShop: ItemDatabase not found!");
-            valid = false;
-        }
-
-        if (itemSlotPrefab == null)
-        {
-            Debug.LogError("CasinoShop: ItemSlot prefab not assigned!");
-            valid = false;
-        }
-
-        if (itemSlotContainer == null)
-        {
-            Debug.LogError("CasinoShop: Item slot container not assigned!");
-            valid = false;
-        }
-
+        if (MoneyManager.Instance == null) { Debug.LogError("CasinoShop: MoneyManager not found!"); valid = false; }
+        if (PlayerInventory.Instance == null) { Debug.LogError("CasinoShop: PlayerInventory not found!"); valid = false; }
+        if (InventoryManager.Instance == null) { Debug.LogError("CasinoShop: InventoryManager not found!"); valid = false; }
+        if (ItemDatabase.Instance == null) { Debug.LogError("CasinoShop: ItemDatabase not found!"); valid = false; }
+        if (itemSlotPrefab == null) { Debug.LogError("CasinoShop: ItemSlot prefab not assigned!"); valid = false; }
+        if (buySlotContainer == null) { Debug.LogError("CasinoShop: Buy slot container not assigned!"); valid = false; }
+        if (sellSlotContainer == null) { Debug.LogError("CasinoShop: Sell slot container not assigned!"); valid = false; }
+        if (buyPanelRoot == null) { Debug.LogWarning("CasinoShop: Buy panel root not assigned - panel switching may not work!"); }
+        if (sellPanelRoot == null) { Debug.LogWarning("CasinoShop: Sell panel root not assigned - panel switching may not work!"); }
         return valid;
     }
+    
+    #endregion
 
-    /// <summary>
-    /// Toggles between buy and sell mode
-    /// </summary>
-    public void ToggleMode()
+    #region Buy Panel (Shop Sells to Player)
+    
+    private void PopulateBuyPanel()
     {
-        buyMode = !buyMode;
-        Debug.Log($"Shop mode switched to: {(buyMode ? "BUY" : "SELL")}");
-        PopulateShop();
-    }
+        Debug.Log("=== PopulateBuyPanel START ===");
+        ClearPanel(buyRuntimeItems);
+        List<ItemData> itemsToSell = new();
 
-    /// <summary>
-    /// Sets the shop to buy mode
-    /// </summary>
-    public void SetBuyMode()
-    {
-        if (!buyMode)
-        {
-            buyMode = true;
-            PopulateShop();
-        }
-    }
-
-    /// <summary>
-    /// Sets the shop to sell mode
-    /// </summary>
-    public void SetSellMode()
-    {
-        if (buyMode)
-        {
-            buyMode = false;
-            PopulateShop();
-        }
-    }
-
-    /// <summary>
-    /// Main populate method - calls appropriate method based on mode
-    /// </summary>
-    private void PopulateShop()
-    {
-        if (buyMode)
-        {
-            PopulateShopFromDatabase();
-        }
-        else
-        {
-            PopulateSellMode();
-        }
-    }
-
-    /// <summary>
-    /// Called when inventory changes - refresh sell mode display
-    /// </summary>
-    private void OnInventoryChanged()
-    {
-        if (!buyMode)
-        {
-            PopulateSellMode();
-        }
-    }
-
-    /// <summary>
-    /// Populates shop with items FROM database (for player to BUY)
-    /// </summary>
-    private void PopulateShopFromDatabase()
-    {
-        Debug.Log("=== PopulateShopFromDatabase (BUY MODE) ===");
-        ClearShop();
-
-        List<ItemData> itemsToSell = new List<ItemData>();
-
-        // Gather items based on what we want to sell
         if (sellSeeds)
         {
-            Debug.Log($"Checking seeds... Database has {ItemDatabase.Instance.allSeeds.Count} seeds");
-            var seeds = ItemDatabase.Instance.allSeeds.Where(s => s != null).ToList();
-            Debug.Log($"Found {seeds.Count} non-null seeds");
-            itemsToSell.AddRange(seeds);
+            Debug.Log($"Adding seeds. Total seeds in database: {ItemDatabase.Instance.allSeeds.Count}");
+            itemsToSell.AddRange(ItemDatabase.Instance.allSeeds.Where(s => s != null));
         }
-
         if (sellTools)
         {
-            Debug.Log($"Checking tools... Database has {ItemDatabase.Instance.allTools.Count} tools");
-            var tools = ItemDatabase.Instance.allTools.Where(t => t != null).ToList();
-            Debug.Log($"Found {tools.Count} non-null tools");
-            itemsToSell.AddRange(tools);
+            Debug.Log($"Adding tools. Total tools in database: {ItemDatabase.Instance.allTools.Count}");
+            itemsToSell.AddRange(ItemDatabase.Instance.allTools.Where(t => t != null));
         }
-
         if (sellCrops)
         {
+            Debug.Log($"Adding crops. Total crops in database: {ItemDatabase.Instance.allCrops.Count}");
             itemsToSell.AddRange(ItemDatabase.Instance.allCrops.Where(c => c != null));
         }
-
         if (sellResources)
         {
+            Debug.Log($"Adding resources. Total resources in database: {ItemDatabase.Instance.allResources.Count}");
             itemsToSell.AddRange(ItemDatabase.Instance.allResources.Where(r => r != null));
         }
 
-        Debug.Log($"CasinoShop: Total items to sell: {itemsToSell.Count}");
+        Debug.Log($"Total items to sell: {itemsToSell.Count}");
+        Debug.Log($"Buy Slot Container null? {buySlotContainer == null}");
+        Debug.Log($"Item Slot Prefab null? {itemSlotPrefab == null}");
 
         if (itemsToSell.Count == 0)
         {
-            Debug.LogWarning("NO ITEMS TO SELL! Check your ItemDatabase!");
+            Debug.LogWarning("No items to sell - creating no items message");
+            CreateNoItemsMessage("No items available for purchase!", buySlotContainer);
         }
-
-        // Create UI slot for each item (BUY MODE)
-        foreach (var itemData in itemsToSell)
+        else
         {
-            Debug.Log($"Creating BUY slot for: {itemData.itemName}");
-            CreateBuySlot(itemData);
+            Debug.Log($"Creating {itemsToSell.Count} buy slots...");
+            foreach (var itemData in itemsToSell)
+            {
+                Debug.Log($"Creating slot for: {itemData.itemName}");
+                CreateBuySlot(itemData);
+            }
         }
 
-        Debug.Log($"Created {runtimeItems.Count} shop items");
         UpdateButtonStates();
+        RebuildLayout(buySlotContainer);
+        LogContainerState(buySlotContainer, "BUY");
+        Debug.Log("=== PopulateBuyPanel END ===");
     }
 
-    /// <summary>
-    /// Populates shop with items FROM player inventory (for player to SELL)
-    /// </summary>
-    private void PopulateSellMode()
+    private void ConfigureSlotLayout(GameObject slotObj)
     {
-        Debug.Log("=== PopulateSellMode (SELL MODE) ===");
-        ClearShop();
+        const float cardWidth = 300f;
+        const float cardHeight = 350f;
 
-        if (InventoryManager.Instance == null)
+        // Stretch slot to top-center and set a predictable size so GridLayoutGroup can arrange it
+        RectTransform rt = slotObj.transform as RectTransform;
+        if (rt != null)
         {
-            Debug.LogError("InventoryManager not found for sell mode!");
-            return;
+            rt.anchorMin = new Vector2(0.5f, 1f);
+            rt.anchorMax = new Vector2(0.5f, 1f);
+            rt.pivot = new Vector2(0.5f, 1f);
+            rt.anchoredPosition = new Vector2(0f, rt.anchoredPosition.y);
+            rt.sizeDelta = new Vector2(cardWidth, cardHeight);
         }
 
-        List<ItemData> itemsToShow = new List<ItemData>();
-
-        // Get items from player's inventory
-        if (shopBuysCrops)
+        LayoutElement le = slotObj.GetComponent<LayoutElement>();
+        if (le != null)
         {
-            var crops = InventoryManager.Instance.GetCrops();
-            foreach (var crop in crops)
-            {
-                int quantity = InventoryManager.Instance.GetItemQuantity(crop);
-                if (quantity > 0 && crop.isTradeable)
-                {
-                    itemsToShow.Add(crop);
-                }
-            }
-            Debug.Log($"Found {crops.Count} sellable crops in inventory");
+            le.minWidth = cardWidth;
+            le.minHeight = cardHeight;
+            le.preferredWidth = cardWidth;
+            le.preferredHeight = cardHeight;
+            le.flexibleWidth = 0f;
+            le.flexibleHeight = 0f;
         }
-
-        if (shopBuysResources)
-        {
-            var resources = InventoryManager.Instance.GetItemsByType(ItemType.Resource);
-            foreach (var resource in resources)
-            {
-                int quantity = InventoryManager.Instance.GetItemQuantity(resource);
-                if (quantity > 0 && resource.isTradeable)
-                {
-                    itemsToShow.Add(resource);
-                }
-            }
-        }
-
-        Debug.Log($"Total items player can sell: {itemsToShow.Count}");
-
-        if (itemsToShow.Count == 0)
-        {
-            Debug.Log("Player has no items to sell!");
-            CreateNoItemsMessage("No crops to sell!\nGo farm some crops first!");
-            return;
-        }
-
-        // Create UI slot for each item (SELL MODE)
-        foreach (var itemData in itemsToShow)
-        {
-            int quantity = InventoryManager.Instance.GetItemQuantity(itemData);
-            Debug.Log($"Creating SELL slot for: {itemData.itemName} (x{quantity})");
-            CreateSellSlot(itemData, quantity);
-        }
-
-        Debug.Log($"Created {runtimeItems.Count} sell slots");
     }
 
-    /// <summary>
-    /// Creates a UI slot for buying an item
-    /// </summary>
     private void CreateBuySlot(ItemData itemData)
     {
-        // Instantiate the prefab
-        GameObject slotObj = Instantiate(itemSlotPrefab, itemSlotContainer);
+        GameObject slotObj = Instantiate(itemSlotPrefab, buySlotContainer);
+        slotObj.transform.SetParent(buySlotContainer, false);
         slotObj.name = $"BuySlot_{itemData.itemName}";
+        ConfigureSlotLayout(slotObj);
+        LogSlotDebugOnce(slotObj, "BUY");
 
-        // Calculate cost
         int cost = useItemBasePrices ? itemData.GetBuyPrice() : itemData.basePrice;
         cost = Mathf.CeilToInt(cost * priceMultiplier);
 
@@ -377,54 +306,131 @@ public class CasinoShop : MonoBehaviour
         TextMeshProUGUI descTextTMP = FindInChildren<TextMeshProUGUI>(slotObj, descriptionTextName);
         Button buyButton = FindInChildren<Button>(slotObj, buyButtonName);
 
-        // Setup icon
+        // Set icon
         if (iconImage != null && itemData.icon != null)
         {
             iconImage.sprite = itemData.icon;
             iconImage.enabled = true;
         }
 
-        // Setup text
+        // Set text
         SetText(nameText, nameTextTMP, itemData.itemName);
         SetText(costText, costTextTMP, $"${cost}");
         SetText(descText, descTextTMP, itemData.description);
 
-        // Setup button
+        // Setup buy button
         if (buyButton != null)
         {
-            // Change button text to BUY
-            Text buttonText = buyButton.GetComponentInChildren<Text>();
-            TextMeshProUGUI buttonTextTMP = buyButton.GetComponentInChildren<TextMeshProUGUI>();
-            SetText(buttonText, buttonTextTMP, "BUY");
-
+            SetText(buyButton.GetComponentInChildren<Text>(), buyButton.GetComponentInChildren<TextMeshProUGUI>(), "BUY");
             ItemData localItemData = itemData;
             int localCost = cost;
             buyButton.onClick.AddListener(() => PurchaseItem(localItemData, localCost));
         }
 
-        // Store runtime data
-        ShopItemRuntime runtimeItem = new ShopItemRuntime
-        {
-            itemData = itemData,
-            cost = cost,
-            buyButton = buyButton,
-            slotObject = slotObj
-        };
-        runtimeItems.Add(runtimeItem);
-
-        Debug.Log($"CasinoShop: Created BUY slot for {itemData.itemName} - ${cost}");
+        buyRuntimeItems.Add(new ShopItemRuntime { itemData = itemData, cost = cost, buyButton = buyButton, slotObject = slotObj });
     }
 
-    /// <summary>
-    /// Creates a UI slot for selling an item
-    /// </summary>
+    private void PurchaseItem(ItemData itemData, int cost)
+    {
+        if (itemData == null) { Debug.LogError("CasinoShop: Cannot purchase - item data is null!"); return; }
+        if (!MoneyManager.Instance.HasEnoughMoney(cost)) { ShowInsufficientFunds(); return; }
+
+        bool canAdd = PlayerInventory.Instance.HasEmptySlot() || PlayerInventory.Instance.HasItem(itemData.itemName);
+        if (!canAdd) { ShowInsufficientSpace(); return; }
+
+        if (MoneyManager.Instance.RemoveMoney(cost))
+        {
+            string itemType = itemData.itemType.ToString();
+            bool added = PlayerInventory.Instance.AddItem(itemData.itemName, 1, itemType);
+            if (added)
+            {
+                ShowPurchaseSuccess($"Purchased: {itemData.itemName}!");
+            }
+            else
+            {
+                MoneyManager.Instance.AddMoney(cost);
+                ShowInsufficientSpace();
+            }
+            UpdateButtonStates();
+        }
+    }
+    
+    #endregion
+
+    #region Sell Panel (Shop Buys from Player)
+    
+    private void PopulateSellPanel()
+    {
+        Debug.Log("=== PopulateSellPanel START ===");
+        ClearPanel(sellRuntimeItems);
+
+        if (InventoryManager.Instance == null)
+        {
+            Debug.LogError("InventoryManager not found for sell panel!");
+            return;
+        }
+
+        List<ItemData> itemsToShow = new();
+
+        if (shopBuysCrops)
+        {
+            Debug.Log("Shop buys crops - checking inventory...");
+            var crops = InventoryManager.Instance.GetCrops();
+            Debug.Log($"Found {crops.Count} crops in inventory");
+            foreach (var crop in crops)
+            {
+                int quantity = InventoryManager.Instance.GetItemQuantity(crop);
+                Debug.Log($"Crop: {crop.itemName}, Quantity: {quantity}, Tradeable: {crop.isTradeable}");
+                if (quantity > 0 && crop.isTradeable)
+                    itemsToShow.Add(crop);
+            }
+        }
+
+        if (shopBuysResources)
+        {
+            Debug.Log("Shop buys resources - checking inventory...");
+            var resources = InventoryManager.Instance.GetItemsByType(ItemType.Resource);
+            Debug.Log($"Found {resources.Count} resources in inventory");
+            foreach (var resource in resources)
+            {
+                int quantity = InventoryManager.Instance.GetItemQuantity(resource);
+                Debug.Log($"Resource: {resource.itemName}, Quantity: {quantity}, Tradeable: {resource.isTradeable}");
+                if (quantity > 0 && resource.isTradeable)
+                    itemsToShow.Add(resource);
+            }
+        }
+
+        Debug.Log($"Total items to show in sell panel: {itemsToShow.Count}");
+
+        if (itemsToShow.Count == 0)
+        {
+            string message = shopBuysCrops ? "No crops to sell!\nGo farm some crops first!" : "No items to sell!";
+            Debug.LogWarning($"No items to sell - showing message: {message}");
+            CreateNoItemsMessage(message, sellSlotContainer);
+        }
+        else
+        {
+            Debug.Log($"Creating {itemsToShow.Count} sell slots...");
+            foreach (var itemData in itemsToShow)
+            {
+                int quantity = InventoryManager.Instance.GetItemQuantity(itemData);
+                Debug.Log($"Creating sell slot for: {itemData.itemName} x{quantity}");
+                CreateSellSlot(itemData, quantity);
+            }
+        }
+        Debug.Log("=== PopulateSellPanel END ===");
+        RebuildLayout(sellSlotContainer);
+        LogContainerState(sellSlotContainer, "SELL");
+    }
+
     private void CreateSellSlot(ItemData itemData, int quantity)
     {
-        // Instantiate the prefab
-        GameObject slotObj = Instantiate(itemSlotPrefab, itemSlotContainer);
+        GameObject slotObj = Instantiate(itemSlotPrefab, sellSlotContainer);
+        slotObj.transform.SetParent(sellSlotContainer, false);
         slotObj.name = $"SellSlot_{itemData.itemName}";
+        ConfigureSlotLayout(slotObj);
+        LogSlotDebugOnce(slotObj, "SELL");
 
-        // Calculate sell price
         int sellPrice = itemData.GetSellPrice();
         int totalValue = sellPrice * quantity;
 
@@ -438,224 +444,96 @@ public class CasinoShop : MonoBehaviour
         TextMeshProUGUI descTextTMP = FindInChildren<TextMeshProUGUI>(slotObj, descriptionTextName);
         Button sellButton = FindInChildren<Button>(slotObj, buyButtonName);
 
-        // Setup icon
+        // Set icon
         if (iconImage != null && itemData.icon != null)
         {
             iconImage.sprite = itemData.icon;
             iconImage.enabled = true;
         }
 
-        // Setup text - show quantity
+        // Set text
         SetText(nameText, nameTextTMP, $"{itemData.itemName} (x{quantity})");
         SetText(costText, costTextTMP, $"${sellPrice} each\n${totalValue} total");
 
-        // Show seasonal bonus if applicable
+        // Set description with seasonal bonus
         string desc = itemData.description;
         if (itemData is CropData cropData && cropData.hasSeasonalBonus)
         {
             if (TurnManager.Instance != null && TurnManager.Instance.GetCurrentSeason() == cropData.bonusSeason)
-            {
-                desc += "\n⭐ SEASONAL BONUS!";
-            }
+                desc += "\n★ SEASONAL BONUS!";
         }
         SetText(descText, descTextTMP, desc);
 
-        // Setup button
+        // Setup sell button
         if (sellButton != null)
         {
-            // Change button text to SELL
-            Text buttonText = sellButton.GetComponentInChildren<Text>();
-            TextMeshProUGUI buttonTextTMP = sellButton.GetComponentInChildren<TextMeshProUGUI>();
-            SetText(buttonText, buttonTextTMP, "SELL");
-
+            SetText(sellButton.GetComponentInChildren<Text>(), sellButton.GetComponentInChildren<TextMeshProUGUI>(), "SELL");
             ItemData localItemData = itemData;
             int localQuantity = quantity;
             sellButton.onClick.AddListener(() => SellItemToShop(localItemData, localQuantity));
         }
 
-        // Store runtime data
-        ShopItemRuntime runtimeItem = new ShopItemRuntime
-        {
-            itemData = itemData,
-            cost = totalValue,
-            buyButton = sellButton,
-            slotObject = slotObj
-        };
-        runtimeItems.Add(runtimeItem);
-
-        Debug.Log($"CasinoShop: Created SELL slot for {itemData.itemName} x{quantity} - ${totalValue}");
+        sellRuntimeItems.Add(new ShopItemRuntime { itemData = itemData, cost = totalValue, buyButton = sellButton, slotObject = slotObj });
     }
 
-    /// <summary>
-    /// Creates a message when no items available
-    /// </summary>
-    private void CreateNoItemsMessage(string message)
-    {
-        GameObject msgObj = new GameObject("NoItemsMessage");
-        msgObj.transform.SetParent(itemSlotContainer);
-
-        TextMeshProUGUI text = msgObj.AddComponent<TextMeshProUGUI>();
-        text.text = message;
-        text.alignment = TextAlignmentOptions.Center;
-        text.fontSize = 24;
-        text.color = Color.white;
-
-        RectTransform rt = msgObj.GetComponent<RectTransform>();
-        rt.sizeDelta = new Vector2(400, 100);
-    }
-
-    /// <summary>
-    /// Finds a component in children by GameObject name
-    /// </summary>
-    private T FindInChildren<T>(GameObject parent, string childName) where T : Component
-    {
-        Transform child = parent.transform.Find(childName);
-        if (child != null)
-        {
-            return child.GetComponent<T>();
-        }
-
-        // Try recursive search if direct child not found
-        T[] components = parent.GetComponentsInChildren<T>(true);
-        foreach (T comp in components)
-        {
-            if (comp.gameObject.name == childName)
-            {
-                return comp;
-            }
-        }
-
-        return null;
-    }
-
-    /// <summary>
-    /// Handles purchasing an item (player buying FROM shop)
-    /// </summary>
-    private void PurchaseItem(ItemData itemData, int cost)
-    {
-        if (itemData == null)
-        {
-            Debug.LogError("CasinoShop: Cannot purchase - item data is null!");
-            return;
-        }
-
-        if (!MoneyManager.Instance.HasEnoughMoney(cost))
-        {
-            ShowInsufficientFunds();
-            return;
-        }
-
-        bool canAdd = PlayerInventory.Instance.HasEmptySlot() ||
-                      PlayerInventory.Instance.HasItem(itemData.itemName);
-
-        if (!canAdd)
-        {
-            ShowInsufficientSpace();
-            return;
-        }
-
-        if (MoneyManager.Instance.RemoveMoney(cost))
-        {
-            string itemType = itemData.itemType.ToString();
-            bool added = PlayerInventory.Instance.AddItem(itemData.itemName, 1, itemType);
-
-            if (added)
-            {
-                Debug.Log($"CasinoShop: Purchased {itemData.itemName} for ${cost}");
-                ShowPurchaseSuccess($"Purchased: {itemData.itemName}!");
-            }
-            else
-            {
-                MoneyManager.Instance.AddMoney(cost);
-                ShowInsufficientSpace();
-                Debug.LogWarning($"CasinoShop: Failed to add {itemData.itemName}, refunded ${cost}");
-            }
-
-            UpdateButtonStates();
-        }
-    }
-
-    /// <summary>
-    /// Handles selling an item (player selling TO shop)
-    /// </summary>
     private void SellItemToShop(ItemData itemData, int quantity)
     {
-        if (itemData == null)
-        {
-            Debug.LogError("CasinoShop: Cannot sell - item data is null!");
-            return;
-        }
+        if (itemData == null) { Debug.LogError("CasinoShop: Cannot sell - item data is null!"); return; }
+        if (InventoryManager.Instance == null) { Debug.LogError("CasinoShop: InventoryManager not found!"); return; }
 
-        if (InventoryManager.Instance == null)
-        {
-            Debug.LogError("CasinoShop: InventoryManager not found!");
-            return;
-        }
-
-        // Use InventoryManager's SellItem which handles money
         bool success = InventoryManager.Instance.SellItem(itemData, quantity, out int totalValue);
-
         if (success)
         {
-            Debug.Log($"✅ Sold {quantity}x {itemData.itemName} for ${totalValue}!");
             ShowPurchaseSuccess($"Sold {quantity}x {itemData.itemName} for ${totalValue}!");
-
-            // Refresh sell mode display
-            PopulateSellMode();
-        }
-        else
-        {
-            Debug.LogWarning($"Failed to sell {itemData.itemName}");
+            PopulateSellPanel();
         }
     }
 
+    private void OnInventoryChanged()
+    {
+        // Only refresh sell panel if it's currently active
+        if (currentPanel == ShopPanel.Sell)
+        {
+            PopulateSellPanel();
+        }
+    }
+    
+    #endregion
+
+    #region UI Updates
+    
     private void UpdateMoneyDisplay(int currentMoney)
     {
-        string moneyText = $"Money:${currentMoney}";
-
-        if (moneyDisplayText != null)
-        {
-            moneyDisplayText.text = moneyText;
-        }
-
-        if (moneyDisplayTextTMP != null)
-        {
-            moneyDisplayTextTMP.text = moneyText;
-        }
-
+        string moneyText = $"Money: ${currentMoney}";
+        if (moneyDisplayText != null) moneyDisplayText.text = moneyText;
+        if (moneyDisplayTextTMP != null) moneyDisplayTextTMP.text = moneyText;
         UpdateButtonStates();
     }
 
     private void UpdateButtonStates()
     {
         if (MoneyManager.Instance == null) return;
-
         int currentMoney = MoneyManager.Instance.GetMoney();
-
-        // Only disable buttons in buy mode if not enough money
-        if (buyMode)
+        
+        // Update buy button states
+        foreach (var item in buyRuntimeItems)
         {
-            foreach (var item in runtimeItems)
-            {
-                if (item.buyButton != null)
-                {
-                    item.buyButton.interactable = currentMoney >= item.cost;
-                }
-            }
+            if (item.buyButton != null)
+                item.buyButton.interactable = currentMoney >= item.cost;
         }
-        else
+        
+        // Sell buttons are always interactable
+        foreach (var item in sellRuntimeItems)
         {
-            // In sell mode, all buttons should be enabled
-            foreach (var item in runtimeItems)
-            {
-                if (item.buyButton != null)
-                {
-                    item.buyButton.interactable = true;
-                }
-            }
+            if (item.buyButton != null)
+                item.buyButton.interactable = true;
         }
     }
+    
+    #endregion
 
+    #region Notifications
+    
     private void ShowInsufficientFunds()
     {
         if (insufficientFundsPanel != null)
@@ -668,8 +546,7 @@ public class CasinoShop : MonoBehaviour
 
     private void HideInsufficientFunds()
     {
-        if (insufficientFundsPanel != null)
-            insufficientFundsPanel.SetActive(false);
+        if (insufficientFundsPanel != null) insufficientFundsPanel.SetActive(false);
     }
 
     private void ShowInsufficientSpace()
@@ -684,8 +561,7 @@ public class CasinoShop : MonoBehaviour
 
     private void HideInsufficientSpace()
     {
-        if (insufficientSpacePanel != null)
-            insufficientSpacePanel.SetActive(false);
+        if (insufficientSpacePanel != null) insufficientSpacePanel.SetActive(false);
     }
 
     private void ShowPurchaseSuccess(string message)
@@ -701,50 +577,161 @@ public class CasinoShop : MonoBehaviour
 
     private void HidePurchaseSuccess()
     {
-        if (purchaseSuccessPanel != null)
-            purchaseSuccessPanel.SetActive(false);
+        if (purchaseSuccessPanel != null) purchaseSuccessPanel.SetActive(false);
     }
 
     private void HideAllPanels()
     {
-        if (insufficientFundsPanel != null)
-            insufficientFundsPanel.SetActive(false);
-        if (insufficientSpacePanel != null)
-            insufficientSpacePanel.SetActive(false);
-        if (purchaseSuccessPanel != null)
-            purchaseSuccessPanel.SetActive(false);
+        if (insufficientFundsPanel != null) insufficientFundsPanel.SetActive(false);
+        if (insufficientSpacePanel != null) insufficientSpacePanel.SetActive(false);
+        if (purchaseSuccessPanel != null) purchaseSuccessPanel.SetActive(false);
+    }
+    
+    #endregion
+
+    #region Helper Methods
+    
+    private void CreateNoItemsMessage(string message, Transform container)
+    {
+        GameObject msgObj = new GameObject("NoItemsMessage");
+        msgObj.transform.SetParent(container, false);
+        
+        TextMeshProUGUI text = msgObj.AddComponent<TextMeshProUGUI>();
+        text.text = message;
+        text.alignment = TextAlignmentOptions.Center;
+        text.fontSize = 24;
+        text.color = Color.white;
+        
+        RectTransform rt = msgObj.GetComponent<RectTransform>();
+        rt.anchorMin = new Vector2(0, 0);
+        rt.anchorMax = new Vector2(1, 1);
+        rt.sizeDelta = Vector2.zero;
+    }
+
+    private T FindInChildren<T>(GameObject parent, string childName) where T : Component
+    {
+        Transform child = parent.transform.Find(childName);
+        if (child != null) return child.GetComponent<T>();
+        
+        T[] components = parent.GetComponentsInChildren<T>(true);
+        foreach (T comp in components)
+        {
+            if (comp.gameObject.name == childName)
+                return comp;
+        }
+        return null;
     }
 
     private void SetText(Text legacyText, TextMeshProUGUI tmpText, string value)
     {
-        if (legacyText != null)
-            legacyText.text = value;
-
-        if (tmpText != null)
-            tmpText.text = value;
+        if (legacyText != null) legacyText.text = value;
+        if (tmpText != null) tmpText.text = value;
     }
 
-    /// <summary>
-    /// Clears all spawned items
-    /// </summary>
-    private void ClearShop()
+    private void ClearPanel(List<ShopItemRuntime> list)
     {
-        foreach (var item in runtimeItems)
+        foreach (var item in list)
         {
             if (item.slotObject != null)
-            {
                 Destroy(item.slotObject);
-            }
         }
-        runtimeItems.Clear();
+        list.Clear();
     }
 
-    /// <summary>
-    /// Manually refresh the shop
-    /// </summary>
+    private void RebuildLayout(Transform container)
+    {
+        if (container == null) return;
+        RectTransform rt = container as RectTransform;
+        if (rt != null)
+        {
+            Canvas.ForceUpdateCanvases();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(rt);
+            if (rt.parent != null)
+                LayoutRebuilder.ForceRebuildLayoutImmediate(rt.parent as RectTransform);
+            Canvas.ForceUpdateCanvases();
+        }
+    }
+
+    private void LogSlotDebugOnce(GameObject slotObj, string panel)
+    {
+        if (slotObj == null) return;
+        if (panel == "BUY" && loggedBuySlotInfo) return;
+        if (panel == "SELL" && loggedSellSlotInfo) return;
+
+        RectTransform rt = slotObj.transform as RectTransform;
+        if (rt != null)
+        {
+            Vector2 size = rt.rect.size;
+            Vector2 anchored = rt.anchoredPosition;
+            var parentRt = rt.parent as RectTransform;
+            string parentInfo = parentRt == null ? "none" : $"parent size {parentRt.rect.size}, pos {parentRt.anchoredPosition}";
+            Debug.Log($"[{panel}] First slot debug -> anchored: {anchored}, size: {size}, world pos: {rt.position}, parent: {rt.parent?.name}, {parentInfo}");
+        }
+
+        if (panel == "BUY") loggedBuySlotInfo = true;
+        if (panel == "SELL") loggedSellSlotInfo = true;
+    }
+
+    private void LogContainerState(Transform container, string panel)
+    {
+        if (container == null) return;
+        RectTransform rt = container as RectTransform;
+        string header = rt == null
+            ? $"[{panel}] Container info: no RectTransform, childCount {container.childCount}"
+            : $"[{panel}] Container info: size {rt.rect.size}, anchored {rt.anchoredPosition}, scale {rt.lossyScale}, childCount {container.childCount}, active {container.gameObject.activeInHierarchy}";
+        Debug.Log(header);
+
+        RectTransform viewport = container.parent as RectTransform;
+        int i = 0;
+        foreach (Transform child in container)
+        {
+            if (child == null) continue;
+            RectTransform crt = child as RectTransform;
+            Vector2 cSize = crt != null ? crt.rect.size : Vector2.zero;
+            Vector2 cPos = crt != null ? crt.anchoredPosition : Vector2.zero;
+            Vector3 cScale = crt != null ? crt.lossyScale : Vector3.one;
+            bool overlapsViewport = false;
+            if (crt != null && viewport != null)
+            {
+                Rect childRect = new Rect(crt.anchoredPosition - Vector2.Scale(crt.rect.size, new Vector2(crt.pivot.x, 1f - crt.pivot.y)), crt.rect.size);
+                Rect viewRect = new Rect(Vector2.zero, viewport.rect.size);
+                overlapsViewport = childRect.Overlaps(viewRect);
+            }
+            Debug.Log($"[{panel}] child {i}: name {child.name}, activeSelf {child.gameObject.activeSelf}, anchored {cPos}, size {cSize}, scale {cScale}, overlapsViewport {overlapsViewport}");
+            i++;
+            if (i >= 5) break; // avoid spamming
+        }
+    }
+
+    private void CleanupButtons(List<ShopItemRuntime> list)
+    {
+        foreach (var item in list)
+        {
+            if (item.buyButton != null)
+                item.buyButton.onClick.RemoveAllListeners();
+        }
+    }
+    
+    #endregion
+
+    #region Public Methods
+    
     [ContextMenu("Refresh Shop")]
     public void RefreshShop()
     {
-        PopulateShop();
+        PopulateBuyPanel();
+        PopulateSellPanel();
     }
+    
+    public void SwitchToBuyPanel()
+    {
+        ShowPanel(ShopPanel.Buy);
+    }
+    
+    public void SwitchToSellPanel()
+    {
+        ShowPanel(ShopPanel.Sell);
+    }
+    
+    #endregion
 }

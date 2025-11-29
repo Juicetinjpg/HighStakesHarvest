@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7aedf3317ec49d24ca374103de9b8897, type: 3}
   m_Name: Potato
   m_EditorClassIdentifier: 
-  itemName: 
-  description: 
+  itemName: Potato Seed
+  description: Plant these to grow potatoes.
   icon: {fileID: 8243370969719617450, guid: 7075dbd24eae86742865e25d9ad28180, type: 3}
   stackSize: 10
   isTradeable: 1
   itemType: 0
-  basePrice: 0
+  basePrice: 10
   sellPriceMultiplier: 0.5
   cropName: Potato
   producedCrop: {fileID: 11400000, guid: 83489051655e4fc48a920965d74041cb, type: 2}
@@ -31,8 +31,8 @@ MonoBehaviour:
   - {fileID: 7738305070149883613, guid: fd18f5e865e94cafa5c51802e986472f, type: 3}
   requiresWater: 1
   requiresTilledSoil: 0
-  isMultiHarvest: 0
-  harvestsPerPlant: 1
+  isMultiHarvest: 1
+  harvestsPerPlant: 15
   regrowthTime: 2
   seasonalGrowthBonus: 0.75
   seasonalYieldBonus: 1.5

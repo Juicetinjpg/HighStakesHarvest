@@ -25,10 +25,10 @@ MonoBehaviour:
   growthTime: 3
   seasonPreference: All
   growthStages:
-  - {fileID: 100001, guid: 1e64b6fea36341bc8484665d71c3de4b, type: 3}
-  - {fileID: 100001, guid: dbaacfa9fdc64caa8a2fb626e194cefa, type: 3}
-  - {fileID: 100001, guid: 421cdfc6514e49179f625a8c2f789e2c, type: 3}
-  - {fileID: 100001, guid: 3517310048b5479f91b1d9afd2fef0be, type: 3}
+  - {fileID: 7738305070149883613, guid: 1e64b6fea36341bc8484665d71c3de4b, type: 3}
+  - {fileID: 7738305070149883613, guid: dbaacfa9fdc64caa8a2fb626e194cefa, type: 3}
+  - {fileID: 7738305070149883613, guid: 421cdfc6514e49179f625a8c2f789e2c, type: 3}
+  - {fileID: 7738305070149883613, guid: 3517310048b5479f91b1d9afd2fef0be, type: 3}
   requiresWater: 1
   requiresTilledSoil: 0
   isMultiHarvest: 0

@@ -230,11 +230,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 1297
-        width: 152
-        height: 177
+        y: 1310
+        width: 138
+        height: 164
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -251,12 +251,12 @@ TextureImporter:
       name: Plant sprites_1
       rect:
         serializedVersion: 2
-        x: 153
-        y: 1290
-        width: 186
-        height: 184
+        x: 139
+        y: 1310
+        width: 201
+        height: 163
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -273,12 +273,12 @@ TextureImporter:
       name: Plant sprites_2
       rect:
         serializedVersion: 2
-        x: 345
-        y: 1290
-        width: 186
-        height: 184
+        x: 343
+        y: 1310
+        width: 197
+        height: 161
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -295,12 +295,12 @@ TextureImporter:
       name: Plant sprites_3
       rect:
         serializedVersion: 2
-        x: 558
-        y: 1290
-        width: 186
-        height: 184
+        x: 543
+        y: 1310
+        width: 219
+        height: 164
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -317,12 +317,12 @@ TextureImporter:
       name: Plant sprites_4
       rect:
         serializedVersion: 2
-        x: 744
-        y: 1290
-        width: 186
-        height: 184
+        x: 763
+        y: 1317
+        width: 167
+        height: 157
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -340,11 +340,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 1132
-        width: 137
-        height: 169
+        y: 1112
+        width: 128
+        height: 165
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -361,12 +361,12 @@ TextureImporter:
       name: Plant sprites_6
       rect:
         serializedVersion: 2
-        x: 129
-        y: 1126
-        width: 186
-        height: 184
+        x: 131
+        y: 1137
+        width: 181
+        height: 143
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -383,12 +383,12 @@ TextureImporter:
       name: Plant sprites_7
       rect:
         serializedVersion: 2
-        x: 330
-        y: 1121
-        width: 186
-        height: 184
+        x: 340
+        y: 1117
+        width: 180
+        height: 178
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -405,12 +405,12 @@ TextureImporter:
       name: Plant sprites_8
       rect:
         serializedVersion: 2
-        x: 556
-        y: 1126
-        width: 186
-        height: 184
+        x: 523
+        y: 1131
+        width: 229
+        height: 164
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -427,12 +427,12 @@ TextureImporter:
       name: Plant sprites_10
       rect:
         serializedVersion: 2
-        x: 0
-        y: 923
-        width: 132
-        height: 183
+        x: 755
+        y: 1135
+        width: 173
+        height: 176
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -449,12 +449,12 @@ TextureImporter:
       name: Plant sprites_11
       rect:
         serializedVersion: 2
-        x: 149
-        y: 953
-        width: 171
-        height: 153
+        x: 0
+        y: 921
+        width: 127
+        height: 173
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -471,12 +471,12 @@ TextureImporter:
       name: Plant sprites_12
       rect:
         serializedVersion: 2
-        x: 348
-        y: 938
-        width: 172
-        height: 170
+        x: 131
+        y: 915
+        width: 178
+        height: 203
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -493,12 +493,12 @@ TextureImporter:
       name: Plant sprites_13
       rect:
         serializedVersion: 2
-        x: 556
+        x: 322
         y: 927
-        width: 186
-        height: 184
+        width: 201
+        height: 197
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -515,12 +515,12 @@ TextureImporter:
       name: Plant sprites_14
       rect:
         serializedVersion: 2
-        x: 745
-        y: 944
-        width: 186
-        height: 184
+        x: 523
+        y: 925
+        width: 211
+        height: 194
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -537,12 +537,12 @@ TextureImporter:
       name: Plant sprites_15
       rect:
         serializedVersion: 2
-        x: 0
-        y: 757
-        width: 126
-        height: 165
+        x: 739
+        y: 937
+        width: 191
+        height: 189
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -559,12 +559,12 @@ TextureImporter:
       name: Plant sprites_16
       rect:
         serializedVersion: 2
-        x: 140
-        y: 743
-        width: 186
-        height: 184
+        x: 0
+        y: 733
+        width: 128
+        height: 167
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -581,12 +581,12 @@ TextureImporter:
       name: Plant sprites_17
       rect:
         serializedVersion: 2
-        x: 346
-        y: 753
-        width: 186
-        height: 184
+        x: 141
+        y: 748
+        width: 170
+        height: 155
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -603,12 +603,12 @@ TextureImporter:
       name: Plant sprites_18
       rect:
         serializedVersion: 2
-        x: 558
-        y: 747
-        width: 186
-        height: 184
+        x: 331
+        y: 771
+        width: 185
+        height: 155
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -625,12 +625,12 @@ TextureImporter:
       name: Plant sprites_19
       rect:
         serializedVersion: 2
-        x: 745
+        x: 544
         y: 769
-        width: 186
-        height: 184
+        width: 192
+        height: 165
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -647,12 +647,12 @@ TextureImporter:
       name: Plant sprites_20
       rect:
         serializedVersion: 2
-        x: 0
-        y: 570
-        width: 126
-        height: 168
+        x: 744
+        y: 769
+        width: 184
+        height: 164
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -669,12 +669,12 @@ TextureImporter:
       name: Plant sprites_21
       rect:
         serializedVersion: 2
-        x: 148
-        y: 547
-        width: 186
-        height: 184
+        x: 0
+        y: 569
+        width: 124
+        height: 142
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -691,12 +691,12 @@ TextureImporter:
       name: Plant sprites_22
       rect:
         serializedVersion: 2
-        x: 339
-        y: 552
-        width: 186
-        height: 184
+        x: 168
+        y: 575
+        width: 145
+        height: 144
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -713,12 +713,12 @@ TextureImporter:
       name: Plant sprites_23
       rect:
         serializedVersion: 2
-        x: 558
-        y: 554
-        width: 186
-        height: 184
+        x: 360
+        y: 569
+        width: 164
+        height: 181
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -735,12 +735,12 @@ TextureImporter:
       name: Plant sprites_24
       rect:
         serializedVersion: 2
-        x: 744
-        y: 554
-        width: 186
-        height: 184
+        x: 568
+        y: 561
+        width: 160
+        height: 189
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -757,12 +757,12 @@ TextureImporter:
       name: Plant sprites_25
       rect:
         serializedVersion: 2
-        x: 0
-        y: 365
-        width: 133
-        height: 189
+        x: 763
+        y: 567
+        width: 165
+        height: 183
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -779,12 +779,12 @@ TextureImporter:
       name: Plant sprites_26
       rect:
         serializedVersion: 2
-        x: 149
-        y: 365
-        width: 186
-        height: 184
+        x: 0
+        y: 383
+        width: 136
+        height: 143
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -801,12 +801,12 @@ TextureImporter:
       name: Plant sprites_27
       rect:
         serializedVersion: 2
-        x: 348
-        y: 365
-        width: 186
-        height: 184
+        x: 351
+        y: 374
+        width: 159
+        height: 168
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -823,12 +823,12 @@ TextureImporter:
       name: Plant sprites_28
       rect:
         serializedVersion: 2
-        x: 558
-        y: 370
-        width: 186
-        height: 184
+        x: 139
+        y: 383
+        width: 189
+        height: 144
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -845,12 +845,12 @@ TextureImporter:
       name: Plant sprites_29
       rect:
         serializedVersion: 2
-        x: 739
-        y: 365
-        width: 186
-        height: 184
+        x: 552
+        y: 383
+        width: 184
+        height: 160
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -867,12 +867,12 @@ TextureImporter:
       name: Plant sprites_9
       rect:
         serializedVersion: 2
-        x: 745
-        y: 1139
-        width: 186
-        height: 184
+        x: 567
+        y: 1183
+        width: 4
+        height: 16
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -889,12 +889,12 @@ TextureImporter:
       name: Plant sprites_30
       rect:
         serializedVersion: 2
-        x: 0
-        y: 186
-        width: 121
-        height: 142
+        x: 776
+        y: 368
+        width: 154
+        height: 174
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -911,12 +911,12 @@ TextureImporter:
       name: Plant sprites_31
       rect:
         serializedVersion: 2
-        x: 140
-        y: 175
-        width: 186
-        height: 184
+        x: 0
+        y: 180
+        width: 124
+        height: 142
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -933,12 +933,12 @@ TextureImporter:
       name: Plant sprites_32
       rect:
         serializedVersion: 2
-        x: 345
-        y: 186
-        width: 186
-        height: 184
+        x: 145
+        y: 176
+        width: 182
+        height: 159
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -955,12 +955,12 @@ TextureImporter:
       name: Plant sprites_33
       rect:
         serializedVersion: 2
-        x: 558
-        y: 186
-        width: 186
-        height: 184
+        x: 358
+        y: 180
+        width: 154
+        height: 178
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -977,12 +977,12 @@ TextureImporter:
       name: Plant sprites_34
       rect:
         serializedVersion: 2
-        x: 744
-        y: 186
-        width: 186
-        height: 184
+        x: 542
+        y: 180
+        width: 201
+        height: 178
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -999,12 +999,12 @@ TextureImporter:
       name: Plant sprites_35
       rect:
         serializedVersion: 2
-        x: 0
-        y: 2
-        width: 110
-        height: 123
+        x: 753
+        y: 180
+        width: 175
+        height: 178
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1021,12 +1021,12 @@ TextureImporter:
       name: Plant sprites_36
       rect:
         serializedVersion: 2
-        x: 149
+        x: 0
         y: 0
-        width: 186
-        height: 184
+        width: 144
+        height: 133
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1043,12 +1043,12 @@ TextureImporter:
       name: Plant sprites_37
       rect:
         serializedVersion: 2
-        x: 352
-        y: 6
-        width: 186
-        height: 184
+        x: 147
+        y: 0
+        width: 157
+        height: 143
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1065,12 +1065,12 @@ TextureImporter:
       name: Plant sprites_38
       rect:
         serializedVersion: 2
-        x: 542
-        y: 4
-        width: 186
-        height: 184
+        x: 345
+        y: 0
+        width: 183
+        height: 159
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1087,12 +1087,12 @@ TextureImporter:
       name: Plant sprites_39
       rect:
         serializedVersion: 2
-        x: 744
-        y: 2
-        width: 186
-        height: 184
+        x: 531
+        y: 0
+        width: 197
+        height: 152
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -1101,6 +1101,28 @@ TextureImporter:
       bones: []
       spriteID: 9108cc343d750ab4db8cc978ab6bef31
       internalID: -1136222393
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Plant sprites_40
+      rect:
+        serializedVersion: 2
+        x: 731
+        y: 0
+        width: 197
+        height: 152
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 553784984eca70140a5c8d077da55ab9
+      internalID: 1498065674
       vertices: []
       indices: 
       edges: []
@@ -1154,6 +1176,7 @@ TextureImporter:
       Plant sprites_38: -400619648
       Plant sprites_39: -1136222393
       Plant sprites_4: 7039910336858596001
+      Plant sprites_40: 1498065674
       Plant sprites_5: -5353930198940995044
       Plant sprites_6: -8209625509081445486
       Plant sprites_7: -3903965579974802044
