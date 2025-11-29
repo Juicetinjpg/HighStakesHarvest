@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float speed = 5f;
+    [SerializeField] private string farmDoggoName = "Farm Doggo";
     private Rigidbody2D rb;
     private Vector2 moveInput;
     public Animator animator;
@@ -16,6 +17,23 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+
+        // Ensure the player never collides with the farm doggo but keeps colliding with everything else.
+        Collider2D[] playerColliders = GetComponents<Collider2D>();
+        if (playerColliders.Length > 0)
+        {
+            Collider2D[] dogColliders = FindObjectsOfType<Collider2D>();
+            foreach (Collider2D dogCollider in dogColliders)
+            {
+                if (dogCollider.gameObject.name == farmDoggoName)
+                {
+                    foreach (Collider2D playerCollider in playerColliders)
+                    {
+                        Physics2D.IgnoreCollision(playerCollider, dogCollider, true);
+                    }
+                }
+            }
+        }
     }
 
     // Update is called once per frame
