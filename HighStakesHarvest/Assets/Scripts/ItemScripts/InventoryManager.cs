@@ -262,7 +262,8 @@ public class InventoryManager : MonoBehaviour
         }
         
         // Check if can plant in current season
-        if (!seed.CanPlantInSeason(currentSeason))
+        bool seasonsEnabled = TurnManager.Instance != null && TurnManager.Instance.enableSeasons;
+        if (seasonsEnabled && !seed.CanPlantInSeason(currentSeason))
         {
             Debug.Log($"{seed.itemName} cannot be planted in {currentSeason}!");
             return false;

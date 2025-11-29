@@ -171,9 +171,10 @@ public class PlantPlacer : MonoBehaviour
         }
 
         // Check if can plant in current season
+        bool seasonsEnabled = TurnManager.Instance != null && TurnManager.Instance.enableSeasons;
         string currentSeason = TurnManager.Instance != null ? TurnManager.Instance.GetCurrentSeason() : "Spring";
 
-        if (!seed.CanPlantInSeason(currentSeason))
+        if (seasonsEnabled && !seed.CanPlantInSeason(currentSeason))
         {
             Debug.Log($"Cannot plant {seed.itemName} in {currentSeason}! Prefers: {seed.seasonPreference}");
             return;
@@ -195,7 +196,14 @@ public class PlantPlacer : MonoBehaviour
 
        
 
-        GameObject go = Instantiate(seedDict[seed.cropName], objectPos, Quaternion.identity);
+        if (!seedDict.TryGetValue(seed.cropName, out GameObject seedPrefab))
+        {
+            Debug.LogWarning($"No prefab registered for seed '{seed.cropName}'. Add it to PlantPlacer.seedList.");
+            InventoryManager.Instance.AddItem(seed, 1);
+            return;
+        }
+
+        GameObject go = Instantiate(seedPrefab, objectPos, Quaternion.identity);
 
         // set the growth time according to whatever is in seed data..?
         //go.GetComponent<Plant>().seedData.growthTime = cropManager.cropInfoDictionary[seed.cropName].growth;

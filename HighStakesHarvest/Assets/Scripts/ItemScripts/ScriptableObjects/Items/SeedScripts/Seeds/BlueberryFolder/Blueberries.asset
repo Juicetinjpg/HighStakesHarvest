@@ -29,12 +29,6 @@ MonoBehaviour:
   - {fileID: 7738305070149883613, guid: d42730d7eb8d49709ce50d4c925f0e63, type: 3}
   - {fileID: 7738305070149883613, guid: 36db118ebc6a4c74a0684cc4f513ec13, type: 3}
   - {fileID: 7738305070149883613, guid: 90a78d1f93084771b6a402a2ef699b94, type: 3}
-  - {fileID: 100001, guid: d42730d7eb8d49709ce50d4c925f0e63, type: 3}
-  - {fileID: 100001, guid: 36db118ebc6a4c74a0684cc4f513ec13, type: 3}
-  - {fileID: 100001, guid: 90a78d1f93084771b6a402a2ef699b94, type: 3}
-  - {fileID: 100001, guid: 337579ca62d14479b751140a79a0e4a7, type: 3}
-  - {fileID: 100001, guid: 864e9af13572407c9d7c225a0d6d48be, type: 3}
-  - {fileID: 100001, guid: 8944ade5b1f74498956aa74b1bf605e3, type: 3}
   requiresWater: 1
   requiresTilledSoil: 0
   isMultiHarvest: 0

@@ -31,8 +31,8 @@ MonoBehaviour:
   - {fileID: 7738305070149883613, guid: ca0d4502ac8847388a49ed2cdfd5911c, type: 3}
   requiresWater: 1
   requiresTilledSoil: 0
-  isMultiHarvest: 0
-  harvestsPerPlant: 1
+  isMultiHarvest: 1
+  harvestsPerPlant: 4
   regrowthTime: 2
   seasonalGrowthBonus: 0.75
   seasonalYieldBonus: 1.5
