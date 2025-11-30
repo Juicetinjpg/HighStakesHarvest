@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
@@ -171,8 +172,8 @@ public class TurnManager : MonoBehaviour
 
         Debug.Log("Turn ended - Player movement disabled");
 
-        // Automatically load casino after short delay
-        Invoke("LoadCasinoScene", 1.5f);
+        // Automatically load casino after short delay (unscaled so UI pauses don't block)
+        StartCoroutine(LoadCasinoAfterDelay());
     }
 
     /// <summary>
@@ -251,6 +252,12 @@ public class TurnManager : MonoBehaviour
     public void LoadCasinoScene()
     {
         SceneManager.LoadScene("CasinoScene");
+    }
+
+    private IEnumerator LoadCasinoAfterDelay()
+    {
+        yield return new WaitForSecondsRealtime(1.5f);
+        LoadCasinoScene();
     }
 
     public void LoadFarmScene()
