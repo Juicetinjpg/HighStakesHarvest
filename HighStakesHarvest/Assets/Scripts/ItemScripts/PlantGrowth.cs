@@ -170,6 +170,9 @@ public class PlantGrowth : MonoBehaviour
         else
         {
             Debug.Log($"{seedData.itemName} has been fully harvested");
+
+            // Free the tile immediately so a new seed can be planted this frame
+            DisableColliders();
             CleanupFromManager();
             Destroy(gameObject);
         }
@@ -254,6 +257,15 @@ public class PlantGrowth : MonoBehaviour
         if (PlantManager.Instance != null)
         {
             PlantManager.Instance.RemovePlant(gameObject);
+        }
+    }
+
+    private void DisableColliders()
+    {
+        // Prevent lingering colliders from blocking immediate replanting
+        foreach (var col in GetComponentsInChildren<Collider2D>())
+        {
+            col.enabled = false;
         }
     }
 
