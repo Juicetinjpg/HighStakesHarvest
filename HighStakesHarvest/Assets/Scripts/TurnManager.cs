@@ -1,5 +1,8 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
+using System.IO;
+
 
 /// <summary>
 /// TurnManager with timer-based turns and scene management
@@ -29,6 +32,11 @@ public class TurnManager : MonoBehaviour
     public System.Action OnTurnEnded;
     public System.Action<float> OnTurnTimeChanged;
     public System.Action<string> OnSeasonChanged; // New event for season changes
+
+    // Log of early turn ends
+    public List<string> earlyEndTurnLog = new List<string>();
+    private bool endedEarly = false;
+
 
     void Awake()
     {
@@ -123,6 +131,22 @@ public class TurnManager : MonoBehaviour
 
         Debug.Log("=== Turn Ending ===");
 
+        // ==== Turn Log Entry ====
+        if (!endedEarly)
+        {
+            if (QuotaManager.Instance != null && MoneyManager.Instance != null)
+            {
+                int quota = QuotaManager.Instance.GetCurrentQuotaAmount();
+                int turnsLeft = QuotaManager.Instance.GetTurnsRemaining();
+                int money = MoneyManager.Instance.GetMoney();
+
+                string logEntry =
+                    $"[NORMAL END] Turn {turnCount} | Quota: {quota} | Turns Left: {turnsLeft} | Money: {money} | Season: {currentSeason} | Time: {System.DateTime.Now}";
+
+                WriteTurnLog(logEntry);
+            }
+        }
+
         // Advance all plants - supports BOTH old and new plant systems
         AdvanceAllPlants();
 
@@ -139,7 +163,9 @@ public class TurnManager : MonoBehaviour
         if (QuotaManager.Instance != null)
         {
             QuotaManager.Instance.DecrementTurn();
-        }
+        }        
+
+        endedEarly = false; // For logging
 
         OnTurnEnded?.Invoke();
 
@@ -297,5 +323,32 @@ public class TurnManager : MonoBehaviour
         }
 
         OnSeasonChanged?.Invoke(currentSeason);
+    }
+
+    public void LogEarlyTurnEnd(float timeRemaining)
+    {
+        endedEarly = true;
+
+        if (QuotaManager.Instance == null || MoneyManager.Instance == null)
+            return;
+
+        int quota = QuotaManager.Instance.GetCurrentQuotaAmount();
+        int turnsLeft = QuotaManager.Instance.GetTurnsRemaining();
+        int money = MoneyManager.Instance.GetMoney();
+
+        string entry =
+            $"[EARLY END] Turn {turnCount} | Time Left: {timeRemaining:F2}s | Quota: {quota} | Turns Left: {turnsLeft} | Money: {money} | Season: {currentSeason} | Time: {System.DateTime.Now}";
+
+        WriteTurnLog(entry);
+
+        Debug.Log("[TurnManager] Logged early turn end: " + entry);
+    }
+
+
+
+    private void WriteTurnLog(string message)
+    {
+        string path = Path.Combine(Application.persistentDataPath, "turnLog.txt");
+        File.AppendAllText(path, message + "\n");
     }
 }

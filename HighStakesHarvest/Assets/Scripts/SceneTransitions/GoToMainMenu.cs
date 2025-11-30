@@ -1,27 +1,42 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO;
 
 public class GoToMainMenu : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        // Get the Button component attached to this GameObject
-        Button button = GetComponent<Button>();
+    [Header("Optional: Assign a Button (otherwise script finds it automatically)")]
+    public Button mainMenuButton;
 
-        if (button != null)
+    private void Start()
+    {
+        // Auto-hook if no button assigned
+        if (mainMenuButton == null)
+            mainMenuButton = GetComponent<Button>();
+
+        if (mainMenuButton != null)
+            mainMenuButton.onClick.AddListener(OnButtonClick);
+        else
+            Debug.LogError("GoToMainMenu: No Button component found on this GameObject.");
+    }
+
+    private void OnButtonClick()
+    {
+        // Delete current save file
+        string path = Path.Combine(Application.persistentDataPath, "saveData.json");
+
+        if (File.Exists(path))
         {
-            button.onClick.AddListener(OnButtonClick);
+            File.Delete(path);
+            Debug.Log("[GoToMainMenu] Save file deleted at: " + path);
         }
         else
         {
-            Debug.LogError("GoToMainMenu: No Button component found on this GameObject.");
+            Debug.Log("[GoToMainMenu] No save file to delete.");
         }
-    }
 
-    void OnButtonClick()
-    {
+        Debug.Log("[GoToMainMenu] Save reset complete.");
+
         // Load the MainMenu scene
         SceneManager.LoadScene("MainMenu");
     }
