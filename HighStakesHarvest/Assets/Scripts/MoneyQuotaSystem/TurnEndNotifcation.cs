@@ -4,28 +4,25 @@ using TMPro;
 using System.Collections;
 
 /// <summary>
-/// Shows "Turn Ended" notification and transitions to casino
+/// Shows "Turn Ended" notification using a prefab and transitions to casino
 /// </summary>
 public class TurnEndNotification : MonoBehaviour
 {
-    [Header("UI References")]
-    [SerializeField] private GameObject turnEndPanel;
-    [SerializeField] private TextMeshProUGUI turnEndText;
+    [Header("Prefab Reference")]
+    [SerializeField] private GameObject turnEndPanelPrefab;
 
     [Header("Settings")]
     [SerializeField] private float displayDuration = 2f;
     [SerializeField] private string casinoSceneName = "CasinoScene";
 
+    private GameObject turnEndPanelInstance;
+    private TextMeshProUGUI turnEndText;
     private TurnManager subscribedTurnManager;
     private Coroutine activeCoroutine;
 
     void Start()
     {
-        // Hide panel initially
-        if (turnEndPanel != null)
-            turnEndPanel.SetActive(false);
-
-        // Subscribe to turn end event
+        // Subscribe to events
         if (TurnManager.Instance != null)
         {
             subscribedTurnManager = TurnManager.Instance;
@@ -40,66 +37,78 @@ public class TurnEndNotification : MonoBehaviour
         {
             subscribedTurnManager.OnTurnEnded -= ShowTurnEndNotification;
             subscribedTurnManager.OnTurnStarted -= HideTurnEndPanel;
-            subscribedTurnManager = null;
         }
+    }
+
+    private void InstantiatePanelIfNeeded()
+    {
+        if (turnEndPanelInstance != null)
+            return;
+
+        // Find a canvas in the scene
+        Canvas canvas = FindObjectOfType<Canvas>();
+        if (canvas == null)
+        {
+            Debug.LogError("TurnEndNotification: No Canvas found in the scene!");
+            return;
+        }
+
+        // Instantiate panel under the canvas
+        turnEndPanelInstance = Instantiate(turnEndPanelPrefab, canvas.transform);
+        turnEndPanelInstance.SetActive(false);
+
+        // Grab the text component automatically
+        turnEndText = turnEndPanelInstance.GetComponentInChildren<TextMeshProUGUI>(true);
+        if (turnEndText == null)
+            Debug.LogError("TurnEndNotification: No TextMeshProUGUI found inside the TurnEndPanel prefab!");
     }
 
     private void ShowTurnEndNotification()
     {
-        // Ensure any previous coroutine is stopped
+        InstantiatePanelIfNeeded();
+
         if (activeCoroutine != null)
-        {
             StopCoroutine(activeCoroutine);
-            activeCoroutine = null;
-        }
 
         activeCoroutine = StartCoroutine(ShowNotificationAndTransition());
     }
 
     private IEnumerator ShowNotificationAndTransition()
     {
-        // Show panel
-        if (turnEndPanel != null)
+        if (turnEndPanelInstance == null)
+            yield break;
+
+        turnEndPanelInstance.SetActive(true);
+
+        if (turnEndText != null)
         {
-            turnEndPanel.SetActive(true);
+            int turnsLeft = 0;
+            if (QuotaManager.Instance != null)
+                turnsLeft = QuotaManager.Instance.GetTurnsRemaining();
 
-            if (turnEndText != null)
-            {
-                // Get turns remaining
-                int turnsLeft = 0;
-                if (QuotaManager.Instance != null)
-                    turnsLeft = QuotaManager.Instance.GetTurnsRemaining();
-
-                // Customize message
-                turnEndText.text = $"Turn Ended!\n\n" +
-                                  $"Turns Remaining: {turnsLeft}\n\n" +
-                                  $"Heading to Casino...";
-            }
+            turnEndText.text =
+                $"Turn Ended!\n\n" +
+                $"Turns Remaining: {turnsLeft}\n\n" +
+                $"Heading to Casino...";
         }
 
-        // Wait
         yield return new WaitForSeconds(displayDuration);
 
-        // Hide panel
-        if (turnEndPanel != null)
-            turnEndPanel.SetActive(false);
-
+        turnEndPanelInstance.SetActive(false);
         activeCoroutine = null;
 
-        // Load casino
-        SceneManager.LoadScene(casinoSceneName);
+        //SceneManager.LoadScene(casinoSceneName);
     }
 
     private void HideTurnEndPanel()
     {
-        // Stop any running notification coroutine
         if (activeCoroutine != null)
         {
             StopCoroutine(activeCoroutine);
             activeCoroutine = null;
         }
 
-        if (turnEndPanel != null && turnEndPanel.activeSelf)
-            turnEndPanel.SetActive(false);
+        if (turnEndPanelInstance != null)
+            turnEndPanelInstance.SetActive(false);
     }
 }
