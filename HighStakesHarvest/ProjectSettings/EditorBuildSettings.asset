@@ -8,12 +8,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: 263c04e890974cb468812996f7108291
-  - enabled: 0
-    path: Assets/Scenes/OptionsMenu.unity
-    guid: d3974bc0e4da95e4181d8d475b9cc8a9
   - enabled: 1
     path: Assets/Scenes/FarmScene.unity
-    guid: 8c9cfa26abfee488c85f1582747f6a02
+    guid: 27c3b80f179ff8f4a9f672ef7c67960b
   - enabled: 1
     path: Assets/Scenes/CasinoScene.unity
     guid: af954937d046cfb449d9605781bc8c88
@@ -26,5 +23,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ShopScene.unity
     guid: 3f6c6ec1e6c04f0c8a0c7f70baae1b4e
+  - enabled: 1
+    path: Assets/Scenes/Cutscene.unity
+    guid: 465650edbccb2c34d81cc3e87d90ab32
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

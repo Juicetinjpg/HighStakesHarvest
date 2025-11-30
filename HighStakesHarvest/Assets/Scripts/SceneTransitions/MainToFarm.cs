@@ -20,6 +20,6 @@ public class MainToFarm : MonoBehaviour
         SaveManager.Instance.InitializeSaveFile();
 
         // Load the first scene
-        SceneManager.LoadScene("FarmScene");
+        SceneManager.LoadScene("Cutscene");
     }
 }

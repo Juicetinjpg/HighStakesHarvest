@@ -22,6 +22,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip casinoSceneMusic;
     public AudioClip slotsMusic;
     public AudioClip casinoTableMusic;
+    public AudioClip cutsceneMusic;
 
     [Header("Options")]
     [Tooltip("Fade time when switching tracks. Set to 0 for instant swap.")]
@@ -92,6 +93,9 @@ public class AudioManager : MonoBehaviour
                 break;
             case "CasinoTable":
                 clip = casinoTableMusic;
+                break;
+            case "Cutscene":
+                clip = cutsceneMusic;
                 break;
             default:
                 return;
