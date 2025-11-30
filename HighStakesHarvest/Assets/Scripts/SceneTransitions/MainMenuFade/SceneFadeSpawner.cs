@@ -2,15 +2,18 @@ using UnityEngine;
 
 public class SceneFadeSpawner : MonoBehaviour
 {
-    public GameObject blackFadePrefab;
-
     private void Start()
     {
-        // Spawn the fade panel into the scene Canvas
-        Canvas canvas = FindObjectOfType<Canvas>();
-        if (canvas != null && blackFadePrefab != null)
+        FadeController fade = FindObjectOfType<FadeController>(true);
+
+        if (fade != null)
         {
-            Instantiate(blackFadePrefab, canvas.transform);
+            Debug.Log("Triggering fade");
+            fade.BeginFade();   // <--- now we call it manually
+        }
+        else
+        {
+            Debug.LogError("FadeController not found!");
         }
     }
 }
