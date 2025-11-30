@@ -300,8 +300,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63da076cf46075b4d910ae13ce91dc3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  turnEndPanel: {fileID: 0}
-  turnEndText: {fileID: 0}
+  turnEndPanelPrefab: {fileID: 8742155818202932353, guid: ceebda756b979f94b9df312477fa85c9,
+    type: 3}
   displayDuration: 2
   casinoSceneName: CasinoScene
 --- !u!4 &184726770
@@ -1578,7 +1578,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f5db376d3a016c04c98368e4899bcd7c, type: 2}
   - {fileID: 11400000, guid: 89c59396820e5554bab5917ff328fa91, type: 2}
   autoProgressToNextQuota: 1
-  losePrefab: {fileID: 0}
+  losePrefab: {fileID: 1257661519884945840, guid: e087316a08d067d4ab00d1af4c1bdc68,
+    type: 3}
+  winPrefab: {fileID: 1257661519884945840, guid: 36c6d62318f34ef4caf20f8784c502a2,
+    type: 3}
 --- !u!4 &736171653
 Transform:
   m_ObjectHideFlags: 0
@@ -2550,6 +2553,7 @@ MonoBehaviour:
   enableSeasons: 0
   turnsPerSeason: 28
   earlyEndTurnLog: []
+  gameOver: 0
 --- !u!1 &1129195371
 GameObject:
   m_ObjectHideFlags: 0
