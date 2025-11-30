@@ -78,7 +78,7 @@ public class TurnEndNotification : MonoBehaviour
         }
 
         // Wait
-        yield return new WaitForSeconds(displayDuration);
+        yield return new WaitForSecondsRealtime(displayDuration);
 
         // Hide panel
         if (turnEndPanel != null)
