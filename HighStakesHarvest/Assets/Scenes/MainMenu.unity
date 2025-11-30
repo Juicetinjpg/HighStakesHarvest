@@ -1860,9 +1860,9 @@ MonoBehaviour:
   spawnPoint: {fileID: 0}
   spawnPointObjectName: FarmhandSpawnPoint
   spawnPointTag: 
-  moveSpeed: 2
+  moveSpeed: 3
   engageDistance: 0
-  waitBeforeWater: 1
+  waitBeforeWater: 0.5
   farmhandActive: 1
 --- !u!1 &930066408
 GameObject:

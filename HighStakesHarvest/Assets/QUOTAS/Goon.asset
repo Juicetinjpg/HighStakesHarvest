@@ -15,7 +15,7 @@ MonoBehaviour:
   creditorName: Da Goon
   creditorDescription: Street thug looking to profit
   creditorPortrait: {fileID: 0}
-  quotaAmount: 2500
+  quotaAmount: 6700
   turnsAllowed: 10
   season: 2
   introDialogue: Pay up jit, or things get ugly... REAL UGLY

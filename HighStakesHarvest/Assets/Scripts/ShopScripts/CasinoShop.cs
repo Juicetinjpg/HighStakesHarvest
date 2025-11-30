@@ -36,6 +36,8 @@ public class CasinoShop : MonoBehaviour
     [Header("UI Containers")]
     [SerializeField] private Transform buySlotContainer;
     [SerializeField] private Transform sellSlotContainer;
+    [SerializeField] private ScrollRect buyScrollRect;
+    [SerializeField] private ScrollRect sellScrollRect;
 
     [Header("Prefab References")]
     [Tooltip("These should be set in the ItemSlot prefab itself")]
@@ -253,6 +255,7 @@ public class CasinoShop : MonoBehaviour
 
         UpdateButtonStates();
         RebuildLayout(buySlotContainer);
+        ResetScroll(buyScrollRect);
         LogContainerState(buySlotContainer, "BUY");
         Debug.Log("=== PopulateBuyPanel END ===");
     }
@@ -307,9 +310,10 @@ public class CasinoShop : MonoBehaviour
         Button buyButton = FindInChildren<Button>(slotObj, buyButtonName);
 
         // Set icon
-        if (iconImage != null && itemData.icon != null)
+        Sprite icon = itemData.GetIcon();
+        if (iconImage != null && icon != null)
         {
-            iconImage.sprite = itemData.icon;
+            iconImage.sprite = icon;
             iconImage.enabled = true;
         }
 
@@ -420,6 +424,7 @@ public class CasinoShop : MonoBehaviour
         }
         Debug.Log("=== PopulateSellPanel END ===");
         RebuildLayout(sellSlotContainer);
+        ResetScroll(sellScrollRect);
         LogContainerState(sellSlotContainer, "SELL");
     }
 
@@ -445,9 +450,10 @@ public class CasinoShop : MonoBehaviour
         Button sellButton = FindInChildren<Button>(slotObj, buyButtonName);
 
         // Set icon
-        if (iconImage != null && itemData.icon != null)
+        Sprite icon = itemData.GetIcon();
+        if (iconImage != null && icon != null)
         {
-            iconImage.sprite = itemData.icon;
+            iconImage.sprite = icon;
             iconImage.enabled = true;
         }
 
@@ -649,6 +655,15 @@ public class CasinoShop : MonoBehaviour
             if (rt.parent != null)
                 LayoutRebuilder.ForceRebuildLayoutImmediate(rt.parent as RectTransform);
             Canvas.ForceUpdateCanvases();
+        }
+    }
+
+    private void ResetScroll(ScrollRect scrollRect)
+    {
+        if (scrollRect != null)
+        {
+            scrollRect.verticalNormalizedPosition = 1f;
+            scrollRect.horizontalNormalizedPosition = 0f;
         }
     }
 

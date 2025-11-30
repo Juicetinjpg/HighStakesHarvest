@@ -22,8 +22,9 @@ MonoBehaviour:
   sellPriceMultiplier: 0.5
   cropName: Pepper
   producedCrop: {fileID: 11400000, guid: 4a43d46d6e0d47b98a8e02e4dea1e8a7, type: 2}
-  growthTime: 3
+  growthTime: 4
   seasonPreference: All
+  seedSprite: {fileID: 2708099430083492396, guid: 5e0d3e704f20210428fa4b54861e9512, type: 3}
   growthStages:
   - {fileID: 7738305070149883613, guid: 656e7714a0f1493286faea860fb4f1fd, type: 3}
   - {fileID: 7738305070149883613, guid: 675d93cdf7f34c0fa237b844cb97ff3f, type: 3}

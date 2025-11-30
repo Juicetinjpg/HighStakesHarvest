@@ -18,6 +18,14 @@ public abstract class ItemData : ScriptableObject
     public float sellPriceMultiplier = 0.5f; // Sell for 50% of buy price by default
     
     /// <summary>
+    /// Provides the sprite used to visually represent the item.
+    /// </summary>
+    public virtual Sprite GetIcon()
+    {
+        return icon;
+    }
+    
+    /// <summary>
     /// Gets the selling price of this item
     /// </summary>
     public virtual int GetSellPrice()

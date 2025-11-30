@@ -15,7 +15,7 @@ MonoBehaviour:
   creditorName: Friends
   creditorDescription: Borrowed money from friends through deceit
   creditorPortrait: {fileID: 0}
-  quotaAmount: 1200
+  quotaAmount: 3000
   turnsAllowed: 10
   season: 1
   introDialogue: We trusted you.. you better pay us back.

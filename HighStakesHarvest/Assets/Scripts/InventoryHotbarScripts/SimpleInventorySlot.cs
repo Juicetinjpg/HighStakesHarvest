@@ -37,6 +37,8 @@ public class SimpleInventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDr
         if (backgroundImage == null) backgroundImage = GetComponent<Image>();
         if (iconImage == null) iconImage = transform.Find("Icon")?.GetComponent<Image>();
         if (quantityText == null) quantityText = transform.Find("Quantity")?.GetComponent<TextMeshProUGUI>();
+
+        StyleText(quantityText);
     }
     
     /// <summary>
@@ -87,16 +89,29 @@ public class SimpleInventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDr
             // Has item
             if (iconImage != null)
             {
-                iconImage.enabled = true;
-                
-                // Load icon sprite if available
-                if (SimpleItemIcons.Instance != null)
+                Sprite icon = null;
+
+                // Prefer ItemData icons (SeedData uses seedSprite, etc.)
+                if (ItemDatabase.Instance != null)
                 {
-                    Sprite icon = SimpleItemIcons.Instance.GetIcon(slotData.itemName);
-                    if (icon != null)
+                    ItemData itemData = ItemDatabase.Instance.GetItem(slotData.itemName);
+                    if (itemData != null)
                     {
-                        iconImage.sprite = icon;
+                        icon = itemData.GetIcon();
                     }
+                }
+
+                // Fallback to legacy SimpleItemIcons mapping
+                if (icon == null && SimpleItemIcons.Instance != null)
+                {
+                    icon = SimpleItemIcons.Instance.GetIcon(slotData.itemName);
+                }
+
+                iconImage.enabled = icon != null;
+                if (icon != null)
+                {
+                    iconImage.sprite = icon;
+                    FitIconToSlot(iconImage, icon);
                 }
             }
             
@@ -262,5 +277,64 @@ public class SimpleInventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDr
     public int GetSlotIndex()
     {
         return slotIndex;
+    }
+
+    /// <summary>
+    /// Scales the icon to fit inside the slot while preserving aspect ratio.
+    /// </summary>
+    private void FitIconToSlot(Image image, Sprite sprite)
+    {
+        if (image == null || sprite == null) return;
+
+        image.preserveAspect = true;
+        RectTransform rt = image.rectTransform;
+        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.pivot = new Vector2(0.5f, 0.5f);
+        image.SetNativeSize();
+        rt.anchoredPosition = Vector2.zero;
+
+        RectTransform parentRect = backgroundImage != null
+            ? backgroundImage.rectTransform
+            : image.rectTransform.parent as RectTransform;
+
+        if (parentRect == null) return;
+
+        float parentSize = Mathf.Min(parentRect.rect.width, parentRect.rect.height);
+        if (parentSize <= 0f)
+        {
+            // Fallback to the current image size if layout hasn't resolved yet
+            parentSize = Mathf.Min(image.rectTransform.rect.width, image.rectTransform.rect.height);
+        }
+        if (parentSize <= 0f)
+        {
+            // Reasonable default if both are zero
+            parentSize = 64f;
+        }
+
+        float maxSize = parentSize * 0.85f;
+        float spriteWidth = sprite.rect.width;
+        float spriteHeight = sprite.rect.height;
+
+        if (spriteWidth <= 0 || spriteHeight <= 0) return;
+
+        float scale = Mathf.Min(maxSize / spriteWidth, maxSize / spriteHeight);
+        image.rectTransform.sizeDelta = new Vector2(spriteWidth * scale, spriteHeight * scale);
+    }
+
+    /// <summary>
+    /// Improve text legibility with bright color and subtle outline.
+    /// </summary>
+    private void StyleText(TextMeshProUGUI text)
+    {
+        if (text == null) return;
+
+        text.color = new Color(1f, 1f, 1f, 0.95f);
+        Outline outline = text.GetComponent<Outline>();
+        if (outline == null)
+        {
+            outline = text.gameObject.AddComponent<Outline>();
+        }
+        outline.effectColor = new Color(0f, 0f, 0f, 0.6f);
+        outline.effectDistance = new Vector2(1f, -1f);
     }
 }

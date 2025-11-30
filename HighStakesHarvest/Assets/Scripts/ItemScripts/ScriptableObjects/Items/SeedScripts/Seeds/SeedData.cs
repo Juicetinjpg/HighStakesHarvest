@@ -15,6 +15,9 @@ public class SeedData : ItemData
     public int growthTime = 3; // Base number of turns to grow
     public string seasonPreference = "All"; // Spring, Summer, Fall, Winter, or All
 
+    [Header("Seed Visuals")]
+    public Sprite seedSprite; // Seed bag icon for UI
+
     [Header("Growth Visuals")]
     public GameObject[] growthStages; // Your prefabs for each growth stage (Sprout, MidGrowth, FullGrowth)
 
@@ -119,5 +122,10 @@ public class SeedData : ItemData
         }
 
         return info;
+    }
+
+    public override Sprite GetIcon()
+    {
+        return seedSprite != null ? seedSprite : base.GetIcon();
     }
 }

@@ -15,7 +15,7 @@ MonoBehaviour:
   creditorName: Mafia Loan Shark
   creditorDescription: The final, most dangerous creditor
   creditorPortrait: {fileID: 0}
-  quotaAmount: 5000
+  quotaAmount: 17380
   turnsAllowed: 10
   season: 3
   introDialogue: You made a deal with the devil. Time to pay up
