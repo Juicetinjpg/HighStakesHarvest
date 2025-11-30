@@ -716,7 +716,8 @@ MonoBehaviour:
   dialogueLines:
   - You've spent who knows how long gambling at the Casino.
   - Sadly, it seems your luck wasn't cutting it, and you've lost it all...
-  - Luckily, you find yourself a golden ticket, giving you the rights to a farm!
+  - Luckily, you find yourself a Gold Ticket, giving you the rights to a brand new
+    farm!
   - Now it's time to make back your money, and pay the debts you owe.
   clickCatcher: {fileID: 1172950903}
 --- !u!4 &1859965878

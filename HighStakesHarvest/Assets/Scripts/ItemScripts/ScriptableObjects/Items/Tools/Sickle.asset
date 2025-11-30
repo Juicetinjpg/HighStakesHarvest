@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Sickle
   description: Harvest crops
-  icon: {fileID: 0}
+  icon: {fileID: -1700892053915081011, guid: 576dcaec6f89a16408404d45ae7191bc, type: 3}
   stackSize: 1
   isTradeable: 0
   itemType: 2

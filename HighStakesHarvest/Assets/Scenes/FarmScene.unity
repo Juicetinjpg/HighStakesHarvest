@@ -5023,6 +5023,11 @@ PrefabInstance:
       propertyPath: m_PixelsPerUnitMultiplier
       value: 20
       objectReference: {fileID: 0}
+    - target: {fileID: 4723985889776167417, guid: ef97d7d3319156a499ae0274d486b7c6,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4753310909107485180, guid: ef97d7d3319156a499ae0274d486b7c6,
         type: 3}
       propertyPath: m_text
@@ -13104,6 +13109,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_PixelsPerUnitMultiplier
       value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 4723985889776167417, guid: fd221ffaf7731cf4c9745e19731795b8,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4753310909107485180, guid: fd221ffaf7731cf4c9745e19731795b8,
         type: 3}
