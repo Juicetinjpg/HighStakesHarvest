@@ -268,8 +268,7 @@ GameObject:
   - component: {fileID: 152225355}
   - component: {fileID: 152225354}
   - component: {fileID: 152225353}
-  - component: {fileID: 152225352}
-  - component: {fileID: 152225351}
+  - component: {fileID: 152225356}
   m_Layer: 5
   m_Name: Quit Button Outline
   m_TagString: Untagged
@@ -296,30 +295,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &152225351
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 152225349}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 441ccc21f5a7c1746a3b0fad545ea12d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &152225352
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 152225349}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78bfe7ee0ec152841a522d4051cd9cbe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &152225353
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -402,6 +377,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 152225349}
   m_CullTransparentMesh: 1
+--- !u!114 &152225356
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152225349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f18596c6a8c61aa41a385c7e62d16bd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &184726768
 GameObject:
   m_ObjectHideFlags: 0
@@ -1694,6 +1681,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f5db376d3a016c04c98368e4899bcd7c, type: 2}
   - {fileID: 11400000, guid: 89c59396820e5554bab5917ff328fa91, type: 2}
   autoProgressToNextQuota: 1
+  losePrefab: {fileID: 1257661519884945840, guid: e087316a08d067d4ab00d1af4c1bdc68,
+    type: 3}
 --- !u!4 &736171653
 Transform:
   m_ObjectHideFlags: 0
@@ -2402,7 +2391,6 @@ GameObject:
   - component: {fileID: 1002288496}
   - component: {fileID: 1002288495}
   - component: {fileID: 1002288498}
-  - component: {fileID: 1002288499}
   m_Layer: 5
   m_Name: Quit Button
   m_TagString: Untagged
@@ -2523,19 +2511,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1002288493}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78bfe7ee0ec152841a522d4051cd9cbe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1002288499
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1002288493}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 441ccc21f5a7c1746a3b0fad545ea12d, type: 3}
+  m_Script: {fileID: 11500000, guid: f18596c6a8c61aa41a385c7e62d16bd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1026638053

@@ -31,7 +31,6 @@ public class FadeController : MonoBehaviour
         while (t < fadeDuration)
         {
             float dt = Time.unscaledDeltaTime;
-            Debug.Log("Loop running. t = " + t + "  delta = " + dt);
 
             t += dt;
             cg.alpha = 1 - (t / fadeDuration);

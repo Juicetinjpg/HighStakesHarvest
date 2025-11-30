@@ -20,6 +20,10 @@ public class QuotaManager : MonoBehaviour
     private int turnsRemaining;
     private int startingMoneyForQuota;
 
+    [Header("Loss Screen")]
+    [SerializeField] private GameObject losePrefab;
+
+
     // Events for UI and game state updates
     public event Action<QuotaData> OnQuotaStarted;
     public event Action<QuotaData> OnQuotaCompleted;
@@ -208,8 +212,34 @@ public class QuotaManager : MonoBehaviour
 
         Debug.Log($"Quota Failed! Could not pay ${currentQuota.quotaAmount} to {currentQuota.creditorName}");
 
-        // This should trigger a loss screen
+        // --- Spawn Lose Prefab ---
+        if (losePrefab != null)
+        {
+            // Try to find a Canvas in the scene
+            Canvas canvas = FindObjectOfType<Canvas>();
+            GameObject instance;
+
+            if (canvas != null)
+            {
+                instance = Instantiate(losePrefab, canvas.transform);
+            }
+            else
+            {
+                // If no canvas exists, instantiate at root
+                instance = Instantiate(losePrefab);
+            }
+
+            // Optionally: pause the game
+            Time.timeScale = 0f;
+
+            Debug.Log("[QuotaManager] Lose prefab spawned.");
+        }
+        else
+        {
+            Debug.LogWarning("[QuotaManager] Lose prefab not assigned!");
+        }
     }
+
 
     // ==================== PUBLIC GETTERS ====================
 
