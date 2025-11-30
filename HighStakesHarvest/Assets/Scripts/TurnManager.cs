@@ -38,6 +38,8 @@ public class TurnManager : MonoBehaviour
     public List<string> earlyEndTurnLog = new List<string>();
     private bool endedEarly = false;
 
+    public bool gameOver = false;
+
 
     void Awake()
     {
@@ -173,7 +175,11 @@ public class TurnManager : MonoBehaviour
         Debug.Log("Turn ended - Player movement disabled");
 
         // Automatically load casino after short delay (unscaled so UI pauses don't block)
-        StartCoroutine(LoadCasinoAfterDelay());
+        if (!gameOver)
+        {
+            StartCoroutine(LoadCasinoAfterDelay());
+        }    
+
     }
 
     /// <summary>

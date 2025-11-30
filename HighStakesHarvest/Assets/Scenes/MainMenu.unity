@@ -1580,6 +1580,8 @@ MonoBehaviour:
   autoProgressToNextQuota: 1
   losePrefab: {fileID: 1257661519884945840, guid: e087316a08d067d4ab00d1af4c1bdc68,
     type: 3}
+  winPrefab: {fileID: 1257661519884945840, guid: 36c6d62318f34ef4caf20f8784c502a2,
+    type: 3}
 --- !u!4 &736171653
 Transform:
   m_ObjectHideFlags: 0
@@ -2551,6 +2553,7 @@ MonoBehaviour:
   enableSeasons: 0
   turnsPerSeason: 28
   earlyEndTurnLog: []
+  gameOver: 0
 --- !u!1 &1129195371
 GameObject:
   m_ObjectHideFlags: 0

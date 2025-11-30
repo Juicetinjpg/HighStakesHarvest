@@ -23,6 +23,10 @@ public class QuotaManager : MonoBehaviour
     [Header("Loss Screen")]
     [SerializeField] private GameObject losePrefab;
 
+    [Header("Win Screen")]
+    [SerializeField] private GameObject winPrefab;
+
+
 
     // Events for UI and game state updates
     public event Action<QuotaData> OnQuotaStarted;
@@ -191,11 +195,19 @@ public class QuotaManager : MonoBehaviour
 
         Debug.Log($"Quota Completed! Paid ${currentQuota.quotaAmount} to {currentQuota.creditorName}");
 
-        // Auto-progress to next quota if enabled
-        if (autoProgressToNextQuota && currentQuotaIndex + 1 < quotas.Count)
+        // If this was the LAST quota, trigger win
+        if (currentQuotaIndex >= quotas.Count - 1)
+        {
+            TriggerWin();
+            return;
+        }
+
+        // Otherwise continue to next quota
+        if (autoProgressToNextQuota)
         {
             StartNextQuota();
         }
+
     }
 
     /// <summary>
@@ -207,6 +219,8 @@ public class QuotaManager : MonoBehaviour
         if (currentQuota == null) return;
 
         isQuotaActive = false;
+
+        TurnManager.Instance.gameOver = true;
 
         OnQuotaFailed?.Invoke(currentQuota);
 
@@ -237,6 +251,35 @@ public class QuotaManager : MonoBehaviour
         else
         {
             Debug.LogWarning("[QuotaManager] Lose prefab not assigned!");
+        }
+    }
+
+    private void TriggerWin()
+    {
+        Debug.Log("[QuotaManager] ALL QUOTAS COMPLETED — YOU WIN!");
+
+        isQuotaActive = false;
+        TurnManager.Instance.gameOver = true;
+
+        // Spawn Win Prefab
+        if (winPrefab != null)
+        {
+            Canvas canvas = FindObjectOfType<Canvas>();
+            GameObject instance;
+
+            if (canvas != null)
+                instance = Instantiate(winPrefab, canvas.transform);
+            else
+                instance = Instantiate(winPrefab);
+
+            // Pause gameplay
+            Time.timeScale = 0f;
+
+            Debug.Log("[QuotaManager] Win prefab spawned.");
+        }
+        else
+        {
+            Debug.LogWarning("[QuotaManager] Win prefab not assigned!");
         }
     }
 

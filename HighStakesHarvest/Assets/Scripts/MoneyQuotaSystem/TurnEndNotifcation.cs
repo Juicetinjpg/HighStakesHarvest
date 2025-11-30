@@ -65,6 +65,9 @@ public class TurnEndNotification : MonoBehaviour
 
     private void ShowTurnEndNotification()
     {
+        if (TurnManager.Instance.gameOver)
+            return;
+
         InstantiatePanelIfNeeded();
 
         if (activeCoroutine != null)
