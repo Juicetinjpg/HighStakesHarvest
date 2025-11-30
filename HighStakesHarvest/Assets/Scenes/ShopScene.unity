@@ -2935,7 +2935,7 @@ MonoBehaviour:
   sellPanelRoot: {fileID: 352856860}
   sellSeeds: 1
   sellTools: 0
-  sellCrops: 1
+  sellCrops: 0
   sellResources: 0
   shopBuysCrops: 1
   shopBuysResources: 1

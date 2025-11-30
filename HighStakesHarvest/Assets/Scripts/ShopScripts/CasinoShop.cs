@@ -307,9 +307,10 @@ public class CasinoShop : MonoBehaviour
         Button buyButton = FindInChildren<Button>(slotObj, buyButtonName);
 
         // Set icon
-        if (iconImage != null && itemData.icon != null)
+        Sprite icon = itemData.GetIcon();
+        if (iconImage != null && icon != null)
         {
-            iconImage.sprite = itemData.icon;
+            iconImage.sprite = icon;
             iconImage.enabled = true;
         }
 
@@ -445,9 +446,10 @@ public class CasinoShop : MonoBehaviour
         Button sellButton = FindInChildren<Button>(slotObj, buyButtonName);
 
         // Set icon
-        if (iconImage != null && itemData.icon != null)
+        Sprite icon = itemData.GetIcon();
+        if (iconImage != null && icon != null)
         {
-            iconImage.sprite = itemData.icon;
+            iconImage.sprite = icon;
             iconImage.enabled = true;
         }
 

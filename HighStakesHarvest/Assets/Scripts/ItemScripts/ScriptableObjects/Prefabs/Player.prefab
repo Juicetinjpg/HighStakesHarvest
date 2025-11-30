@@ -243,7 +243,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15761fb04a45a0c4092c3eadb96d7d3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 6
+  speed: 4
+  farmDoggoName: Farm Doggo
   animator: {fileID: 0}
 --- !u!114 &7997187335714920926
 MonoBehaviour:

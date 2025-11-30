@@ -1578,8 +1578,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f5db376d3a016c04c98368e4899bcd7c, type: 2}
   - {fileID: 11400000, guid: 89c59396820e5554bab5917ff328fa91, type: 2}
   autoProgressToNextQuota: 1
-  losePrefab: {fileID: 1257661519884945840, guid: e087316a08d067d4ab00d1af4c1bdc68,
-    type: 3}
+  losePrefab: {fileID: 0}
 --- !u!4 &736171653
 Transform:
   m_ObjectHideFlags: 0
@@ -1858,9 +1857,9 @@ MonoBehaviour:
   spawnPoint: {fileID: 0}
   spawnPointObjectName: FarmhandSpawnPoint
   spawnPointTag: 
-  moveSpeed: 2
+  moveSpeed: 3
   engageDistance: 0
-  waitBeforeWater: 1
+  waitBeforeWater: 0.5
   farmhandActive: 1
 --- !u!1 &930066408
 GameObject:

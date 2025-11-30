@@ -24,6 +24,7 @@ MonoBehaviour:
   producedCrop: {fileID: 11400000, guid: 380762e0a2214038ad27495f23c08cb6, type: 2}
   growthTime: 3
   seasonPreference: All
+  seedSprite: {fileID: -6462202804630979062, guid: fc1973d677c496c4b8c6f0499c7d9369, type: 3}
   growthStages:
   - {fileID: 7738305070149883613, guid: ee323e5ee8a8428a855e6bbad70dd3c3, type: 3}
   - {fileID: 7738305070149883613, guid: 6abd21a213794e7dba64e1339bf49151, type: 3}
