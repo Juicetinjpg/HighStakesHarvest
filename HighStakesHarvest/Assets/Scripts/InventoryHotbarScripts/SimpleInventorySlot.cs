@@ -21,9 +21,10 @@ public class SimpleInventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDr
     [SerializeField] private TextMeshProUGUI quantityText; // Changed from Text to TextMeshProUGUI
     
     [Header("Visual Settings")]
-    [SerializeField] private Color normalColor = new Color(0.2f, 0.2f, 0.2f, 0.9f);
-    [SerializeField] private Color hotbarColor = new Color(0.3f, 0.25f, 0.2f, 0.9f);
-    [SerializeField] private Color emptyColor = new Color(0.1f, 0.1f, 0.1f, 0.8f);
+    // Brighter defaults so slots don't look disabled/greyed out
+    [SerializeField] private Color normalColor = new Color(0.45f, 0.45f, 0.45f, 1f);
+    [SerializeField] private Color hotbarColor = new Color(0.65f, 0.6f, 0.5f, 1f);
+    [SerializeField] private Color emptyColor = new Color(0.35f, 0.35f, 0.35f, 0.9f);
     
     private int slotIndex;
     private GameObject dragIcon;
@@ -39,6 +40,7 @@ public class SimpleInventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDr
         if (quantityText == null) quantityText = transform.Find("Quantity")?.GetComponent<TextMeshProUGUI>();
 
         StyleText(quantityText);
+        UpgradeLegacyColorsIfNeeded();
     }
     
     /// <summary>
@@ -111,6 +113,7 @@ public class SimpleInventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDr
                 if (icon != null)
                 {
                     iconImage.sprite = icon;
+                    iconImage.color = Color.white; // ensure no dark tint on icons
                     FitIconToSlot(iconImage, icon);
                 }
             }
@@ -336,5 +339,37 @@ public class SimpleInventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDr
         }
         outline.effectColor = new Color(0f, 0f, 0f, 0.6f);
         outline.effectDistance = new Vector2(1f, -1f);
+    }
+
+    /// <summary>
+    /// If the serialized colors are still the old dark defaults, upgrade them to the brighter palette.
+    /// This ensures existing prefab/scene instances get the new look without manual inspector edits.
+    /// </summary>
+    private void UpgradeLegacyColorsIfNeeded()
+    {
+        Color oldNormal = new Color(0.2f, 0.2f, 0.2f, 0.9f);
+        Color oldHotbar = new Color(0.3f, 0.25f, 0.2f, 0.9f);
+        Color oldEmpty = new Color(0.1f, 0.1f, 0.1f, 0.8f);
+
+        if (Approximately(backgroundImage != null ? backgroundImage.color : normalColor, oldNormal))
+        {
+            normalColor = new Color(0.45f, 0.45f, 0.45f, 1f);
+        }
+        if (Approximately(hotbarColor, oldHotbar))
+        {
+            hotbarColor = new Color(0.65f, 0.6f, 0.5f, 1f);
+        }
+        if (Approximately(emptyColor, oldEmpty))
+        {
+            emptyColor = new Color(0.35f, 0.35f, 0.35f, 0.9f);
+        }
+    }
+
+    private bool Approximately(Color a, Color b, float tolerance = 0.02f)
+    {
+        return Mathf.Abs(a.r - b.r) < tolerance &&
+               Mathf.Abs(a.g - b.g) < tolerance &&
+               Mathf.Abs(a.b - b.b) < tolerance &&
+               Mathf.Abs(a.a - b.a) < tolerance;
     }
 }

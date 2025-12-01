@@ -16,8 +16,9 @@ public class HotbarUI : MonoBehaviour
     [SerializeField] private HotbarSlotDisplay[] slotDisplays = new HotbarSlotDisplay[10];
     
     [Header("Visual Settings")]
-    [SerializeField] private Color normalColor = new Color(0.3f, 0.3f, 0.3f, 0.8f);
-    [SerializeField] private Color selectedColor = new Color(1f, 0.9f, 0.5f, 1f);
+    // Brighter defaults so the hotbar looks active instead of disabled
+    [SerializeField] private Color normalColor = new Color(0.8f, 0.8f, 0.8f, 1f);
+    [SerializeField] private Color selectedColor = new Color(1f, 0.95f, 0.65f, 1f);
     [SerializeField] private float selectedScale = 1.1f;
     
     private int currentSelectedSlot = 0;
@@ -40,6 +41,7 @@ public class HotbarUI : MonoBehaviour
         HotbarSystem.OnSlotSelected += OnSlotSelected;
         PlayerInventory.OnSlotChanged += OnInventorySlotChanged;
         PlayerInventory.OnInventoryChanged += RefreshAllSlots;
+        UpgradeLegacyColorsIfNeeded();
     }
     
     private void OnDisable()
@@ -168,6 +170,7 @@ public class HotbarUI : MonoBehaviour
                 if (icon != null)
                 {
                     display.itemIcon.sprite = icon;
+                    display.itemIcon.color = Color.white; // clear any tint so sprites stay bright
                     FitIconToSlot(display.itemIcon, icon, display.backgroundImage);
                 }
             }
@@ -253,5 +256,31 @@ public class HotbarUI : MonoBehaviour
         }
         outline.effectColor = new Color(0f, 0f, 0f, 0.6f);
         outline.effectDistance = new Vector2(1f, -1f);
+    }
+
+    /// <summary>
+    /// If inspector values are still the old dark defaults, upgrade them to the brighter palette automatically.
+    /// </summary>
+    private void UpgradeLegacyColorsIfNeeded()
+    {
+        Color oldNormal = new Color(0.3f, 0.3f, 0.3f, 0.8f);
+        Color oldSelected = new Color(1f, 0.9f, 0.5f, 1f);
+
+        if (Approximately(normalColor, oldNormal))
+        {
+            normalColor = new Color(0.8f, 0.8f, 0.8f, 1f);
+        }
+        if (Approximately(selectedColor, oldSelected))
+        {
+            selectedColor = new Color(1f, 0.95f, 0.65f, 1f);
+        }
+    }
+
+    private bool Approximately(Color a, Color b, float tolerance = 0.02f)
+    {
+        return Mathf.Abs(a.r - b.r) < tolerance &&
+               Mathf.Abs(a.g - b.g) < tolerance &&
+               Mathf.Abs(a.b - b.b) < tolerance &&
+               Mathf.Abs(a.a - b.a) < tolerance;
     }
 }
