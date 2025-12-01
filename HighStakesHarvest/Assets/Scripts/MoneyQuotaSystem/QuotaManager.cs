@@ -90,6 +90,11 @@ public class QuotaManager : MonoBehaviour
         pendingQuotaEvaluation = false;
         isQuotaActive = true;
 
+        if (MoneyManager.Instance != null)
+        {
+            MoneyManager.Instance.SetSpendingLocked(false);
+        }
+
         OnQuotaStarted?.Invoke(currentQuota);
         OnTurnChanged?.Invoke(turnsRemaining);
 
@@ -132,6 +137,10 @@ public class QuotaManager : MonoBehaviour
         {
             // Defer quota evaluation until after the player has a chance to sell on the final turn.
             pendingQuotaEvaluation = true;
+            if (MoneyManager.Instance != null)
+            {
+                MoneyManager.Instance.SetSpendingLocked(true);
+            }
             Debug.Log("[QuotaManager] Final turn reached; quota evaluation deferred until next farm day.");
         }
     }
@@ -188,13 +197,19 @@ public class QuotaManager : MonoBehaviour
         isQuotaActive = false;
         pendingQuotaEvaluation = false;
 
-        // Deduct the quota amount from player money
-        MoneyManager.Instance.RemoveMoney(currentQuota.quotaAmount);
-
-        // Give completion bonus if any
-        if (currentQuota.completionBonus > 0)
+        if (MoneyManager.Instance != null)
         {
-            MoneyManager.Instance.AddMoney(currentQuota.completionBonus);
+            // Force payment even while spending is locked (casino phase),
+            // then release the lock once the quota is settled.
+            MoneyManager.Instance.RemoveMoney(currentQuota.quotaAmount, true);
+
+            // Give completion bonus if any
+            if (currentQuota.completionBonus > 0)
+            {
+                MoneyManager.Instance.AddMoney(currentQuota.completionBonus);
+            }
+
+            MoneyManager.Instance.SetSpendingLocked(false);
         }
 
         OnQuotaCompleted?.Invoke(currentQuota);
@@ -230,6 +245,11 @@ public class QuotaManager : MonoBehaviour
         TurnManager.Instance.gameOver = true;
 
         OnQuotaFailed?.Invoke(currentQuota);
+
+        if (MoneyManager.Instance != null)
+        {
+            MoneyManager.Instance.SetSpendingLocked(false);
+        }
 
         Debug.Log($"Quota Failed! Could not pay ${currentQuota.quotaAmount} to {currentQuota.creditorName}");
 
@@ -268,6 +288,11 @@ public class QuotaManager : MonoBehaviour
         isQuotaActive = false;
         pendingQuotaEvaluation = false;
         TurnManager.Instance.gameOver = true;
+
+        if (MoneyManager.Instance != null)
+        {
+            MoneyManager.Instance.SetSpendingLocked(false);
+        }
 
         // Spawn Win Prefab
         if (winPrefab != null)
@@ -338,6 +363,10 @@ public class QuotaManager : MonoBehaviour
         if (!isQuotaActive)
         {
             pendingQuotaEvaluation = false;
+            if (MoneyManager.Instance != null)
+            {
+                MoneyManager.Instance.SetSpendingLocked(false);
+            }
             return false;
         }
 

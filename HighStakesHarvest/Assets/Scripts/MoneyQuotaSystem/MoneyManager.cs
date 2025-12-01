@@ -13,6 +13,7 @@ public class MoneyManager : MonoBehaviour
     [SerializeField] private int startingMoney = 100;
     
     private int currentMoney;
+    private bool spendingLocked = false;
 
     // Events for UI updates
     public event Action<int> OnMoneyChanged;
@@ -31,6 +32,20 @@ public class MoneyManager : MonoBehaviour
 
         // Initialize money
         currentMoney = startingMoney;
+    }
+
+    /// <summary>
+    /// Prevent spending while a quota is being evaluated (e.g., during casino phase after final farm turn).
+    /// </summary>
+    public void SetSpendingLocked(bool locked)
+    {
+        spendingLocked = locked;
+        Debug.Log($"MoneyManager spending lock {(locked ? "ENABLED" : "DISABLED")}");
+    }
+
+    public bool IsSpendingLocked()
+    {
+        return spendingLocked;
     }
 
     /// <summary>
@@ -60,8 +75,14 @@ public class MoneyManager : MonoBehaviour
     /// <summary>
     /// Remove money from the player's total
     /// </summary>
-    public bool RemoveMoney(int amount)
+    public bool RemoveMoney(int amount, bool ignoreLock = false)
     {
+        if (spendingLocked && !ignoreLock)
+        {
+            Debug.LogWarning("Spending is currently locked until the quota is evaluated.");
+            return false;
+        }
+
         if (amount < 0)
         {
             Debug.LogWarning("Amount should be positive when removing money");
