@@ -96,6 +96,11 @@ public class TurnManager : MonoBehaviour
             return;
         }
 
+        if (!EvaluateQuotaBeforeStartingTurn())
+        {
+            return;
+        }
+
         currentTurnTimeRemaining = turnTimeLimit;
         isTurnActive = true;
 
@@ -110,6 +115,11 @@ public class TurnManager : MonoBehaviour
     // Force-reset the turn timer and start the turn regardless of previous state
     public void ResetAndStartTurn()
     {
+        if (!EvaluateQuotaBeforeStartingTurn())
+        {
+            return;
+        }
+
         currentTurnTimeRemaining = turnTimeLimit;
         isTurnActive = true;
 
@@ -358,6 +368,25 @@ public class TurnManager : MonoBehaviour
     }
 
 
+
+    /// <summary>
+    /// If a quota is due (turnsRemaining <= 0), evaluate it before allowing a new turn to begin.
+    /// Returns false when the game should not start a new turn (e.g., win/lose triggered).
+    /// </summary>
+    private bool EvaluateQuotaBeforeStartingTurn()
+    {
+        if (QuotaManager.Instance != null && QuotaManager.Instance.HasPendingQuotaEvaluation())
+        {
+            QuotaManager.Instance.EvaluateQuotaIfDue();
+
+            if (gameOver || (QuotaManager.Instance != null && !QuotaManager.Instance.IsQuotaActive()))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     private void WriteTurnLog(string message)
     {

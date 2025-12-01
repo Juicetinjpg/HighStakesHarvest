@@ -1,4 +1,4 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using System;
 using System.Collections.Generic;
 
@@ -18,7 +18,7 @@ public class QuotaManager : MonoBehaviour
     [Header("Current Run State")]
     private int currentQuotaIndex = 0;
     private int turnsRemaining;
-    private int startingMoneyForQuota;
+    private bool pendingQuotaEvaluation = false;
 
     [Header("Loss Screen")]
     [SerializeField] private GameObject losePrefab;
@@ -33,7 +33,7 @@ public class QuotaManager : MonoBehaviour
     public event Action<QuotaData> OnQuotaCompleted;
     public event Action<QuotaData> OnQuotaFailed;
     public event Action<int> OnTurnChanged;
-    public event Action<int> OnProgressChanged; // Money progress toward quota
+    public event Action<int> OnProgressChanged; // Money progress toward quota (current total money)
 
     private bool isQuotaActive = false;
 
@@ -87,7 +87,7 @@ public class QuotaManager : MonoBehaviour
         QuotaData currentQuota = quotas[currentQuotaIndex];
 
         turnsRemaining = currentQuota.turnsAllowed;
-        startingMoneyForQuota = MoneyManager.Instance.GetMoney();
+        pendingQuotaEvaluation = false;
         isQuotaActive = true;
 
         OnQuotaStarted?.Invoke(currentQuota);
@@ -120,13 +120,19 @@ public class QuotaManager : MonoBehaviour
         if (!isQuotaActive) return;
 
         turnsRemaining--;
+        if (turnsRemaining < 0)
+        {
+            turnsRemaining = 0;
+        }
         OnTurnChanged?.Invoke(turnsRemaining);
 
         Debug.Log($"Turn ended. Turns remaining: {turnsRemaining}");
 
         if (turnsRemaining <= 0)
         {
-            CheckQuotaCompletion();
+            // Defer quota evaluation until after the player has a chance to sell on the final turn.
+            pendingQuotaEvaluation = true;
+            Debug.Log("[QuotaManager] Final turn reached; quota evaluation deferred until next farm day.");
         }
     }
 
@@ -139,9 +145,9 @@ public class QuotaManager : MonoBehaviour
         if (currentQuota == null) return;
 
         int currentMoney = MoneyManager.Instance.GetMoney();
-        int moneyEarnedThisQuota = currentMoney - startingMoneyForQuota;
 
-        if (moneyEarnedThisQuota >= currentQuota.quotaAmount)
+        // Quota is satisfied when the player's total money meets or exceeds the required amount.
+        if (currentMoney >= currentQuota.quotaAmount)
         {
             CompleteQuota();
         }
@@ -161,13 +167,12 @@ public class QuotaManager : MonoBehaviour
         QuotaData currentQuota = GetCurrentQuota();
         if (currentQuota == null) return;
 
-        int moneyEarnedThisQuota = currentMoney - startingMoneyForQuota;
-        OnProgressChanged?.Invoke(moneyEarnedThisQuota);
+        OnProgressChanged?.Invoke(currentMoney);
 
         // Check if quota met early
-        if (turnsRemaining > 0 && moneyEarnedThisQuota >= currentQuota.quotaAmount)
+        if (turnsRemaining > 0 && currentMoney >= currentQuota.quotaAmount)
         {
-            Debug.Log($"Quota achieved early! {moneyEarnedThisQuota}/{currentQuota.quotaAmount}");
+            Debug.Log($"Quota achieved early! {currentMoney}/{currentQuota.quotaAmount}");
             // Optionally show notification but don't complete until season ends
         }
     }
@@ -181,6 +186,7 @@ public class QuotaManager : MonoBehaviour
         if (currentQuota == null) return;
 
         isQuotaActive = false;
+        pendingQuotaEvaluation = false;
 
         // Deduct the quota amount from player money
         MoneyManager.Instance.RemoveMoney(currentQuota.quotaAmount);
@@ -219,6 +225,7 @@ public class QuotaManager : MonoBehaviour
         if (currentQuota == null) return;
 
         isQuotaActive = false;
+        pendingQuotaEvaluation = false;
 
         TurnManager.Instance.gameOver = true;
 
@@ -256,9 +263,10 @@ public class QuotaManager : MonoBehaviour
 
     private void TriggerWin()
     {
-        Debug.Log("[QuotaManager] ALL QUOTAS COMPLETED — YOU WIN!");
+        Debug.Log("[QuotaManager] ALL QUOTAS COMPLETED - YOU WIN!");
 
         isQuotaActive = false;
+        pendingQuotaEvaluation = false;
         TurnManager.Instance.gameOver = true;
 
         // Spawn Win Prefab
@@ -308,13 +316,39 @@ public class QuotaManager : MonoBehaviour
 
     public int GetMoneyProgressTowardQuota()
     {
-        int currentMoney = MoneyManager.Instance.GetMoney();
-        return currentMoney - startingMoneyForQuota;
+        return MoneyManager.Instance.GetMoney();
     }
 
     public bool IsQuotaActive()
     {
         return isQuotaActive;
+    }
+
+    public bool HasPendingQuotaEvaluation()
+    {
+        return pendingQuotaEvaluation;
+    }
+
+    /// <summary>
+    /// Evaluate quota once the selling phase for the final turn is done.
+    /// Returns true if an evaluation was attempted.
+    /// </summary>
+    public bool EvaluateQuotaIfDue()
+    {
+        if (!isQuotaActive)
+        {
+            pendingQuotaEvaluation = false;
+            return false;
+        }
+
+        if (!pendingQuotaEvaluation && turnsRemaining > 0)
+        {
+            return false;
+        }
+
+        pendingQuotaEvaluation = false;
+        CheckQuotaCompletion();
+        return true;
     }
 
     public int GetCurrentQuotaIndex()
