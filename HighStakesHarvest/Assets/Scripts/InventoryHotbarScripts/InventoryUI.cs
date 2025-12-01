@@ -3,7 +3,7 @@
 
 /*
 Simple inventory UI like Stardew Valley
-Press Tab/E to open, shows all 36 slots
+Press Tab to open, shows all 36 slots
 First row (slots 0-9) = hotbar (always visible at bottom)
 Can drag items to reorganize
 */
@@ -22,8 +22,14 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private Transform slotsContainer;
     [SerializeField] private GameObject slotPrefab;
     
+    [Header("Input")]
+    [SerializeField] private KeyCode inventoryToggleKey = KeyCode.Tab;
+    [SerializeField] private KeyCode inventoryCloseKey = KeyCode.Escape;
+    
     private SimpleInventorySlot[] slotComponents;
     public bool isOpen = false;
+    private int lastToggleFrame = -1; // prevents multiple toggles in the same frame
+    private CanvasGroup panelCanvasGroup; // used when panel is on the same GameObject as this script
     
     private void Awake()
     {
@@ -34,6 +40,17 @@ public class InventoryUI : MonoBehaviour
         else
         {
             Destroy(gameObject);
+        }
+
+        // If the assigned panel is the same GameObject this script lives on,
+        // use a CanvasGroup to hide/show instead of SetActive which would disable Update.
+        if (inventoryPanel != null && inventoryPanel == gameObject)
+        {
+            panelCanvasGroup = inventoryPanel.GetComponent<CanvasGroup>();
+            if (panelCanvasGroup == null)
+            {
+                panelCanvasGroup = inventoryPanel.AddComponent<CanvasGroup>();
+            }
         }
     }
     
@@ -55,14 +72,14 @@ public class InventoryUI : MonoBehaviour
     
     private void Update()
     {
-        // Toggle inventory with Tab or E
-        if (Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.E))
+        // Toggle inventory with Tab
+        if (Input.GetKeyDown(inventoryToggleKey))
         {
             ToggleInventory();
         }
         
         // Close with Escape
-        if (Input.GetKeyDown(KeyCode.Escape) && isOpen)
+        if (Input.GetKeyDown(inventoryCloseKey) && isOpen)
         {
             CloseInventory();
         }
@@ -105,6 +122,11 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     public void ToggleInventory()
     {
+        if (lastToggleFrame == Time.frameCount)
+            return; // another input already toggled this frame
+
+        lastToggleFrame = Time.frameCount;
+
         if (isOpen)
         {
             CloseInventory();
@@ -120,13 +142,17 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     public void OpenInventory()
     {
-        if (inventoryPanel == null) return;
+        if (inventoryPanel == null)
+        {
+            Debug.LogWarning("Inventory panel not assigned on InventoryUI.");
+            return;
+        }
         
         isOpen = true;
-        inventoryPanel.SetActive(true);
+        SetPanelVisibility(true);
         RefreshDisplay();
         
-        Debug.Log("Inventory opened (Tab/E to close)");
+        Debug.Log("Inventory opened (Tab/Escape to close)");
     }
     
     /// <summary>
@@ -134,12 +160,31 @@ public class InventoryUI : MonoBehaviour
     /// </summary>
     public void CloseInventory()
     {
-        if (inventoryPanel == null) return;
+        if (inventoryPanel == null)
+        {
+            Debug.LogWarning("Inventory panel not assigned on InventoryUI.");
+            return;
+        }
         
         isOpen = false;
-        inventoryPanel.SetActive(false);
+        SetPanelVisibility(false);
         
         Debug.Log("Inventory closed");
+    }
+
+    // Show/hide without disabling this component when the panel is the same GameObject
+    private void SetPanelVisibility(bool visible)
+    {
+        if (panelCanvasGroup != null)
+        {
+            panelCanvasGroup.alpha = visible ? 1f : 0f;
+            panelCanvasGroup.blocksRaycasts = visible;
+            panelCanvasGroup.interactable = visible;
+        }
+        else
+        {
+            inventoryPanel.SetActive(visible);
+        }
     }
     
     /// <summary>
