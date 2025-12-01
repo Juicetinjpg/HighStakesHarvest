@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -60,6 +61,14 @@ public class CasinoShop : MonoBehaviour
     [Header("Pricing")]
     [SerializeField] private bool useItemBasePrices = true;
     [SerializeField] private float priceMultiplier = 1.0f;
+
+    [Header("Styling")]
+    [SerializeField] private TMP_FontAsset pixelFont;
+    [SerializeField] private int noItemsFontSize = 36;
+    [SerializeField] private int contentTopPadding = 24;
+    [SerializeField] private int emptyStateTopPadding = 80;
+    private Coroutine buyScrollRoutine;
+    private Coroutine sellScrollRoutine;
 
     private readonly List<ShopItemRuntime> buyRuntimeItems = new();
     private readonly List<ShopItemRuntime> sellRuntimeItems = new();
@@ -210,7 +219,7 @@ public class CasinoShop : MonoBehaviour
     private void PopulateBuyPanel()
     {
         Debug.Log("=== PopulateBuyPanel START ===");
-        ClearPanel(buyRuntimeItems);
+        ClearPanel(buyRuntimeItems, buySlotContainer);
         List<ItemData> itemsToSell = new();
 
         if (sellSeeds)
@@ -254,8 +263,10 @@ public class CasinoShop : MonoBehaviour
         }
 
         UpdateButtonStates();
+        int padding = itemsToSell.Count == 0 ? emptyStateTopPadding : contentTopPadding;
+        EnsureTopPadding(buySlotContainer, padding);
         RebuildLayout(buySlotContainer);
-        ResetScroll(buyScrollRect);
+        ResetScroll(buyScrollRect, ref buyScrollRoutine);
         LogContainerState(buySlotContainer, "BUY");
         Debug.Log("=== PopulateBuyPanel END ===");
     }
@@ -366,7 +377,7 @@ public class CasinoShop : MonoBehaviour
     private void PopulateSellPanel()
     {
         Debug.Log("=== PopulateSellPanel START ===");
-        ClearPanel(sellRuntimeItems);
+        ClearPanel(sellRuntimeItems, sellSlotContainer);
 
         if (InventoryManager.Instance == null)
         {
@@ -423,8 +434,10 @@ public class CasinoShop : MonoBehaviour
             }
         }
         Debug.Log("=== PopulateSellPanel END ===");
+        int padding = itemsToShow.Count == 0 ? emptyStateTopPadding : contentTopPadding;
+        EnsureTopPadding(sellSlotContainer, padding);
         RebuildLayout(sellSlotContainer);
-        ResetScroll(sellScrollRect);
+        ResetScroll(sellScrollRect, ref sellScrollRoutine);
         LogContainerState(sellSlotContainer, "SELL");
     }
 
@@ -605,13 +618,25 @@ public class CasinoShop : MonoBehaviour
         TextMeshProUGUI text = msgObj.AddComponent<TextMeshProUGUI>();
         text.text = message;
         text.alignment = TextAlignmentOptions.Center;
-        text.fontSize = 24;
+        text.fontSize = noItemsFontSize > 0 ? noItemsFontSize : 36f;
         text.color = Color.white;
+        text.fontStyle = FontStyles.Bold;
+        text.enableWordWrapping = true;
+        text.overflowMode = TextOverflowModes.Overflow;
+        ApplyPixelFont(text);
+
+        // Give it a reasonable size so the scroll viewport doesn't clip the top
+        LayoutElement le = msgObj.AddComponent<LayoutElement>();
+        le.minHeight = 200f;
+        le.preferredHeight = 220f;
+        le.flexibleHeight = 1f;
         
         RectTransform rt = msgObj.GetComponent<RectTransform>();
         rt.anchorMin = new Vector2(0, 0);
         rt.anchorMax = new Vector2(1, 1);
-        rt.sizeDelta = Vector2.zero;
+        rt.pivot = new Vector2(0.5f, 0.5f);
+        rt.anchoredPosition = Vector2.zero;
+        rt.sizeDelta = new Vector2(0f, 250f);
     }
 
     private T FindInChildren<T>(GameObject parent, string childName) where T : Component
@@ -631,17 +656,56 @@ public class CasinoShop : MonoBehaviour
     private void SetText(Text legacyText, TextMeshProUGUI tmpText, string value)
     {
         if (legacyText != null) legacyText.text = value;
-        if (tmpText != null) tmpText.text = value;
+        if (tmpText != null)
+        {
+            tmpText.text = value;
+            ApplyPixelFont(tmpText);
+        }
     }
 
-    private void ClearPanel(List<ShopItemRuntime> list)
+    private void ApplyPixelFont(TextMeshProUGUI tmp)
+    {
+        if (tmp == null || pixelFont == null) return;
+
+        tmp.font = pixelFont;
+        var tex = pixelFont.material != null ? pixelFont.material.mainTexture : null;
+        if (tex != null)
+        {
+            tex.filterMode = FilterMode.Point; // keep pixelated look
+        }
+    }
+
+    private void EnsureTopPadding(Transform container, int topPadding)
+    {
+        if (container == null) return;
+
+        var grid = container.GetComponent<GridLayoutGroup>();
+        if (grid != null && grid.padding.top != topPadding)
+        {
+            grid.padding = new RectOffset(
+                grid.padding.left,
+                grid.padding.right,
+                topPadding,
+                grid.padding.bottom);
+        }
+    }
+
+    private void ClearPanel(List<ShopItemRuntime> list, Transform container)
     {
         foreach (var item in list)
         {
-            if (item.slotObject != null)
-                Destroy(item.slotObject);
+            if (item.buyButton != null)
+                item.buyButton.onClick.RemoveAllListeners();
         }
         list.Clear();
+
+        if (container != null)
+        {
+            for (int i = container.childCount - 1; i >= 0; i--)
+            {
+                Destroy(container.GetChild(i).gameObject);
+            }
+        }
     }
 
     private void RebuildLayout(Transform container)
@@ -658,13 +722,21 @@ public class CasinoShop : MonoBehaviour
         }
     }
 
-    private void ResetScroll(ScrollRect scrollRect)
+    private void ResetScroll(ScrollRect scrollRect, ref Coroutine routine)
     {
-        if (scrollRect != null)
-        {
-            scrollRect.verticalNormalizedPosition = 1f;
-            scrollRect.horizontalNormalizedPosition = 0f;
-        }
+        if (scrollRect == null) return;
+
+        if (routine != null)
+            StopCoroutine(routine);
+        routine = StartCoroutine(ResetScrollNextFrame(scrollRect));
+    }
+
+    private IEnumerator ResetScrollNextFrame(ScrollRect scrollRect)
+    {
+        // Wait a frame so Content Size Fitter/GridLayout have applied sizes
+        yield return null;
+        scrollRect.verticalNormalizedPosition = 1f;
+        scrollRect.horizontalNormalizedPosition = 0f;
     }
 
     private void LogSlotDebugOnce(GameObject slotObj, string panel)

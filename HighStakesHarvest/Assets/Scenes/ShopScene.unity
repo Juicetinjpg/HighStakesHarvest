@@ -2960,6 +2960,10 @@ MonoBehaviour:
   notificationDuration: 2
   useItemBasePrices: 1
   priceMultiplier: 1
+  pixelFont: {fileID: 0}
+  noItemsFontSize: 36
+  contentTopPadding: 24
+  emptyStateTopPadding: 80
 --- !u!4 &2039305528
 Transform:
   m_ObjectHideFlags: 0
